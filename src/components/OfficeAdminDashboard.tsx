@@ -77,6 +77,8 @@ export function OfficeAdminDashboard({ user }: { user: User }) {
   const [newEventLetterSize, setNewEventLetterSize] = useState<'A4' | 'LETTER'>('A4');
   const [newEventLetterContent, setNewEventLetterContent] = useState('');
   const [newEventOpeningQuote, setNewEventOpeningQuote] = useState('');
+  const [newEventEndDate, setNewEventEndDate] = useState('');
+  const [newEventRundown, setNewEventRundown] = useState('');
   const [newEventHeroImage, setNewEventHeroImage] = useState<string | null>(null);
   const [newEventBacksound, setNewEventBacksound] = useState<string | null>(null);
   const [newEventGallery, setNewEventGallery] = useState<string[]>([]);
@@ -386,6 +388,8 @@ export function OfficeAdminDashboard({ user }: { user: User }) {
           letterSize: newEventLetterSize,
           letterContent: newEventLetterContent,
           openingQuote: newEventOpeningQuote,
+          eventEndDate: newEventEndDate ? new Date(newEventEndDate).toISOString() : null,
+          rundown: newEventRundown,
           heroImage: newEventHeroImage,
           backsound: newEventBacksound,
           gallery: JSON.stringify(newEventGallery),
@@ -406,6 +410,8 @@ export function OfficeAdminDashboard({ user }: { user: User }) {
         setNewEventLetterSize('A4');
         setNewEventLetterContent('');
         setNewEventOpeningQuote('');
+        setNewEventEndDate('');
+        setNewEventRundown('');
         setNewEventHeroImage(null);
         setNewEventBacksound(null);
         setNewEventGallery([]);
@@ -413,7 +419,7 @@ export function OfficeAdminDashboard({ user }: { user: User }) {
       setNewEventThemeSecondary('#fef3c7');
         fetchEvents();
         if (selectedEvent?.id === editingEventId) {
-          setSelectedEvent({ ...selectedEvent, eventName: newEventName, eventDate: new Date(newEventDate), location: newEventLocation, mapsLink: newEventMapsLink, logo: newEventLogo, invitationFile: newEventInvitationFile, letterBackground: newEventLetterBackground, letterSize: newEventLetterSize, letterContent: newEventLetterContent, openingQuote: newEventOpeningQuote });
+          setSelectedEvent({ ...selectedEvent, eventName: newEventName, eventDate: new Date(newEventDate).toISOString(), eventEndDate: newEventEndDate ? new Date(newEventEndDate).toISOString() : undefined, location: newEventLocation, mapsLink: newEventMapsLink, logo: newEventLogo, invitationFile: newEventInvitationFile, letterBackground: newEventLetterBackground, letterSize: newEventLetterSize, letterContent: newEventLetterContent, openingQuote: newEventOpeningQuote, rundown: newEventRundown });
         }
       } else {
         alert("Gagal memperbarui acara. File mungkin terlalu besar.");
@@ -462,6 +468,8 @@ export function OfficeAdminDashboard({ user }: { user: User }) {
           letterSize: newEventLetterSize,
           letterContent: newEventLetterContent,
           openingQuote: newEventOpeningQuote,
+          eventEndDate: newEventEndDate ? new Date(newEventEndDate).toISOString() : null,
+          rundown: newEventRundown,
           heroImage: newEventHeroImage,
           backsound: newEventBacksound,
           gallery: JSON.stringify(newEventGallery),
@@ -883,13 +891,27 @@ export function OfficeAdminDashboard({ user }: { user: User }) {
                         onChange={e => setNewEventName(e.target.value)}
                         className="w-full text-sm bg-gray-50 border border-gray-200 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 text-gray-900 placeholder-gray-400 py-2 px-3"
                       />
-                      <input
-                        type="datetime-local"
-                        required
-                        value={newEventDate}
-                        onChange={e => setNewEventDate(e.target.value)}
-                        className="w-full text-sm bg-gray-50 border border-gray-200 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 text-gray-900 placeholder-gray-400 py-2 px-3 [color-scheme:light]"
-                      />
+                      <div className="flex gap-3">
+                        <div className="flex-1">
+                          <label className="block text-[10px] uppercase tracking-widest text-gray-500 mb-1.5 font-bold">Waktu Mulai</label>
+                          <input
+                            type="datetime-local"
+                            required
+                            value={newEventDate}
+                            onChange={e => setNewEventDate(e.target.value)}
+                            className="w-full text-sm bg-gray-50 border border-gray-200 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 text-gray-900 placeholder-gray-400 py-2 px-3 [color-scheme:light]"
+                          />
+                        </div>
+                        <div className="flex-1">
+                          <label className="block text-[10px] uppercase tracking-widest text-gray-500 mb-1.5 font-bold">Waktu Selesai (Opsional)</label>
+                          <input
+                            type="datetime-local"
+                            value={newEventEndDate}
+                            onChange={e => setNewEventEndDate(e.target.value)}
+                            className="w-full text-sm bg-gray-50 border border-gray-200 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 text-gray-900 placeholder-gray-400 py-2 px-3 [color-scheme:light]"
+                          />
+                        </div>
+                      </div>
                       <input
                         type="text"
                         placeholder="Location (Optional)"
@@ -1149,6 +1171,19 @@ export function OfficeAdminDashboard({ user }: { user: User }) {
                                 />
                               </div>
                             </div>
+
+                            <div>
+                              <label className="block text-[10px] uppercase tracking-widest text-gray-500 mb-1.5 font-bold">Rundown / Jadwal Acara (Opsional)</label>
+                              <div className="bg-white rounded-lg border border-gray-200 overflow-hidden [&_.ql-editor]:min-h-[150px] [&_.ql-editor]:text-xs mb-4">
+                                <ReactQuill 
+                                  theme="snow" 
+                                  value={newEventRundown} 
+                                  onChange={setNewEventRundown} 
+                                  placeholder="Tulis rundown atau susunan acara disini..."
+                                  modules={{ toolbar: [['bold', 'italic', 'underline', 'strike'], [{'list': 'ordered'}, {'list': 'bullet'}], [{'align': []}]] }}
+                                />
+                              </div>
+                            </div>
                             
                             <div>
                               <label className="block text-[10px] uppercase tracking-widest text-gray-500 mb-1.5 font-bold">Isi Undangan Digital (Gunakan {'{{nama_tamu}}'} untuk nama tamu)</label>
@@ -1246,12 +1281,14 @@ export function OfficeAdminDashboard({ user }: { user: User }) {
                         setNewEventDate(new Date(selectedEvent.eventDate).toISOString().slice(0,16));
                         setNewEventLocation(selectedEvent.location || "");
                         setNewEventMapsLink(selectedEvent.mapsLink || "");
-                        setNewEventLogo(selectedEvent.logo || undefined);
+                        setNewEventLogo(selectedEvent.logo);
                         setNewEventInvitationFile(selectedEvent.invitationFile || null);
                         setNewEventLetterBackground(selectedEvent.letterBackground || null);
-                        setNewEventLetterSize(selectedEvent.letterSize as 'A4' | 'LETTER' || 'A4');
+                        setNewEventLetterSize((selectedEvent.letterSize as 'A4' | 'LETTER') || 'A4');
                         setNewEventLetterContent(selectedEvent.letterContent || "");
                         setNewEventOpeningQuote(selectedEvent.openingQuote || "");
+                        setNewEventEndDate(selectedEvent.eventEndDate ? new Date(selectedEvent.eventEndDate).toISOString().slice(0,16) : "");
+                        setNewEventRundown(selectedEvent.rundown || "");
                         setNewEventHeroImage(selectedEvent.heroImage || null);
                         setNewEventBacksound(selectedEvent.backsound || null);
                         setNewEventGallery(selectedEvent.gallery ? JSON.parse(selectedEvent.gallery) : []);
@@ -1620,15 +1657,26 @@ export function OfficeAdminDashboard({ user }: { user: User }) {
                     className="w-full text-sm bg-gray-50 border border-gray-200 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 text-gray-900 py-2.5 px-3"
                   />
                 </div>
-                <div>
-                  <label className="block text-[10px] uppercase tracking-widest text-gray-500 mb-1.5">Event Date</label>
-                  <input
-                    type="datetime-local"
-                    required
-                    value={newEventDate}
-                    onChange={e => setNewEventDate(e.target.value)}
-                    className="w-full text-sm bg-gray-50 border border-gray-200 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 text-gray-900 py-2.5 px-3"
-                  />
+                <div className="flex gap-3">
+                  <div className="flex-1">
+                    <label className="block text-[10px] uppercase tracking-widest text-gray-500 mb-1.5">Waktu Mulai</label>
+                    <input
+                      type="datetime-local"
+                      required
+                      value={newEventDate}
+                      onChange={e => setNewEventDate(e.target.value)}
+                      className="w-full text-sm bg-gray-50 border border-gray-200 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 text-gray-900 py-2.5 px-3"
+                    />
+                  </div>
+                  <div className="flex-1">
+                    <label className="block text-[10px] uppercase tracking-widest text-gray-500 mb-1.5">Waktu Selesai (Opsional)</label>
+                    <input
+                      type="datetime-local"
+                      value={newEventEndDate}
+                      onChange={e => setNewEventEndDate(e.target.value)}
+                      className="w-full text-sm bg-gray-50 border border-gray-200 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 text-gray-900 py-2.5 px-3"
+                    />
+                  </div>
                 </div>
                 <div>
                   <label className="block text-[10px] uppercase tracking-widest text-gray-500 mb-1.5">Location (Optional)</label>
@@ -1910,6 +1958,18 @@ export function OfficeAdminDashboard({ user }: { user: User }) {
                           onChange={setNewEventOpeningQuote} 
                           placeholder="Ketik kutipan atau ayat disini..."
                           modules={{ toolbar: [['bold', 'italic', 'underline', 'strike'], [{'align': []}]] }}
+                        />
+                      </div>
+                    </div>
+                    <div>
+                      <label className="block text-[10px] uppercase tracking-widest text-gray-500 mb-1.5 font-bold">Rundown / Jadwal Acara (Opsional)</label>
+                      <div className="bg-white rounded-lg border border-gray-200 overflow-hidden [&_.ql-editor]:min-h-[150px] [&_.ql-editor]:text-xs mb-4">
+                        <ReactQuill 
+                          theme="snow" 
+                          value={newEventRundown} 
+                          onChange={setNewEventRundown} 
+                          placeholder="Tulis rundown atau susunan acara disini..."
+                          modules={{ toolbar: [['bold', 'italic', 'underline', 'strike'], [{'list': 'ordered'}, {'list': 'bullet'}], [{'align': []}]] }}
                         />
                       </div>
                     </div>

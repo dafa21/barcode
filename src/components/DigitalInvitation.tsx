@@ -22,6 +22,8 @@ interface Props {
   eventSlug?: string;
   hasInvitationFile?: boolean;
   openingQuote?: string | null;
+  eventEndDate?: string | null;
+  rundown?: string | null;
   children?: React.ReactNode;
 }
 
@@ -129,6 +131,8 @@ export function DigitalInvitation({
   hasInvitationFile = false,
   logo,
   openingQuote,
+  eventEndDate,
+  rundown,
   children
 }: Props) {
   const audioRef = useRef<HTMLAudioElement>(null);
@@ -342,7 +346,8 @@ export function DigitalInvitation({
                     {new Date(eventDate).toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
                   </span>
                   <span className="text-sm font-medium block text-gray-500 mt-0.5">
-                    Pukul {new Date(eventDate).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })}
+                    Pukul {new Date(eventDate).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', hour12: false })}
+                    {eventEndDate ? ` - ${new Date(eventEndDate).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', hour12: false })}` : ' s.d Selesai'}
                   </span>
                 </div>
               </div>
@@ -401,6 +406,25 @@ export function DigitalInvitation({
                 className="text-sm text-gray-800 leading-relaxed ql-editor !p-0 bg-white/80 backdrop-blur-xl rounded-3xl p-8 shadow-2xl border border-white/60 w-full"
                 dangerouslySetInnerHTML={{ __html: content.replace(/\{\{nama_tamu\}\}/g, `<span class="font-bold underline text-[var(--theme-primary)]">${guestName}</span>`) }}
               />
+            )}
+
+            {rundown && (
+              <motion.div 
+                initial={isPrint ? false : { opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-50px" }}
+                transition={{ delay: 1.0, duration: 1 }}
+                className="w-full mt-6"
+              >
+                <div className="flex items-center justify-center mb-6">
+                  <div className="h-[1px] bg-[var(--theme-primary)] opacity-40 flex-1"></div>
+                  <h3 className="px-4 text-xs tracking-[0.3em] uppercase text-gray-500 font-sans font-bold">Rundown Acara</h3>
+                  <div className="h-[1px] bg-[var(--theme-primary)] opacity-40 flex-1"></div>
+                </div>
+                <div 
+                  className="text-sm text-gray-800 leading-relaxed ql-editor !p-0 bg-white/80 backdrop-blur-xl rounded-3xl p-8 shadow-2xl border border-white/60 w-full"
+                  dangerouslySetInnerHTML={{ __html: rundown }}
+                />
+              </motion.div>
             )}
 
             {parsedGallery.length > 0 && (

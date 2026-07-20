@@ -45,6 +45,8 @@ export const events = pgTable('events', {
   themePrimary: varchar('theme_primary', { length: 20 }).default('#b45309'), // amber-700
   themeSecondary: varchar('theme_secondary', { length: 20 }).default('#fef3c7'), // amber-50
   openingQuote: text('opening_quote'),
+  eventEndDate: timestamp('event_end_date'),
+  rundown: text('rundown'),
 });
 
 export const guests = pgTable('guests', {

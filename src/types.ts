@@ -17,6 +17,7 @@ export interface Event {
   officeId: string;
   eventName: string;
   eventDate: string;
+  eventEndDate?: string;
   location?: string;
   isActive: boolean;
   logo?: string;
@@ -31,6 +32,8 @@ export interface Event {
   letterSize?: string;
   themePrimary?: string;
   themeSecondary?: string;
+  openingQuote?: string;
+  rundown?: string;
 }
 
 export interface Guest {
