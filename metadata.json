@@ -1,0 +1,6 @@
+{
+  "name": "Barcode Sistem Undangan Digital",
+  "description": "Multi-tenant event attendance system with barcode scanning.",
+  "requestFramePermissions": ["camera"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
