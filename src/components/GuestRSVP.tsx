@@ -26,6 +26,8 @@ interface RSVPData {
     themePrimary?: string | null;
     themeSecondary?: string | null;
     openingQuote?: string | null;
+    eventEndDate?: string | null;
+    rundown?: string | null;
   };
 }
 

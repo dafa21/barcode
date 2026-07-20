@@ -33,7 +33,9 @@ router.get('/rsvp/:barcodeUid', async (req, res) => {
         letterContent: events.letterContent,
         themePrimary: events.themePrimary,
         themeSecondary: events.themeSecondary,
-        openingQuote: events.openingQuote
+        openingQuote: events.openingQuote,
+        eventEndDate: events.eventEndDate,
+        rundown: events.rundown
       }
     })
     .from(guests)
