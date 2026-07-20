@@ -432,10 +432,14 @@ export function DigitalInvitation({
                   <h3 className="px-4 text-xs tracking-[0.3em] uppercase text-gray-500 font-sans font-bold">Rundown Acara</h3>
                   <div className="h-[1px] bg-[var(--theme-primary)] opacity-40 flex-1"></div>
                 </div>
-                <div 
-                  className="text-sm text-gray-800 leading-relaxed ql-editor !p-0 bg-white/80 backdrop-blur-xl rounded-3xl p-8 shadow-2xl border border-white/60 w-full"
-                  dangerouslySetInnerHTML={{ __html: rundown }}
-                />
+                <div className="bg-white/80 backdrop-blur-xl rounded-3xl p-6 shadow-2xl border border-white/60 w-full overflow-hidden">
+                  <div className="w-full overflow-x-auto custom-scrollbar">
+                    <div 
+                      className="text-sm text-gray-800 leading-relaxed ql-editor !p-0 min-w-full"
+                      dangerouslySetInnerHTML={{ __html: rundown }}
+                    />
+                  </div>
+                </div>
               </motion.div>
             )}
 
