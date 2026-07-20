@@ -285,6 +285,8 @@ export function GuestRSVP() {
         backsound={data.event.backsound || null}
         gallery={data.event.gallery || '[]'}
         openingQuote={data.event.openingQuote || null}
+        eventEndDate={data.event.eventEndDate || null}
+        rundown={data.event.rundown || null}
         themePrimary={data.event.themePrimary}
         themeSecondary={data.event.themeSecondary}
         isPreview={false}

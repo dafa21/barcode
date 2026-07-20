@@ -1213,6 +1213,8 @@ export function OfficeAdminDashboard({ user }: { user: User }) {
                                       background={newEventLetterBackground}
                                       content={newEventLetterContent}
                                       openingQuote={newEventOpeningQuote}
+                                      eventEndDate={newEventEndDate ? new Date(newEventEndDate).toISOString() : null}
+                                      rundown={newEventRundown}
                                       backsound={newEventBacksound}
                                       gallery={JSON.stringify(newEventGallery)}
                                       themePrimary={newEventThemePrimary}
@@ -2001,6 +2003,8 @@ export function OfficeAdminDashboard({ user }: { user: User }) {
                                       background={newEventLetterBackground}
                                       content={newEventLetterContent}
                                       openingQuote={newEventOpeningQuote}
+                                      eventEndDate={newEventEndDate ? new Date(newEventEndDate).toISOString() : null}
+                                      rundown={newEventRundown}
                                       backsound={newEventBacksound}
                                       gallery={JSON.stringify(newEventGallery)}
                                       themePrimary={newEventThemePrimary}
@@ -2180,6 +2184,9 @@ export function OfficeAdminDashboard({ user }: { user: User }) {
                   logo={selectedEvent.logo || null}
                   background={selectedEvent.letterBackground || null}
                   content={selectedEvent.letterContent || ''}
+                  openingQuote={selectedEvent.openingQuote || null}
+                  eventEndDate={selectedEvent.eventEndDate || null}
+                  rundown={selectedEvent.rundown || null}
                   backsound={selectedEvent.backsound || null}
                   themePrimary={selectedEvent.themePrimary || null}
                   themeSecondary={selectedEvent.themeSecondary || null}
