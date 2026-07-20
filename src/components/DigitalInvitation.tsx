@@ -219,8 +219,11 @@ export function DigitalInvitation({
                     transition={{ duration: 0.6, delay: 0.3 }}
                     className="space-y-4"
                   >
-                    <p className="text-xs tracking-[0.4em] uppercase opacity-90 font-sans font-bold">K E P A D A   Y T H.</p>
-                    <h2 className="text-4xl font-bold font-cursive capitalize text-[#fef3c7]">{guestName}</h2>
+                    <div className="flex flex-col items-center justify-center gap-1">
+                      <p className="text-[9px] tracking-[0.4em] uppercase opacity-90 font-sans font-bold">UNDANGAN SPESIAL UNTUK</p>
+                      <p className="text-sm text-white/90 font-serif italic mt-2">Bapak/Ibu</p>
+                      <h2 className="text-4xl font-bold font-cursive capitalize text-[#fef3c7] mt-1 drop-shadow-md">{guestName}</h2>
+                    </div>
                   </motion.div>
                 </div>
 
@@ -295,17 +298,26 @@ export function DigitalInvitation({
                   <img src={logo} alt="Event Logo" className="max-h-24 w-auto object-contain drop-shadow-md" />
                 </div>
               )}
-              <h4 className="text-[10px] tracking-[0.3em] uppercase text-gray-400 mb-4 font-sans font-semibold">You are invited to</h4>
-              <h1 className="text-4xl md:text-5xl font-bold text-gray-900 leading-tight mb-4 font-cursive text-[var(--theme-primary)]">
+              <div className="flex flex-col items-center justify-center">
+                <p className="text-[13px] font-semibold text-[var(--theme-primary)] mb-3 font-serif">
+                  Assalamu'alaikum Warahmatullahi Wabarakatuh
+                </p>
+                <p className="text-[11px] text-gray-600 leading-relaxed mb-6 px-2 md:px-6">
+                  Dengan memohon rahmat dan ridho Allah SWT, kami dari <strong>LAZNAS Dewan Da'wah</strong> dengan hormat bermaksud mengundang Bapak/Ibu untuk hadir pada acara:
+                </p>
+              </div>
+
+              <h1 className="text-3xl md:text-5xl font-bold text-gray-900 leading-tight mb-4 font-cursive text-[var(--theme-primary)]">
                 {eventName}
               </h1>
 
               <div className="w-12 h-[2px] bg-[var(--theme-primary)] opacity-40 mx-auto my-6"></div>
 
-              <p className="text-xs text-gray-500 mb-2 italic">Dear,</p>
-              <h2 className="text-xl font-bold text-gray-800">
-                Bapak/Ibu {guestName}
+              <p className="text-[10px] uppercase tracking-widest text-gray-500 mb-2 font-bold">Kepada Yth. Bapak/Ibu:</p>
+              <h2 className="text-2xl font-bold text-gray-900 font-serif">
+                {guestName}
               </h2>
+              <p className="text-[9px] text-gray-400 mt-2 italic">*Mohon maaf apabila terdapat kesalahan penulisan nama/gelar</p>
             </motion.div>
 
             {openingQuote && (

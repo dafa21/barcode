@@ -18,3 +18,28 @@
   padding-left: 1.5em;
   margin-bottom: 1em;
 }
+
+/* Table styles for Quill */
+.ql-editor table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 1rem;
+  font-size: 0.8rem;
+}
+.ql-editor th, .ql-editor td {
+  border: 1px solid #e2e8f0;
+  padding: 0.5rem;
+  text-align: left;
+  vertical-align: top;
+}
+.ql-editor th {
+  background-color: #f8fafc;
+  font-weight: 600;
+  color: #334155;
+}
+.ql-editor td {
+  color: #475569;
+}
+.ql-editor tr:nth-child(even) {
+  background-color: #f8fafc;
+}
