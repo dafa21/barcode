@@ -109,16 +109,16 @@ export function GuestRSVP() {
 
       const background = eventData.twibbonBackground || "https://images.unsplash.com/photo-1557683316-973673baf926?q=80&w=800&auto=format&fit=crop";
       let config = {
-        logoX: 400 - 55,
+        logoX: 400 - 50,
         logoY: 50,
-        logoSize: 110,
-        qrX: 400 - 175,
-        qrY: 390,
-        qrSize: 350,
-        eventNameY: 210,
-        badgeY: 265,
-        guestNameY: 840,
-        guestLabelY: 895,
+        logoSize: 100,
+        qrX: 400 - 160,
+        qrY: 380,
+        qrSize: 320,
+        eventNameY: 190,
+        badgeY: 280,
+        guestNameY: 800,
+        guestLabelY: 850,
       };
       
       if (eventData.twibbonConfig) {
@@ -136,7 +136,8 @@ export function GuestRSVP() {
 
       const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
       gradient.addColorStop(0, "rgba(17,24,39,0.2)");
-      gradient.addColorStop(1, "rgba(17,24,39,0.9)");
+      gradient.addColorStop(0.5, "rgba(17,24,39,0.5)");
+      gradient.addColorStop(1, "rgba(17,24,39,0.85)");
       ctx.fillStyle = gradient;
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
@@ -174,18 +175,20 @@ export function GuestRSVP() {
       ctx.restore();
 
       ctx.fillStyle = "white";
-      drawWrappedText(ctx, (eventData.eventName || "Event").toUpperCase(), canvas.width / 2, config.eventNameY, 700, 36);
+      drawWrappedText(ctx, (eventData.eventName || "Event").toUpperCase(), canvas.width / 2, config.eventNameY, 680, 28);
 
       const badgeText = "OFFICIAL INVITATION";
-      ctx.font = "bold 20px sans-serif";
-      const badgeWidth = ctx.measureText(badgeText).width + 40;
+      ctx.font = "bold 18px sans-serif";
+      const badgeWidth = ctx.measureText(badgeText).width + 36;
+      const computedBadgeY = Math.max(config.badgeY, config.eventNameY + 65);
       ctx.fillStyle = "#FDB931";
       ctx.beginPath();
-      ctx.roundRect(canvas.width / 2 - badgeWidth / 2, config.badgeY, badgeWidth, 40, 20);
+      ctx.roundRect(canvas.width / 2 - badgeWidth / 2, computedBadgeY, badgeWidth, 36, 18);
       ctx.fill();
       ctx.fillStyle = "#5C4000";
-      ctx.fillText(badgeText, canvas.width / 2, config.badgeY + 28);
+      ctx.fillText(badgeText, canvas.width / 2, computedBadgeY + 24);
 
+      const computedQrY = Math.max(config.qrY, computedBadgeY + 65);
       const qrDataUrl = await QRCode.toDataURL(uid, {
         width: config.qrSize,
         margin: 2,
@@ -194,25 +197,27 @@ export function GuestRSVP() {
       const qrImg = new Image();
       qrImg.src = qrDataUrl;
       await new Promise((resolve) => { qrImg.onload = resolve; });
-      const { qrX, qrY, qrSize } = config;
+      const { qrX, qrSize } = config;
       
       ctx.fillStyle = "white";
       ctx.beginPath();
-      ctx.roundRect(qrX - 20, qrY - 20, qrSize + 40, qrSize + 40, 32);
+      ctx.roundRect(qrX - 20, computedQrY - 20, qrSize + 40, qrSize + 40, 32);
       ctx.shadowColor = "rgba(0,0,0,0.3)";
       ctx.shadowBlur = 30;
       ctx.shadowOffsetY = 10;
       ctx.fill();
       ctx.shadowColor = "transparent";
       
-      ctx.drawImage(qrImg, qrX, qrY, qrSize, qrSize);
+      ctx.drawImage(qrImg, qrX, computedQrY, qrSize, qrSize);
 
+      const computedGuestNameY = Math.max(config.guestNameY, computedQrY + qrSize + 60);
       ctx.fillStyle = "white";
-      drawWrappedText(ctx, name, canvas.width / 2, config.guestNameY, 700, 48);
+      drawWrappedText(ctx, name, canvas.width / 2, computedGuestNameY, 700, 44);
 
-      ctx.font = "600 24px sans-serif";
+      const computedGuestLabelY = Math.max(config.guestLabelY, computedGuestNameY + 45);
+      ctx.font = "600 20px sans-serif";
       ctx.fillStyle = "rgba(255,255,255,0.7)";
-      ctx.fillText("GUEST IDENTITY", canvas.width / 2, config.guestLabelY);
+      ctx.fillText("GUEST IDENTITY", canvas.width / 2, computedGuestLabelY);
 
       const dataUrl = canvas.toDataURL("image/png");
       setGeneratedTwibbon(dataUrl);

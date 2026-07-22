@@ -17,16 +17,16 @@ interface TwibbonConfig {
 }
 
 const DEFAULT_CONFIG: TwibbonConfig = {
-  logoX: 400 - 55,
+  logoX: 400 - 50,
   logoY: 50,
-  logoSize: 110,
-  qrX: 400 - 175,
-  qrY: 390,
-  qrSize: 350,
-  eventNameY: 210,
-  badgeY: 265,
-  guestNameY: 840,
-  guestLabelY: 895,
+  logoSize: 100,
+  qrX: 400 - 160,
+  qrY: 380,
+  qrSize: 320,
+  eventNameY: 190,
+  badgeY: 280,
+  guestNameY: 800,
+  guestLabelY: 850,
 };
 
 const drawWrappedText = (
@@ -111,17 +111,18 @@ export function TwibbonConfigurator({ event, onClose, onSave }: { event: Event, 
 
     const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
     gradient.addColorStop(0, "rgba(17,24,39,0.2)");
-    gradient.addColorStop(1, "rgba(17,24,39,0.9)");
+    gradient.addColorStop(0.5, "rgba(17,24,39,0.5)");
+    gradient.addColorStop(1, "rgba(17,24,39,0.85)");
     ctx.fillStyle = gradient;
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
     // Logo
     try {
-      const logoSrc = event.logo || "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=800&q=80";
       const logoImg = new Image();
-      if (logoSrc.startsWith("http")) { logoImg.crossOrigin = "anonymous"; }
-      logoImg.src = logoSrc;
-      await new Promise((resolve) => { logoImg.onload = resolve; logoImg.onerror = resolve; });
+      const logoUrl = event.logo || "https://images.unsplash.com/photo-1599305445671-ac291c95aaa9?q=80&w=200&auto=format&fit=crop";
+      if (logoUrl.startsWith("http")) { logoImg.crossOrigin = "anonymous"; }
+      logoImg.src = logoUrl;
+      await new Promise((resolve, reject) => { logoImg.onload = resolve; logoImg.onerror = reject; });
       
       const { logoX, logoY, logoSize } = config;
       ctx.fillStyle = "white";
@@ -132,7 +133,7 @@ export function TwibbonConfigurator({ event, onClose, onSave }: { event: Event, 
       ctx.beginPath();
       ctx.roundRect(logoX, logoY, logoSize, logoSize, 16);
       ctx.clip();
-            const lRatio = logoImg.width / logoImg.height;
+      const lRatio = logoImg.width / logoImg.height;
       let lSWidth, lSHeight, lSx, lSy;
       if (lRatio > 1) {
         lSHeight = logoImg.height;
@@ -152,24 +153,26 @@ export function TwibbonConfigurator({ event, onClose, onSave }: { event: Event, 
     }
 
     ctx.fillStyle = "white";
-    drawWrappedText(ctx, (event.eventName || "Event").toUpperCase(), canvas.width / 2, config.eventNameY, 700, 36);
+    drawWrappedText(ctx, (event.eventName || "Event").toUpperCase(), canvas.width / 2, config.eventNameY, 680, 28);
 
     // Badge
     const badgeText = "OFFICIAL INVITATION";
-    ctx.font = "bold 20px sans-serif";
-    const badgeWidth = ctx.measureText(badgeText).width + 40;
+    ctx.font = "bold 18px sans-serif";
+    const badgeWidth = ctx.measureText(badgeText).width + 36;
+    const computedBadgeY = Math.max(config.badgeY, config.eventNameY + 65);
     ctx.fillStyle = "#FDB931";
     ctx.beginPath();
-    ctx.roundRect(canvas.width / 2 - badgeWidth / 2, config.badgeY, badgeWidth, 40, 20);
+    ctx.roundRect(canvas.width / 2 - badgeWidth / 2, computedBadgeY, badgeWidth, 36, 18);
     ctx.fill();
     ctx.fillStyle = "#5C4000";
-    ctx.fillText(badgeText, canvas.width / 2, config.badgeY + 28);
+    ctx.fillText(badgeText, canvas.width / 2, computedBadgeY + 24);
 
     // QR Code Placeholder
-    const { qrX, qrY, qrSize } = config;
+    const computedQrY = Math.max(config.qrY, computedBadgeY + 65);
+    const { qrX, qrSize } = config;
     ctx.fillStyle = "white";
     ctx.beginPath();
-    ctx.roundRect(qrX - 20, qrY - 20, qrSize + 40, qrSize + 40, 32);
+    ctx.roundRect(qrX - 20, computedQrY - 20, qrSize + 40, qrSize + 40, 32);
     ctx.shadowColor = "rgba(0,0,0,0.3)";
     ctx.shadowBlur = 30;
     ctx.shadowOffsetY = 10;
@@ -178,19 +181,21 @@ export function TwibbonConfigurator({ event, onClose, onSave }: { event: Event, 
     
     ctx.fillStyle = "#f3f4f6";
     ctx.beginPath();
-    ctx.roundRect(qrX, qrY, qrSize, qrSize, 16);
+    ctx.roundRect(qrX, computedQrY, qrSize, qrSize, 16);
     ctx.fill();
     ctx.fillStyle = "#9ca3af";
     ctx.font = "bold 32px sans-serif";
-    ctx.fillText("QR CODE", canvas.width / 2, qrY + qrSize / 2 + 10);
+    ctx.fillText("QR CODE", canvas.width / 2, computedQrY + qrSize / 2 + 10);
 
+    const computedGuestNameY = Math.max(config.guestNameY, computedQrY + qrSize + 60);
     ctx.fillStyle = "white";
-    drawWrappedText(ctx, "John Doe", canvas.width / 2, config.guestNameY, 700, 48);
+    drawWrappedText(ctx, "John Doe", canvas.width / 2, computedGuestNameY, 700, 44);
 
     // Guest Label
-    ctx.font = "600 24px sans-serif";
+    const computedGuestLabelY = Math.max(config.guestLabelY, computedGuestNameY + 45);
+    ctx.font = "600 20px sans-serif";
     ctx.fillStyle = "rgba(255,255,255,0.7)";
-    ctx.fillText("GUEST IDENTITY", canvas.width / 2, config.guestLabelY);
+    ctx.fillText("GUEST IDENTITY", canvas.width / 2, computedGuestLabelY);
   };
 
   useEffect(() => {
