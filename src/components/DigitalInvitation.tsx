@@ -412,7 +412,7 @@ export function DigitalInvitation({
                 <div 
                   className="text-sm text-gray-800 leading-relaxed ql-editor !p-0 font-serif"
                   dangerouslySetInnerHTML={{ 
-                    __html: openingQuote
+                    __html: openingQuote.replaceAll('&nbsp;', ' ')
                   }}
                 />
               </motion.div>
@@ -524,7 +524,7 @@ export function DigitalInvitation({
               >
                 <FloralCornerTR />
                 <FloralCornerBL />
-                <div dangerouslySetInnerHTML={{ __html: content.replace(/\{\{nama_tamu\}\}/g, `<span class="font-bold underline text-[var(--theme-primary)]">${guestName}</span>`) }} />
+                <div dangerouslySetInnerHTML={{ __html: content.replaceAll('&nbsp;', ' ').replace(/\{\{nama_tamu\}\}/g, `<span class="font-bold underline text-[var(--theme-primary)]">${guestName}</span>`) }} />
               </motion.div>
             )}
 
@@ -556,7 +556,7 @@ export function DigitalInvitation({
                     <div className="w-full overflow-x-auto custom-scrollbar">
                       <div 
                         className="text-sm text-gray-800 leading-relaxed ql-editor !p-0 min-w-full"
-                        dangerouslySetInnerHTML={{ __html: rundown }}
+                        dangerouslySetInnerHTML={{ __html: rundown.replaceAll('&nbsp;', ' ') }}
                       />
                     </div>
                   )}
