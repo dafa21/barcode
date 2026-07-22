@@ -17,16 +17,69 @@ interface TwibbonConfig {
 }
 
 const DEFAULT_CONFIG: TwibbonConfig = {
-  logoX: 400 - 60,
-  logoY: 80,
-  logoSize: 120,
-  qrX: 400 - 200,
-  qrY: 600 - 200 + 50, // 450
-  qrSize: 400,
-  eventNameY: 80 + 120 + 60, // 260
-  badgeY: 80 + 120 + 90, // 290
-  guestNameY: 450 + 400 + 100, // 950
-  guestLabelY: 450 + 400 + 140, // 990
+  logoX: 400 - 55,
+  logoY: 70,
+  logoSize: 110,
+  qrX: 400 - 175,
+  qrY: 380,
+  qrSize: 350,
+  eventNameY: 230,
+  badgeY: 275,
+  guestNameY: 810,
+  guestLabelY: 860,
+};
+
+const drawWrappedText = (
+  ctx: CanvasRenderingContext2D,
+  text: string,
+  centerX: number,
+  centerY: number,
+  maxWidth: number,
+  baseFontSize: number,
+  fontFamily: string = "sans-serif",
+  fontWeight: string = "bold"
+) => {
+  if (!text) return;
+  ctx.save();
+  ctx.textAlign = "center";
+  
+  let fontSize = baseFontSize;
+  ctx.font = `${fontWeight} ${fontSize}px ${fontFamily}`;
+  
+  const words = text.split(" ");
+  
+  const computeLines = (fSize: number) => {
+    ctx.font = `${fontWeight} ${fSize}px ${fontFamily}`;
+    const result: string[] = [];
+    let curLine = "";
+    for (const w of words) {
+      const testLine = curLine ? `${curLine} ${w}` : w;
+      if (ctx.measureText(testLine).width > maxWidth && curLine !== "") {
+        result.push(curLine);
+        curLine = w;
+      } else {
+        curLine = testLine;
+      }
+    }
+    if (curLine) result.push(curLine);
+    return result;
+  };
+
+  let lines = computeLines(fontSize);
+
+  while (fontSize > 16 && (lines.length > 2 || lines.some(l => ctx.measureText(l).width > maxWidth))) {
+    fontSize -= 2;
+    lines = computeLines(fontSize);
+  }
+
+  const lineHeight = fontSize * 1.25;
+  const startY = centerY - ((lines.length - 1) * lineHeight) / 2;
+
+  lines.forEach((line, i) => {
+    ctx.fillText(line, centerX, startY + i * lineHeight);
+  });
+
+  ctx.restore();
 };
 
 export function TwibbonConfigurator({ event, onClose, onSave }: { event: Event, onClose: () => void, onSave: (bg: string, config: string) => void }) {
@@ -51,22 +104,7 @@ export function TwibbonConfigurator({ event, onClose, onSave }: { event: Event, 
       if (background.startsWith("http")) { bgImg.crossOrigin = "anonymous"; }
       bgImg.src = background;
       await new Promise((resolve, reject) => { bgImg.onload = resolve; bgImg.onerror = reject; });
-          const imgRatio = bgImg.width / bgImg.height;
-    const canvasRatio = canvas.width / canvas.height;
-    let sWidth, sHeight, sx, sy;
-
-    if (imgRatio > canvasRatio) {
-      sHeight = bgImg.height;
-      sWidth = bgImg.height * canvasRatio;
-      sy = 0;
-      sx = (bgImg.width - sWidth) / 2;
-    } else {
-      sWidth = bgImg.width;
-      sHeight = bgImg.width / canvasRatio;
-      sx = 0;
-      sy = (bgImg.height - sHeight) / 2;
-    }
-    ctx.drawImage(bgImg, sx, sy, sWidth, sHeight, 0, 0, canvas.width, canvas.height);
+      ctx.drawImage(bgImg, 0, 0, canvas.width, canvas.height);
     } catch (e) {
       console.error("Failed to load background", e);
     }
@@ -113,11 +151,8 @@ export function TwibbonConfigurator({ event, onClose, onSave }: { event: Event, 
       console.error("Failed to load logo", e);
     }
 
-    // Event Name
-    ctx.font = "bold 40px sans-serif";
     ctx.fillStyle = "white";
-    ctx.textAlign = "center";
-    ctx.fillText((event.eventName || "Event").toUpperCase(), canvas.width / 2, config.eventNameY);
+    drawWrappedText(ctx, (event.eventName || "Event").toUpperCase(), canvas.width / 2, config.eventNameY, 700, 36);
 
     // Badge
     const badgeText = "OFFICIAL INVITATION";
@@ -149,10 +184,8 @@ export function TwibbonConfigurator({ event, onClose, onSave }: { event: Event, 
     ctx.font = "bold 32px sans-serif";
     ctx.fillText("QR CODE", canvas.width / 2, qrY + qrSize / 2 + 10);
 
-    // Guest Name
-    ctx.font = "bold 56px sans-serif";
     ctx.fillStyle = "white";
-    ctx.fillText("John Doe", canvas.width / 2, config.guestNameY);
+    drawWrappedText(ctx, "John Doe", canvas.width / 2, config.guestNameY, 700, 48);
 
     // Guest Label
     ctx.font = "600 24px sans-serif";

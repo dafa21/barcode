@@ -1,6 +1,6 @@
 
 import React, { useEffect, useRef, useState } from 'react';
-import { Calendar, MapPin, X, Music, VolumeX, FileText } from 'lucide-react';
+import { Calendar, MapPin, X, Music, VolumeX, FileText, Clock } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface Props {
@@ -9,6 +9,8 @@ interface Props {
   location: string | null;
   mapsLink?: string | null;
   guestName: string;
+  company?: string | null;
+  jobTitle?: string | null;
   heroImage: string | null;
   logo?: string | null;
   background: string | null;
@@ -46,6 +48,64 @@ function AnimatedNumber({ value }: { value: number }) {
     </div>
   );
 }
+
+const FloralCornerTL = ({ className = "" }: { className?: string }) => (
+  <svg className={`w-20 h-20 absolute -top-1 -left-1 text-[var(--theme-primary)] opacity-25 pointer-events-none ${className}`} viewBox="0 0 100 100" fill="currentColor">
+    <path d="M0,0 Q50,10 70,40 Q40,40 20,20 Q10,50 0,100 Z" opacity="0.5" />
+    <path d="M10,0 C30,15 50,30 65,65 C40,55 25,35 0,10 Z" />
+    <circle cx="25" cy="25" r="4" />
+    <circle cx="45" cy="15" r="3" />
+    <circle cx="15" cy="45" r="3" />
+  </svg>
+);
+
+const FloralCornerTR = ({ className = "" }: { className?: string }) => (
+  <svg className={`w-20 h-20 absolute -top-1 -right-1 text-[var(--theme-primary)] opacity-25 pointer-events-none transform scale-x-[-1] ${className}`} viewBox="0 0 100 100" fill="currentColor">
+    <path d="M0,0 Q50,10 70,40 Q40,40 20,20 Q10,50 0,100 Z" opacity="0.5" />
+    <path d="M10,0 C30,15 50,30 65,65 C40,55 25,35 0,10 Z" />
+    <circle cx="25" cy="25" r="4" />
+    <circle cx="45" cy="15" r="3" />
+    <circle cx="15" cy="45" r="3" />
+  </svg>
+);
+
+const FloralCornerBL = ({ className = "" }: { className?: string }) => (
+  <svg className={`w-20 h-20 absolute -bottom-1 -left-1 text-[var(--theme-primary)] opacity-25 pointer-events-none transform scale-y-[-1] ${className}`} viewBox="0 0 100 100" fill="currentColor">
+    <path d="M0,0 Q50,10 70,40 Q40,40 20,20 Q10,50 0,100 Z" opacity="0.5" />
+    <path d="M10,0 C30,15 50,30 65,65 C40,55 25,35 0,10 Z" />
+    <circle cx="25" cy="25" r="4" />
+    <circle cx="45" cy="15" r="3" />
+    <circle cx="15" cy="45" r="3" />
+  </svg>
+);
+
+const FloralCornerBR = ({ className = "" }: { className?: string }) => (
+  <svg className={`w-20 h-20 absolute -bottom-1 -right-1 text-[var(--theme-primary)] opacity-25 pointer-events-none transform scale-[-1] ${className}`} viewBox="0 0 100 100" fill="currentColor">
+    <path d="M0,0 Q50,10 70,40 Q40,40 20,20 Q10,50 0,100 Z" opacity="0.5" />
+    <path d="M10,0 C30,15 50,30 65,65 C40,55 25,35 0,10 Z" />
+    <circle cx="25" cy="25" r="4" />
+    <circle cx="45" cy="15" r="3" />
+    <circle cx="15" cy="45" r="3" />
+  </svg>
+);
+
+const FloralRosePattern = ({ className = "" }: { className?: string }) => (
+  <svg className={`w-28 h-28 absolute text-[var(--theme-primary)] opacity-20 pointer-events-none ${className}`} viewBox="0 0 100 100" fill="currentColor">
+    <circle cx="50" cy="50" r="14" opacity="0.3" />
+    <path d="M50,20 C65,20 70,35 50,50 C30,35 35,20 50,20 Z" />
+    <path d="M20,50 C20,35 35,30 50,50 C35,70 20,65 20,50 Z" />
+    <path d="M50,80 C35,80 30,65 50,50 C70,65 65,80 50,80 Z" />
+    <path d="M80,50 C80,65 65,70 50,50 C65,30 80,35 80,50 Z" />
+  </svg>
+);
+
+const FloralLeafPattern = ({ className = "" }: { className?: string }) => (
+  <svg className={`w-28 h-28 absolute text-[var(--theme-primary)] opacity-20 pointer-events-none ${className}`} viewBox="0 0 100 100" fill="currentColor">
+    <path d="M10,90 Q50,80 90,10 C70,30 60,60 10,90 Z" />
+    <path d="M10,90 Q30,70 10,50 C30,60 50,70 10,90 Z" opacity="0.6" />
+    <path d="M10,90 Q50,70 50,40 C60,55 70,70 10,90 Z" opacity="0.6" />
+  </svg>
+);
 
 function CountdownTimer({ targetDate }: { targetDate: string }) {
   const [timeLeft, setTimeLeft] = useState({
@@ -118,6 +178,8 @@ export function DigitalInvitation({
   location,
   mapsLink,
   guestName,
+  company,
+  jobTitle,
   heroImage,
   background,
   content,
@@ -209,7 +271,7 @@ export function DigitalInvitation({
                       initial={{ scale: 0.8, opacity: 0 }}
                       animate={{ scale: 1, opacity: 1 }}
                       transition={{ duration: 0.6, delay: 0.1, ease: "easeOut" }}
-                      src={logo} alt="Event Logo" className="max-h-24 w-auto object-contain drop-shadow-xl" 
+                      src={logo} alt="Event Logo" className="max-h-48 md:max-h-56 max-w-[90%] object-contain drop-shadow-2xl bg-white/20 backdrop-blur-md p-4 rounded-3xl border border-white/30" 
                     />
                   )}
                   
@@ -217,12 +279,23 @@ export function DigitalInvitation({
                     initial={{ y: 20, opacity: 0 }}
                     animate={{ y: 0, opacity: 1 }}
                     transition={{ duration: 0.6, delay: 0.3 }}
-                    className="space-y-4"
+                    className="space-y-4 px-4 text-center"
                   >
-                    <div className="flex flex-col items-center justify-center gap-1">
-                      <p className="text-[9px] tracking-[0.4em] uppercase opacity-90 font-sans font-bold">UNDANGAN SPESIAL UNTUK</p>
-                      <p className="text-sm text-white/90 font-serif italic mt-2">Bapak/Ibu</p>
-                      <h2 className="text-4xl font-bold font-cursive capitalize text-[#fef3c7] mt-1 drop-shadow-md">{guestName}</h2>
+                    <div className="flex flex-col items-center justify-center gap-1.5">
+                      <p className="text-[10px] sm:text-xs tracking-[0.3em] uppercase text-amber-200/90 font-sans font-semibold">
+                        KAMI MENGUNDANG DENGAN HORMAT
+                      </p>
+                      <p className="text-xs sm:text-sm text-white/90 font-serif italic mt-1">
+                        Yth. Bapak/Ibu/Saudara/i
+                      </p>
+                      <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold font-cursive capitalize text-[#fef3c7] drop-shadow-md my-1">
+                        {guestName}
+                      </h2>
+                      {(jobTitle || company) && (
+                        <p className="text-xs sm:text-sm text-white/95 font-sans font-medium tracking-wide bg-black/30 backdrop-blur-md px-5 py-1.5 rounded-full border border-white/20 mt-1 shadow-lg">
+                          {jobTitle}{jobTitle && company ? ' • ' : ''}{company}
+                        </p>
+                      )}
                     </div>
                   </motion.div>
                 </div>
@@ -291,8 +364,10 @@ export function DigitalInvitation({
               initial={isPrint ? false : { opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-50px" }}
               transition={{ delay: 0.3, duration: 1 }}
-              className={`w-full bg-white/80 backdrop-blur-xl rounded-3xl p-8 shadow-2xl border border-white/60 ${!heroImage && 'mt-8'}`}
+              className={`relative overflow-hidden w-full bg-white/85 backdrop-blur-xl rounded-3xl p-8 shadow-2xl border border-white/60 ${!heroImage && 'mt-8'}`}
             >
+              <FloralCornerTL />
+              <FloralCornerBR />
               {logo && (
                 <div className="flex justify-center mb-6">
                   <img src={logo} alt="Event Logo" className="max-h-24 w-auto object-contain drop-shadow-md" />
@@ -313,10 +388,15 @@ export function DigitalInvitation({
 
               <div className="w-12 h-[2px] bg-[var(--theme-primary)] opacity-40 mx-auto my-6"></div>
 
-              <p className="text-[10px] uppercase tracking-widest text-gray-500 mb-2 font-bold">Kepada Yth. Bapak/Ibu:</p>
+              <p className="text-[10px] uppercase tracking-widest text-gray-500 mb-2 font-bold">Kepada Yth. Bapak/Ibu/Saudara/i:</p>
               <h2 className="text-2xl font-bold text-gray-900 font-serif">
                 {guestName}
               </h2>
+              {(jobTitle || company) && (
+                <p className="text-sm font-semibold text-indigo-900 mt-1 font-sans">
+                  {jobTitle}{jobTitle && company ? ' - ' : ''}{company}
+                </p>
+              )}
               <p className="text-[9px] text-gray-400 mt-2 italic">*Mohon maaf apabila terdapat kesalahan penulisan nama/gelar</p>
             </motion.div>
 
@@ -325,8 +405,10 @@ export function DigitalInvitation({
                 initial={isPrint ? false : { opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-50px" }}
                 transition={{ delay: 0.4, duration: 1 }}
-                className="w-full bg-white/80 backdrop-blur-xl rounded-3xl p-8 shadow-2xl border border-white/60"
+                className="relative overflow-hidden w-full bg-white/85 backdrop-blur-xl rounded-3xl p-8 shadow-2xl border border-white/60"
               >
+                <FloralRosePattern className="top-0 right-0" />
+                <FloralRosePattern className="bottom-0 left-0 rotate-180" />
                 <div 
                   className="text-sm text-gray-800 leading-relaxed ql-editor !p-0 font-serif"
                   dangerouslySetInnerHTML={{ 
@@ -348,30 +430,52 @@ export function DigitalInvitation({
               initial={isPrint ? false : { opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-50px" }}
               transition={{ delay: 0.7, duration: 1 }}
-              className="space-y-6 w-full bg-white/80 backdrop-blur-xl rounded-3xl p-8 shadow-2xl border border-white/60"
+              className="relative overflow-hidden space-y-6 w-full bg-white/90 backdrop-blur-xl rounded-3xl p-6 md:p-8 shadow-2xl border border-white/80"
             >
-              <div className="flex items-start space-x-4 text-gray-700 text-left w-full">
-                <Calendar className="w-5 h-5 text-[var(--theme-primary)] opacity-90 mt-0.5 shrink-0" />
+              <FloralLeafPattern className="top-0 left-0 -translate-x-2 -translate-y-2" />
+              <FloralLeafPattern className="bottom-0 right-0 translate-x-2 translate-y-2 rotate-180" />
+              {/* Tanggal */}
+              <div className="flex items-start space-x-4 text-gray-800 text-left w-full">
+                <div className="w-10 h-10 rounded-2xl bg-[var(--theme-secondary)] flex items-center justify-center shrink-0 border border-[var(--theme-primary)]/20 shadow-sm">
+                  <Calendar className="w-5 h-5 text-[var(--theme-primary)]" />
+                </div>
                 <div className="flex-1 w-full">
-                  <p className="text-[10px] uppercase tracking-widest text-[var(--theme-primary)] opacity-60 font-sans font-bold mb-1">Tanggal</p>
-                  <span className="text-sm font-medium block">
+                  <p className="text-[10px] uppercase tracking-[0.2em] text-[var(--theme-primary)] font-sans font-bold mb-1">HARI & TANGGAL</p>
+                  <span className="text-base font-bold text-gray-900 block font-serif">
                     {new Date(eventDate).toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
                   </span>
-                  <span className="text-sm font-medium block text-gray-500 mt-0.5">
-                    Pukul {new Date(eventDate).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', hour12: false })}
-                    {eventEndDate ? ` - ${new Date(eventEndDate).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', hour12: false })}` : ' s.d Selesai'}
+                </div>
+              </div>
+
+              <div className="w-full h-[1px] bg-gray-100/80"></div>
+
+              {/* Waktu */}
+              <div className="flex items-start space-x-4 text-gray-800 text-left w-full">
+                <div className="w-10 h-10 rounded-2xl bg-[var(--theme-secondary)] flex items-center justify-center shrink-0 border border-[var(--theme-primary)]/20 shadow-sm">
+                  <Clock className="w-5 h-5 text-[var(--theme-primary)]" />
+                </div>
+                <div className="flex-1 w-full">
+                  <p className="text-[10px] uppercase tracking-[0.2em] text-[var(--theme-primary)] font-sans font-bold mb-1">WAKTU ACARA</p>
+                  <span className="text-sm font-bold text-gray-900 block font-sans">
+                    {eventEndDate ? (
+                      `Pukul ${new Date(eventDate).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', hour12: false })} - ${new Date(eventEndDate).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', hour12: false })} WIB`
+                    ) : (
+                      `Pukul ${new Date(eventDate).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', hour12: false })} WIB - Selesai`
+                    )}
                   </span>
                 </div>
               </div>
               
               {location && (
                 <>
-                  <div className="w-full h-[1px] bg-gray-100 my-4"></div>
-                  <div className="flex items-start space-x-4 text-gray-700 text-left w-full">
-                    <MapPin className="w-5 h-5 text-[var(--theme-primary)] opacity-90 mt-0.5 shrink-0" />
+                  <div className="w-full h-[1px] bg-gray-100/80"></div>
+                  <div className="flex items-start space-x-4 text-gray-800 text-left w-full">
+                    <div className="w-10 h-10 rounded-2xl bg-[var(--theme-secondary)] flex items-center justify-center shrink-0 border border-[var(--theme-primary)]/20 shadow-sm">
+                      <MapPin className="w-5 h-5 text-[var(--theme-primary)]" />
+                    </div>
                     <div className="flex-1 w-full min-w-0">
-                      <p className="text-[10px] uppercase tracking-widest text-[var(--theme-primary)] opacity-60 font-sans font-bold mb-1">Lokasi</p>
-                      <span className="text-sm font-medium block leading-relaxed mb-4 break-words">{location}</span>
+                      <p className="text-[10px] uppercase tracking-[0.2em] text-[var(--theme-primary)] font-sans font-bold mb-1">LOKASI ACARA</p>
+                      <span className="text-sm font-bold text-gray-900 block leading-relaxed mb-4 break-words font-sans">{location}</span>
                       
                       {!isPrint && (
                         <div className="w-full h-48 md:h-56 rounded-2xl overflow-hidden shadow-inner border border-white/60 mt-4 relative">
@@ -381,7 +485,8 @@ export function DigitalInvitation({
                             allowFullScreen 
                             src={`https://maps.google.com/maps?q=${encodeURIComponent(location)}&t=&z=15&ie=UTF8&iwloc=&output=embed`}
                           ></iframe>
-                          <a href={mapsLink || `https://maps.google.com/?q=${encodeURIComponent(location)}`} target="_blank" rel="noopener noreferrer" className="absolute bottom-2 right-2 bg-white/90 backdrop-blur-sm px-4 py-2 rounded-lg text-xs font-bold text-[var(--theme-primary)] shadow-md border border-[var(--theme-secondary)] hover:bg-[var(--theme-secondary)] transition-colors flex items-center gap-1 z-10">
+                          <a href={mapsLink || `https://maps.google.com/?q=${encodeURIComponent(location)}`} target="_blank" rel="noopener noreferrer" className="absolute bottom-2 right-2 bg-white/95 backdrop-blur-md px-4 py-2 rounded-xl text-xs font-bold text-[var(--theme-primary)] shadow-lg border border-[var(--theme-secondary)] hover:bg-[var(--theme-secondary)] transition-all flex items-center gap-1.5 z-10">
+                            <MapPin className="w-3.5 h-3.5" />
                             Buka di Maps
                           </a>
                         </div>
@@ -415,9 +520,12 @@ export function DigitalInvitation({
                 initial={isPrint ? false : { opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-50px" }}
                 transition={{ delay: 0.9, duration: 1 }}
-                className="text-sm text-gray-800 leading-relaxed ql-editor !p-0 bg-white/80 backdrop-blur-xl rounded-3xl p-8 shadow-2xl border border-white/60 w-full"
-                dangerouslySetInnerHTML={{ __html: content.replace(/\{\{nama_tamu\}\}/g, `<span class="font-bold underline text-[var(--theme-primary)]">${guestName}</span>`) }}
-              />
+                className="relative overflow-hidden text-sm text-gray-800 leading-relaxed ql-editor !p-0 bg-white/85 backdrop-blur-xl rounded-3xl p-8 shadow-2xl border border-white/60 w-full"
+              >
+                <FloralCornerTR />
+                <FloralCornerBL />
+                <div dangerouslySetInnerHTML={{ __html: content.replace(/\{\{nama_tamu\}\}/g, `<span class="font-bold underline text-[var(--theme-primary)]">${guestName}</span>`) }} />
+              </motion.div>
             )}
 
             {rundown && (
@@ -432,13 +540,26 @@ export function DigitalInvitation({
                   <h3 className="px-4 text-xs tracking-[0.3em] uppercase text-gray-500 font-sans font-bold">Rundown Acara</h3>
                   <div className="h-[1px] bg-[var(--theme-primary)] opacity-40 flex-1"></div>
                 </div>
-                <div className="bg-white/80 backdrop-blur-xl rounded-3xl p-6 shadow-2xl border border-white/60 w-full overflow-hidden">
-                  <div className="w-full overflow-x-auto custom-scrollbar">
-                    <div 
-                      className="text-sm text-gray-800 leading-relaxed ql-editor !p-0 min-w-full"
-                      dangerouslySetInnerHTML={{ __html: rundown }}
-                    />
-                  </div>
+                <div className="relative overflow-hidden bg-white/85 backdrop-blur-xl rounded-3xl p-6 shadow-2xl border border-white/60 w-full">
+                  <FloralRosePattern className="top-0 left-0 scale-75" />
+                  <FloralRosePattern className="bottom-0 right-0 scale-75 rotate-180" />
+                  {rundown.startsWith('data:image/') || rundown.startsWith('http://') || rundown.startsWith('https://') ? (
+                    <div className="flex justify-center">
+                      <img 
+                        src={rundown} 
+                        alt="Rundown Acara" 
+                        className="w-full h-auto rounded-2xl shadow-md border border-white/60 cursor-pointer hover:scale-[1.02] transition-transform duration-300"
+                        onClick={() => setSelectedImage(rundown)}
+                      />
+                    </div>
+                  ) : (
+                    <div className="w-full overflow-x-auto custom-scrollbar">
+                      <div 
+                        className="text-sm text-gray-800 leading-relaxed ql-editor !p-0 min-w-full"
+                        dangerouslySetInnerHTML={{ __html: rundown }}
+                      />
+                    </div>
+                  )}
                 </div>
               </motion.div>
             )}

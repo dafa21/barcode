@@ -8,6 +8,7 @@ interface RSVPData {
   id: string;
   guestName: string;
   company: string | null;
+  jobTitle?: string | null;
   rsvpStatus: 'pending' | 'attending' | 'not_attending';
   paxCount: number;
   event: {
@@ -29,7 +30,60 @@ interface RSVPData {
     eventEndDate?: string | null;
     rundown?: string | null;
   };
-}
+};
+
+const drawWrappedText = (
+  ctx: CanvasRenderingContext2D,
+  text: string,
+  centerX: number,
+  centerY: number,
+  maxWidth: number,
+  baseFontSize: number,
+  fontFamily: string = "sans-serif",
+  fontWeight: string = "bold"
+) => {
+  if (!text) return;
+  ctx.save();
+  ctx.textAlign = "center";
+  
+  let fontSize = baseFontSize;
+  ctx.font = `${fontWeight} ${fontSize}px ${fontFamily}`;
+  
+  const words = text.split(" ");
+  
+  const computeLines = (fSize: number) => {
+    ctx.font = `${fontWeight} ${fSize}px ${fontFamily}`;
+    const result: string[] = [];
+    let curLine = "";
+    for (const w of words) {
+      const testLine = curLine ? `${curLine} ${w}` : w;
+      if (ctx.measureText(testLine).width > maxWidth && curLine !== "") {
+        result.push(curLine);
+        curLine = w;
+      } else {
+        curLine = testLine;
+      }
+    }
+    if (curLine) result.push(curLine);
+    return result;
+  };
+
+  let lines = computeLines(fontSize);
+
+  while (fontSize > 16 && (lines.length > 2 || lines.some(l => ctx.measureText(l).width > maxWidth))) {
+    fontSize -= 2;
+    lines = computeLines(fontSize);
+  }
+
+  const lineHeight = fontSize * 1.25;
+  const startY = centerY - ((lines.length - 1) * lineHeight) / 2;
+
+  lines.forEach((line, i) => {
+    ctx.fillText(line, centerX, startY + i * lineHeight);
+  });
+
+  ctx.restore();
+};
 
 export function GuestRSVP() {
   const { barcodeUid } = useParams<{ barcodeUid: string }>();
@@ -55,16 +109,16 @@ export function GuestRSVP() {
 
       const background = eventData.twibbonBackground || "https://images.unsplash.com/photo-1557683316-973673baf926?q=80&w=800&auto=format&fit=crop";
       let config = {
-        logoX: 400 - 60,
-        logoY: 80,
-        logoSize: 120,
-        qrX: 400 - 200,
-        qrY: 600 - 200 + 50,
-        qrSize: 400,
-        eventNameY: 80 + 120 + 60,
-        badgeY: 80 + 120 + 90,
-        guestNameY: 450 + 400 + 100,
-        guestLabelY: 450 + 400 + 140,
+        logoX: 400 - 55,
+        logoY: 70,
+        logoSize: 110,
+        qrX: 400 - 175,
+        qrY: 380,
+        qrSize: 350,
+        eventNameY: 230,
+        badgeY: 275,
+        guestNameY: 810,
+        guestLabelY: 860,
       };
       
       if (eventData.twibbonConfig) {
@@ -78,21 +132,7 @@ export function GuestRSVP() {
       bgImg.src = background;
       await new Promise((resolve, reject) => { bgImg.onload = resolve; bgImg.onerror = reject; });
       
-      const imgRatio = bgImg.width / bgImg.height;
-      const canvasRatio = canvas.width / canvas.height;
-      let sWidth, sHeight, sx, sy;
-      if (imgRatio > canvasRatio) {
-        sHeight = bgImg.height;
-        sWidth = bgImg.height * canvasRatio;
-        sy = 0;
-        sx = (bgImg.width - sWidth) / 2;
-      } else {
-        sWidth = bgImg.width;
-        sHeight = bgImg.width / canvasRatio;
-        sx = 0;
-        sy = (bgImg.height - sHeight) / 2;
-      }
-      ctx.drawImage(bgImg, sx, sy, sWidth, sHeight, 0, 0, canvas.width, canvas.height);
+      ctx.drawImage(bgImg, 0, 0, canvas.width, canvas.height);
 
       const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
       gradient.addColorStop(0, "rgba(17,24,39,0.2)");
@@ -133,10 +173,8 @@ export function GuestRSVP() {
       ctx.drawImage(logoImg, lSx, lSy, lSWidth, lSHeight, logoX, logoY, logoSize, logoSize);
       ctx.restore();
 
-      ctx.font = "bold 40px sans-serif";
       ctx.fillStyle = "white";
-      ctx.textAlign = "center";
-      ctx.fillText((eventData.eventName || "Event").toUpperCase(), canvas.width / 2, config.eventNameY);
+      drawWrappedText(ctx, (eventData.eventName || "Event").toUpperCase(), canvas.width / 2, config.eventNameY, 700, 36);
 
       const badgeText = "OFFICIAL INVITATION";
       ctx.font = "bold 20px sans-serif";
@@ -169,9 +207,8 @@ export function GuestRSVP() {
       
       ctx.drawImage(qrImg, qrX, qrY, qrSize, qrSize);
 
-      ctx.font = "bold 56px sans-serif";
       ctx.fillStyle = "white";
-      ctx.fillText(name, canvas.width / 2, config.guestNameY);
+      drawWrappedText(ctx, name, canvas.width / 2, config.guestNameY, 700, 48);
 
       ctx.font = "600 24px sans-serif";
       ctx.fillStyle = "rgba(255,255,255,0.7)";
@@ -280,6 +317,8 @@ export function GuestRSVP() {
         eventDate={data.event.eventDate}
         location={data.event.location}
         guestName={data.guestName}
+        company={data.company}
+        jobTitle={data.jobTitle}
         heroImage={data.event.heroImage || null}
         logo={data.event.logo || null}
         background={data.event.letterBackground || null}
@@ -296,10 +335,15 @@ export function GuestRSVP() {
         hasInvitationFile={true}
       >
         <div className="bg-white/90 backdrop-blur-md rounded-2xl p-6 shadow-xl border border-gray-100 text-center w-full relative mt-4">
-          <p className="text-[10px] tracking-widest uppercase text-gray-500 mb-2 font-sans font-semibold">Invitation For</p>
+          <p className="text-[10px] tracking-widest uppercase text-gray-500 mb-2 font-sans font-semibold">UNDANGAN SPESIAL UNTUK</p>
           <h2 className="text-xl font-bold text-gray-900 mb-1">{data.guestName}</h2>
-          {data.company && <p className="text-xs text-gray-500 mb-6">{data.company}</p>}
-          {!data.company && <div className="mb-6"></div>}
+          {(data.jobTitle || data.company) ? (
+            <p className="text-xs text-gray-600 font-medium mb-6">
+              {data.jobTitle}{data.jobTitle && data.company ? ' - ' : ''}{data.company}
+            </p>
+          ) : (
+            <div className="mb-6"></div>
+          )}
           
           {success ? (
             <div className="bg-[var(--theme-secondary)] p-6 rounded-xl border border-[var(--theme-secondary)] animate-in fade-in zoom-in duration-300">

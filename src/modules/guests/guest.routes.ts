@@ -16,6 +16,7 @@ router.get('/rsvp/:barcodeUid', async (req, res) => {
       id: guests.id,
       guestName: guests.guestName,
       company: guests.company,
+      jobTitle: guests.jobTitle,
       rsvpStatus: guests.rsvpStatus,
       paxCount: guests.paxCount,
       event: {

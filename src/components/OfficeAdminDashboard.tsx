@@ -53,6 +53,59 @@ const compressImage = (file: File): Promise<string> => {
   });
 };
 
+const drawWrappedText = (
+  ctx: CanvasRenderingContext2D,
+  text: string,
+  centerX: number,
+  centerY: number,
+  maxWidth: number,
+  baseFontSize: number,
+  fontFamily: string = "sans-serif",
+  fontWeight: string = "bold"
+) => {
+  if (!text) return;
+  ctx.save();
+  ctx.textAlign = "center";
+  
+  let fontSize = baseFontSize;
+  ctx.font = `${fontWeight} ${fontSize}px ${fontFamily}`;
+  
+  const words = text.split(" ");
+  
+  const computeLines = (fSize: number) => {
+    ctx.font = `${fontWeight} ${fSize}px ${fontFamily}`;
+    const result: string[] = [];
+    let curLine = "";
+    for (const w of words) {
+      const testLine = curLine ? `${curLine} ${w}` : w;
+      if (ctx.measureText(testLine).width > maxWidth && curLine !== "") {
+        result.push(curLine);
+        curLine = w;
+      } else {
+        curLine = testLine;
+      }
+    }
+    if (curLine) result.push(curLine);
+    return result;
+  };
+
+  let lines = computeLines(fontSize);
+
+  while (fontSize > 16 && (lines.length > 2 || lines.some(l => ctx.measureText(l).width > maxWidth))) {
+    fontSize -= 2;
+    lines = computeLines(fontSize);
+  }
+
+  const lineHeight = fontSize * 1.25;
+  const startY = centerY - ((lines.length - 1) * lineHeight) / 2;
+
+  lines.forEach((line, i) => {
+    ctx.fillText(line, centerX, startY + i * lineHeight);
+  });
+
+  ctx.restore();
+};
+
 
 export function OfficeAdminDashboard({ user }: { user: User }) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
@@ -127,16 +180,16 @@ export function OfficeAdminDashboard({ user }: { user: User }) {
 
       const background = selectedEvent?.twibbonBackground || "https://images.unsplash.com/photo-1557683316-973673baf926?q=80&w=800&auto=format&fit=crop";
       let config = {
-        logoX: 400 - 60,
-        logoY: 80,
-        logoSize: 120,
-        qrX: 400 - 200,
-        qrY: 600 - 200 + 50,
-        qrSize: 400,
-        eventNameY: 80 + 120 + 60,
-        badgeY: 80 + 120 + 90,
-        guestNameY: 450 + 400 + 100,
-        guestLabelY: 450 + 400 + 140,
+        logoX: 400 - 55,
+        logoY: 70,
+        logoSize: 110,
+        qrX: 400 - 175,
+        qrY: 380,
+        qrSize: 350,
+        eventNameY: 230,
+        badgeY: 275,
+        guestNameY: 810,
+        guestLabelY: 860,
       };
       
       if (selectedEvent?.twibbonConfig) {
@@ -149,22 +202,7 @@ export function OfficeAdminDashboard({ user }: { user: User }) {
       if (background.startsWith("http")) { bgImg.crossOrigin = "anonymous"; }
       bgImg.src = background;
       await new Promise((resolve, reject) => { bgImg.onload = resolve; bgImg.onerror = reject; });
-          const imgRatio = bgImg.width / bgImg.height;
-    const canvasRatio = canvas.width / canvas.height;
-    let sWidth, sHeight, sx, sy;
-
-    if (imgRatio > canvasRatio) {
-      sHeight = bgImg.height;
-      sWidth = bgImg.height * canvasRatio;
-      sy = 0;
-      sx = (bgImg.width - sWidth) / 2;
-    } else {
-      sWidth = bgImg.width;
-      sHeight = bgImg.width / canvasRatio;
-      sx = 0;
-      sy = (bgImg.height - sHeight) / 2;
-    }
-    ctx.drawImage(bgImg, sx, sy, sWidth, sHeight, 0, 0, canvas.width, canvas.height);
+      ctx.drawImage(bgImg, 0, 0, canvas.width, canvas.height);
 
       const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
       gradient.addColorStop(0, "rgba(17,24,39,0.2)");
@@ -203,10 +241,8 @@ export function OfficeAdminDashboard({ user }: { user: User }) {
       ctx.drawImage(logoImg, lSx, lSy, lSWidth, lSHeight, logoX, logoY, logoSize, logoSize);
       ctx.restore();
 
-      ctx.font = "bold 40px sans-serif";
       ctx.fillStyle = "white";
-      ctx.textAlign = "center";
-      ctx.fillText((selectedEvent?.eventName || "Event").toUpperCase(), canvas.width / 2, config.eventNameY);
+      drawWrappedText(ctx, (selectedEvent?.eventName || "Event").toUpperCase(), canvas.width / 2, config.eventNameY, 700, 36);
 
       const badgeText = "OFFICIAL INVITATION";
       ctx.font = "bold 20px sans-serif";
@@ -240,9 +276,8 @@ export function OfficeAdminDashboard({ user }: { user: User }) {
       
       ctx.drawImage(qrImg, qrX, qrY, qrSize, qrSize);
 
-      ctx.font = "bold 56px sans-serif";
       ctx.fillStyle = "white";
-      ctx.fillText(name, canvas.width / 2, config.guestNameY);
+      drawWrappedText(ctx, name, canvas.width / 2, config.guestNameY, 700, 48);
 
       ctx.font = "600 24px sans-serif";
       ctx.fillStyle = "rgba(255,255,255,0.7)";
@@ -448,6 +483,26 @@ export function OfficeAdminDashboard({ user }: { user: User }) {
     }
   };
 
+  const handleDeleteGuest = async (id: string) => {
+    if (!confirm("Are you sure you want to delete this guest?")) return;
+    try {
+      const res = await fetch(`/api/guests/${id}`, {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
+      });
+      if (res.ok) {
+        if (selectedEvent) {
+          fetchGuests(selectedEvent.id);
+        }
+      } else {
+        alert("Gagal menghapus tamu");
+      }
+    } catch (error) {
+      console.error(error);
+      alert("Terjadi kesalahan");
+    }
+  };
+
   const handleCreateEvent = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
@@ -644,11 +699,11 @@ export function OfficeAdminDashboard({ user }: { user: User }) {
         
         if (guest.rsvpStatus === 'attending') {
           const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${guest.barcodeUid}`;
-          const message = `Yth. Bapak/Ibu ${guest.guestName},\n\nTerima kasih atas konfirmasi kehadiran Bapak/Ibu pada acara *${selectedEvent.eventName}*.\n\nUntuk kemudahan proses registrasi dan akses masuk di lokasi, mohon berkenan menunjukkan QR Code pada tautan di bawah ini atau menyebutkan Kode Kehadiran kepada petugas kami:\n\n🔗 Tautan QR Code: ${qrUrl}\n📝 Kode UID: *${guest.barcodeUid}*\n\nKami menantikan kehadiran Bapak/Ibu.\n\nHormat kami,\nPanitia Acara`;
+          const message = `Yth. Bapak/Ibu ${guest.guestName},\n\nTerima kasih atas konfirmasi kehadiran Bapak/Ibu pada acara *${selectedEvent.eventName}*.\n\nUntuk kemudahan proses registrasi dan akses masuk di lokasi, mohon berkenan menunjukkan QR Code pada tautan di bawah ini atau menyebutkan Kode Kehadiran kepada petugas kami:\n\n\u{1F517} Tautan QR Code: ${qrUrl}\n\u{1F4DD} Kode UID: *${guest.barcodeUid}*\n\nKami menantikan kehadiran Bapak/Ibu.\n\nHormat kami,\nPanitia Acara`;
           window.open(`https://wa.me/${formattedPhone}?text=${encodeURIComponent(message)}`, '_blank');
         } else {
           const rsvpUrl = `${getBaseUrl()}/rsvp/${guest.barcodeUid}`;
-          const message = `Yth. Bapak/Ibu ${guest.guestName},\n\nKami dengan hormat mengundang Bapak/Ibu untuk hadir pada acara *${selectedEvent.eventName}* yang akan diselenggarakan pada:\n\nWaktu: ${new Date(selectedEvent.eventDate).toLocaleString()}\nLokasi: ${selectedEvent.location || 'Akan diinformasikan'}\n\nMohon berkenan untuk memberikan konfirmasi kehadiran Bapak/Ibu melalui tautan berikut:\n🔗 ${rsvpUrl}\n\nSetelah Bapak/Ibu melakukan konfirmasi kehadiran, kami akan mengirimkan tiket barcode akses masuk secara otomatis.\n\nKehadiran Bapak/Ibu sangat berarti bagi kami. Atas perhatian dan perkenannya, kami ucapkan terima kasih.\n\nHormat kami,\nPanitia Acara`;
+          const message = `Yth. Bapak/Ibu ${guest.guestName},\n\nKami dengan hormat mengundang Bapak/Ibu untuk hadir pada acara *${selectedEvent.eventName}* yang akan diselenggarakan pada:\n\nWaktu: ${new Date(selectedEvent.eventDate).toLocaleString()}\nLokasi: ${selectedEvent.location || 'Akan diinformasikan'}\n\nMohon berkenan untuk memberikan konfirmasi kehadiran Bapak/Ibu melalui tautan berikut:\n\u{1F517} ${rsvpUrl}\n\nSetelah Bapak/Ibu melakukan konfirmasi kehadiran, kami akan mengirimkan tiket barcode akses masuk secara otomatis.\n\nKehadiran Bapak/Ibu sangat berarti bagi kami. Atas perhatian dan perkenannya, kami ucapkan terima kasih.\n\nHormat kami,\nPanitia Acara`;
           window.open(`https://wa.me/${formattedPhone}?text=${encodeURIComponent(message)}`, '_blank');
         }
       });
@@ -1172,17 +1227,47 @@ export function OfficeAdminDashboard({ user }: { user: User }) {
                               </div>
                             </div>
 
-                            <div>
-                              <label className="block text-[10px] uppercase tracking-widest text-gray-500 mb-1.5 font-bold">Rundown / Jadwal Acara (Opsional)</label>
-                              <div className="bg-white rounded-lg border border-gray-200 overflow-hidden [&_.ql-editor]:min-h-[150px] [&_.ql-editor]:text-xs mb-4">
-                                <ReactQuill 
-                                  theme="snow" 
-                                  value={newEventRundown} 
-                                  onChange={setNewEventRundown} 
-                                  placeholder="Tulis rundown atau susunan acara disini..."
-                                  modules={{ toolbar: [['bold', 'italic', 'underline', 'strike'], [{'list': 'ordered'}, {'list': 'bullet'}], [{'align': []}]] }}
-                                />
+                             <div>
+                              <div className="flex items-center justify-between mb-1.5">
+                                <label className="block text-[10px] uppercase tracking-widest text-gray-500 font-bold">Rundown / Jadwal Acara (Opsional)</label>
+                                <label className="cursor-pointer text-[10px] font-bold text-indigo-600 hover:text-indigo-800 flex items-center gap-1 bg-indigo-50 px-2.5 py-1 rounded-lg border border-indigo-100 transition-colors">
+                                  <Upload className="w-3 h-3" />
+                                  Upload Gambar Rundown
+                                  <input 
+                                    type="file" 
+                                    accept="image/*" 
+                                    className="hidden" 
+                                    onChange={e => {
+                                      const file = e.target.files?.[0];
+                                      if (file) {
+                                        compressImage(file).then(res => setNewEventRundown(res));
+                                      }
+                                    }} 
+                                  />
+                                </label>
                               </div>
+                              {newEventRundown && (newEventRundown.startsWith('data:image/') || newEventRundown.startsWith('http')) ? (
+                                <div className="relative mb-4 p-3 bg-gray-50 border border-gray-200 rounded-xl flex flex-col items-center">
+                                  <img src={newEventRundown} alt="Rundown Preview" className="max-h-48 object-contain rounded-lg shadow-sm mb-2" />
+                                  <button 
+                                    type="button" 
+                                    onClick={() => setNewEventRundown('')}
+                                    className="text-xs font-bold text-red-600 hover:text-red-800 transition-colors"
+                                  >
+                                    Hapus Gambar Rundown & Ganti Teks
+                                  </button>
+                                </div>
+                              ) : (
+                                <div className="bg-white rounded-lg border border-gray-200 overflow-hidden [&_.ql-editor]:min-h-[150px] [&_.ql-editor]:text-xs mb-4">
+                                  <ReactQuill 
+                                    theme="snow" 
+                                    value={newEventRundown} 
+                                    onChange={setNewEventRundown} 
+                                    placeholder="Tulis rundown atau susunan acara disini, atau klik tombol 'Upload Gambar Rundown' di kanan atas..."
+                                    modules={{ toolbar: [['bold', 'italic', 'underline', 'strike'], [{'list': 'ordered'}, {'list': 'bullet'}], [{'align': []}]] }}
+                                  />
+                                </div>
+                              )}
                             </div>
                             
                             <div>
@@ -1520,6 +1605,9 @@ export function OfficeAdminDashboard({ user }: { user: User }) {
          <button onClick={() => setSelectedGuestDetail(guest)} className="inline-flex items-center justify-center py-1.5 px-3 bg-indigo-50 text-indigo-700 rounded border border-indigo-100 hover:bg-indigo-100 transition-colors ml-auto text-[10px] font-bold uppercase tracking-widest shadow-sm">
            Detail
          </button>
+         <button onClick={() => handleDeleteGuest(guest.id)} className="inline-flex items-center justify-center p-1.5 bg-red-50 text-red-600 rounded border border-red-200 hover:bg-red-100 transition-colors" title="Delete Guest">
+            <Trash2 className="w-3.5 h-3.5" />
+         </button>
          <button onClick={() => {
             const rsvpUrl = `${getBaseUrl()}/rsvp/${guest.barcodeUid}`;
             const fileUrl = `${getBaseUrl()}/api/events/public/invitation/${selectedEvent?.slug}`;
@@ -1527,10 +1615,12 @@ export function OfficeAdminDashboard({ user }: { user: User }) {
             const eventTimeStr = new Date(selectedEvent?.eventDate || '').toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
             
             const message = guest.rsvpStatus === 'attending' 
-              ? `*Tiket Resmi Acara* 🎟️\n\nKepada Yth.\n*Bapak/Ibu ${guest.guestName}*\n\nTerima kasih telah mengonfirmasi kehadiran Anda pada acara *${selectedEvent?.eventName}*.\n\nBerikut adalah tautan tiket Barcode (QR Code) Anda. Mohon tunjukkan tiket ini kepada petugas registrasi saat tiba di lokasi acara:\n\n🔗 *Tautan Tiket:*\n${rsvpUrl}\n\nKami menantikan kehadiran Anda pada:\n📅 *Hari/Tanggal:* ${eventDateStr}\n⏰ *Waktu:* ${eventTimeStr}\n📍 *Lokasi:* ${selectedEvent?.location || 'Akan diinformasikan'}\n\nSampai jumpa di acara!\n\nHormat kami,\n*Panitia Penyelenggara*`
-              : `*Undangan Resmi Acara* ✉️\n\nKepada Yth.\n*Bapak/Ibu ${guest.guestName}*\n\nDengan hormat,\n\nMelalui pesan ini, kami bermaksud mengundang Bapak/Ibu untuk berkenan hadir pada acara *${selectedEvent?.eventName}* yang akan diselenggarakan pada:\n\n📅 *Hari/Tanggal:* ${eventDateStr}\n⏰ *Waktu:* ${eventTimeStr}\n📍 *Lokasi:* ${selectedEvent?.location || 'Akan diinformasikan'}\n\n📎 *Tautan File Undangan Resmi:*\n${fileUrl}\n\nMengingat pentingnya acara ini, kami sangat mengharapkan kehadiran Bapak/Ibu. Untuk kelancaran persiapan acara, mohon berkenan memberikan konfirmasi kehadiran (RSVP) melalui sistem registrasi kami pada tautan di bawah ini:\n\n🔗 *Tautan Konfirmasi Kehadiran (RSVP):*\n${rsvpUrl}\n\nSetelah Bapak/Ibu melakukan konfirmasi kehadiran melalui tautan di atas, sistem akan secara otomatis menerbitkan Kartu Identitas Tamu (ID Card) beserta QR Code sebagai tiket akses masuk resmi Bapak/Ibu.\n\nDemikian undangan ini kami sampaikan. Atas perhatian dan perkenan Bapak/Ibu, kami mengucapkan terima kasih yang sebesar-besarnya.\n\nHormat kami,\n\n*Panitia Penyelenggara*`;
+              ? `*Tiket Resmi Acara* \u{1F3AB}\n\nKepada Yth.\n*Bapak/Ibu ${guest.guestName}*\n\nTerima kasih telah mengonfirmasi kehadiran Anda pada acara *${selectedEvent?.eventName}*.\n\nBerikut adalah tautan tiket Barcode (QR Code) Anda. Mohon tunjukkan tiket ini kepada petugas registrasi saat tiba di lokasi acara:\n\n\u{1F517} *Tautan Tiket:*\n${rsvpUrl}\n\nKami menantikan kehadiran Anda pada:\n\u{1F4C5} *Hari/Tanggal:* ${eventDateStr}\n\u{23F0} *Waktu:* ${eventTimeStr}\n\u{1F4CD} *Lokasi:* ${selectedEvent?.location || 'Akan diinformasikan'}\n\nSampai jumpa di acara!\n\nHormat kami,\n*Panitia Penyelenggara*`
+              : `*Undangan Resmi Acara* \u{1F4E9}\n\nKepada Yth.\n*Bapak/Ibu ${guest.guestName}*\n\nDengan hormat,\n\nMelalui pesan ini, kami bermaksud mengundang Bapak/Ibu untuk berkenan hadir pada acara *${selectedEvent?.eventName}* yang akan diselenggarakan pada:\n\n\u{1F4C5} *Hari/Tanggal:* ${eventDateStr}\n\u{23F0} *Waktu:* ${eventTimeStr}\n\u{1F4CD} *Lokasi:* ${selectedEvent?.location || 'Akan diinformasikan'}\n\n\u{1F4CE} *Tautan File Undangan Resmi:*\n${fileUrl}\n\nMengingat pentingnya acara ini, kami sangat mengharapkan kehadiran Bapak/Ibu. Untuk kelancaran persiapan acara, mohon berkenan memberikan konfirmasi kehadiran (RSVP) melalui sistem registrasi kami pada tautan di bawah ini:\n\n\u{1F517} *Tautan Konfirmasi Kehadiran (RSVP):*\n${rsvpUrl}\n\nSetelah Bapak/Ibu melakukan konfirmasi kehadiran melalui tautan di atas, sistem akan secara otomatis menerbitkan Kartu Identitas Tamu (ID Card) beserta QR Code sebagai tiket akses masuk resmi Bapak/Ibu.\n\nDemikian undangan ini kami sampaikan. Atas perhatian dan perkenan Bapak/Ibu, kami mengucapkan terima kasih yang sebesar-besarnya.\n\nHormat kami,\n\n*Panitia Penyelenggara*`;
             
-            window.open(`https://wa.me/${guest.phone.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(message)}`, '_blank');
+            const phoneStr = guest.phone.replace(/[^0-9]/g, '');
+            const formattedPhone = phoneStr.startsWith('0') ? '62' + phoneStr.slice(1) : phoneStr;
+            window.open(`https://wa.me/${formattedPhone}?text=${encodeURIComponent(message)}`, '_blank');
          }} disabled={!guest.phone} className="inline-flex items-center justify-center p-1.5 bg-gray-50 text-gray-600 rounded border border-gray-200 hover:bg-white hover:text-green-600 transition-colors disabled:opacity-50" title={guest.rsvpStatus === 'attending' ? 'Kirim Tiket Barcode WA' : 'Kirim Link Konfirmasi RSVP WA'}>
             <MessageCircle className="w-3.5 h-3.5" />
          </button>
@@ -1964,16 +2054,46 @@ export function OfficeAdminDashboard({ user }: { user: User }) {
                       </div>
                     </div>
                     <div>
-                      <label className="block text-[10px] uppercase tracking-widest text-gray-500 mb-1.5 font-bold">Rundown / Jadwal Acara (Opsional)</label>
-                      <div className="bg-white rounded-lg border border-gray-200 overflow-hidden [&_.ql-editor]:min-h-[150px] [&_.ql-editor]:text-xs mb-4">
-                        <ReactQuill 
-                          theme="snow" 
-                          value={newEventRundown} 
-                          onChange={setNewEventRundown} 
-                          placeholder="Tulis rundown atau susunan acara disini..."
-                          modules={{ toolbar: [['bold', 'italic', 'underline', 'strike'], [{'list': 'ordered'}, {'list': 'bullet'}], [{'align': []}]] }}
-                        />
+                      <div className="flex items-center justify-between mb-1.5">
+                        <label className="block text-[10px] uppercase tracking-widest text-gray-500 font-bold">Rundown / Jadwal Acara (Opsional)</label>
+                        <label className="cursor-pointer text-[10px] font-bold text-indigo-600 hover:text-indigo-800 flex items-center gap-1 bg-indigo-50 px-2.5 py-1 rounded-lg border border-indigo-100 transition-colors">
+                          <Upload className="w-3 h-3" />
+                          Upload Gambar Rundown
+                          <input 
+                            type="file" 
+                            accept="image/*" 
+                            className="hidden" 
+                            onChange={e => {
+                              const file = e.target.files?.[0];
+                              if (file) {
+                                compressImage(file).then(res => setNewEventRundown(res));
+                              }
+                            }} 
+                          />
+                        </label>
                       </div>
+                      {newEventRundown && (newEventRundown.startsWith('data:image/') || newEventRundown.startsWith('http')) ? (
+                        <div className="relative mb-4 p-3 bg-gray-50 border border-gray-200 rounded-xl flex flex-col items-center">
+                          <img src={newEventRundown} alt="Rundown Preview" className="max-h-48 object-contain rounded-lg shadow-sm mb-2" />
+                          <button 
+                            type="button" 
+                            onClick={() => setNewEventRundown('')}
+                            className="text-xs font-bold text-red-600 hover:text-red-800 transition-colors"
+                          >
+                            Hapus Gambar Rundown & Ganti Teks
+                          </button>
+                        </div>
+                      ) : (
+                        <div className="bg-white rounded-lg border border-gray-200 overflow-hidden [&_.ql-editor]:min-h-[150px] [&_.ql-editor]:text-xs mb-4">
+                          <ReactQuill 
+                            theme="snow" 
+                            value={newEventRundown} 
+                            onChange={setNewEventRundown} 
+                            placeholder="Tulis rundown atau susunan acara disini, atau klik tombol 'Upload Gambar Rundown' di kanan atas..."
+                            modules={{ toolbar: [['bold', 'italic', 'underline', 'strike'], [{'list': 'ordered'}, {'list': 'bullet'}], [{'align': []}]] }}
+                          />
+                        </div>
+                      )}
                     </div>
                     <div>
                       <label className="block text-[10px] uppercase tracking-widest text-gray-500 mb-1.5 font-bold">Isi Undangan Digital (Gunakan {'{{nama_tamu}}'} untuk nama tamu)</label>
@@ -2085,7 +2205,7 @@ export function OfficeAdminDashboard({ user }: { user: User }) {
                     type="tel"
                     value={newGuestPhone}
                     onChange={e => setNewGuestPhone(e.target.value)}
-                    placeholder="e.g. +628123456789"
+                    placeholder="e.g. 08123456789 atau +628123456789"
                     className="w-full text-sm bg-gray-50 border border-gray-200 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 text-gray-900 placeholder-gray-400 py-2.5 px-3"
                   />
                 </div>
@@ -2227,6 +2347,76 @@ export function OfficeAdminDashboard({ user }: { user: User }) {
                 className="w-full py-4 bg-gray-900 hover:bg-gray-800 text-white rounded-xl transition-colors text-sm font-bold uppercase tracking-widest shadow-md"
               >
                 Cetak Surat
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Guest Detail Modal */}
+      {selectedGuestDetail && (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-2xl w-full max-w-md shadow-2xl overflow-hidden">
+            <div className="p-6 border-b border-gray-100 flex justify-between items-center bg-gray-50">
+              <h2 className="text-lg font-bold text-gray-900 flex items-center gap-2">
+                <Users className="w-5 h-5 text-indigo-600" />
+                Detail Tamu
+              </h2>
+              <button onClick={() => setSelectedGuestDetail(null)} className="text-gray-400 hover:text-gray-600 transition-colors">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            <div className="p-6 space-y-4">
+              <div>
+                <p className="text-[10px] uppercase tracking-widest text-gray-500 font-bold mb-1">Nama Tamu</p>
+                <p className="text-sm font-medium text-gray-900">{selectedGuestDetail.guestName} {selectedGuestDetail.isVip && <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-bold bg-amber-100 text-amber-800 border border-amber-200 ml-2"><Crown className="w-3 h-3"/> VIP</span>}</p>
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <p className="text-[10px] uppercase tracking-widest text-gray-500 font-bold mb-1">Email</p>
+                  <p className="text-sm text-gray-900">{selectedGuestDetail.email || '-'}</p>
+                </div>
+                <div>
+                  <p className="text-[10px] uppercase tracking-widest text-gray-500 font-bold mb-1">Telepon (WA)</p>
+                  <p className="text-sm text-gray-900">{selectedGuestDetail.phone || '-'}</p>
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <p className="text-[10px] uppercase tracking-widest text-gray-500 font-bold mb-1">Instansi / Company</p>
+                  <p className="text-sm text-gray-900">{selectedGuestDetail.company || '-'}</p>
+                </div>
+                <div>
+                  <p className="text-[10px] uppercase tracking-widest text-gray-500 font-bold mb-1">Jabatan</p>
+                  <p className="text-sm text-gray-900">{selectedGuestDetail.jobTitle || '-'}</p>
+                </div>
+              </div>
+              <div>
+                <p className="text-[10px] uppercase tracking-widest text-gray-500 font-bold mb-1">Barcode UID</p>
+                <p className="text-sm font-mono text-indigo-600 break-all">{selectedGuestDetail.barcodeUid}</p>
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <p className="text-[10px] uppercase tracking-widest text-gray-500 font-bold mb-1">Status Kehadiran</p>
+                  <p className="text-sm text-gray-900">
+                    {selectedGuestDetail.status === 'attended' ? 'Hadir (Checked-in)' : 'Belum Hadir'}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-[10px] uppercase tracking-widest text-gray-500 font-bold mb-1">Status RSVP</p>
+                  <p className="text-sm text-gray-900 capitalize">{selectedGuestDetail.rsvpStatus || 'Pending'}</p>
+                </div>
+              </div>
+              {selectedGuestDetail.scannedAt && (
+                <div>
+                  <p className="text-[10px] uppercase tracking-widest text-gray-500 font-bold mb-1">Waktu Check-in</p>
+                  <p className="text-sm text-gray-900">{new Date(selectedGuestDetail.scannedAt).toLocaleString()}</p>
+                </div>
+              )}
+            </div>
+            <div className="p-4 border-t border-gray-100 bg-gray-50 flex justify-end">
+              <button onClick={() => setSelectedGuestDetail(null)} className="px-4 py-2 bg-white border border-gray-200 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors">
+                Tutup
               </button>
             </div>
           </div>
