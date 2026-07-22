@@ -17,16 +17,16 @@ interface TwibbonConfig {
 }
 
 const DEFAULT_CONFIG: TwibbonConfig = {
-  logoX: 400 - 50,
-  logoY: 50,
-  logoSize: 100,
-  qrX: 400 - 160,
-  qrY: 380,
-  qrSize: 320,
-  eventNameY: 190,
-  badgeY: 280,
-  guestNameY: 800,
-  guestLabelY: 850,
+  logoX: 400 - 45,
+  logoY: 45,
+  logoSize: 90,
+  qrX: 400 - 140,
+  qrY: 325,
+  qrSize: 280,
+  eventNameY: 165,
+  badgeY: 235,
+  guestNameY: 675,
+  guestLabelY: 725,
 };
 
 const drawWrappedText = (
@@ -153,22 +153,26 @@ export function TwibbonConfigurator({ event, onClose, onSave }: { event: Event, 
     }
 
     ctx.fillStyle = "white";
-    drawWrappedText(ctx, (event.eventName || "Event").toUpperCase(), canvas.width / 2, config.eventNameY, 680, 28);
+    drawWrappedText(ctx, (event.eventName || "Event").toUpperCase(), canvas.width / 2, config.eventNameY, 680, 26);
 
     // Badge
     const badgeText = "OFFICIAL INVITATION";
+    ctx.save();
     ctx.font = "bold 18px sans-serif";
-    const badgeWidth = ctx.measureText(badgeText).width + 36;
-    const computedBadgeY = Math.max(config.badgeY, config.eventNameY + 65);
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    const badgeWidth = ctx.measureText(badgeText).width + 44;
+    const computedBadgeY = Math.max(config.badgeY, config.eventNameY + 50);
     ctx.fillStyle = "#FDB931";
     ctx.beginPath();
-    ctx.roundRect(canvas.width / 2 - badgeWidth / 2, computedBadgeY, badgeWidth, 36, 18);
+    ctx.roundRect(canvas.width / 2 - badgeWidth / 2, computedBadgeY, badgeWidth, 38, 19);
     ctx.fill();
     ctx.fillStyle = "#5C4000";
-    ctx.fillText(badgeText, canvas.width / 2, computedBadgeY + 24);
+    ctx.fillText(badgeText, canvas.width / 2, computedBadgeY + 19);
+    ctx.restore();
 
     // QR Code Placeholder
-    const computedQrY = Math.max(config.qrY, computedBadgeY + 65);
+    const computedQrY = Math.max(config.qrY, computedBadgeY + 55);
     const { qrX, qrSize } = config;
     ctx.fillStyle = "white";
     ctx.beginPath();
@@ -185,17 +189,23 @@ export function TwibbonConfigurator({ event, onClose, onSave }: { event: Event, 
     ctx.fill();
     ctx.fillStyle = "#9ca3af";
     ctx.font = "bold 32px sans-serif";
-    ctx.fillText("QR CODE", canvas.width / 2, computedQrY + qrSize / 2 + 10);
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillText("QR CODE", canvas.width / 2, computedQrY + qrSize / 2);
 
-    const computedGuestNameY = Math.max(config.guestNameY, computedQrY + qrSize + 60);
+    const computedGuestNameY = Math.max(config.guestNameY, computedQrY + qrSize + 55);
     ctx.fillStyle = "white";
-    drawWrappedText(ctx, "John Doe", canvas.width / 2, computedGuestNameY, 700, 44);
+    drawWrappedText(ctx, "John Doe", canvas.width / 2, computedGuestNameY, 700, 42);
 
     // Guest Label
     const computedGuestLabelY = Math.max(config.guestLabelY, computedGuestNameY + 45);
+    ctx.save();
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
     ctx.font = "600 20px sans-serif";
-    ctx.fillStyle = "rgba(255,255,255,0.7)";
+    ctx.fillStyle = "rgba(255,255,255,0.75)";
     ctx.fillText("GUEST IDENTITY", canvas.width / 2, computedGuestLabelY);
+    ctx.restore();
   };
 
   useEffect(() => {
