@@ -17,16 +17,16 @@ interface TwibbonConfig {
 }
 
 const DEFAULT_CONFIG: TwibbonConfig = {
-  logoX: 400 - 45,
-  logoY: 45,
-  logoSize: 90,
-  qrX: 400 - 140,
-  qrY: 325,
-  qrSize: 280,
-  eventNameY: 165,
-  badgeY: 235,
-  guestNameY: 675,
-  guestLabelY: 725,
+  logoX: 400 - 40,
+  logoY: 40,
+  logoSize: 80,
+  qrX: 400 - 125,
+  qrY: 290,
+  qrSize: 250,
+  eventNameY: 150,
+  badgeY: 210,
+  guestNameY: 600,
+  guestLabelY: 640,
 };
 
 const drawWrappedText = (
