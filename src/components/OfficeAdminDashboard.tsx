@@ -2492,7 +2492,7 @@ export function OfficeAdminDashboard({ user }: { user: User }) {
                     method: 'PUT',
                     headers: {
                       'Content-Type': 'application/json',
-                      'Authorization': `Bearer ${token}`
+                      'Authorization': `Bearer ${localStorage.getItem('token')}`
                     },
                     body: JSON.stringify({
                       guestName: editingGuest.guestName,
