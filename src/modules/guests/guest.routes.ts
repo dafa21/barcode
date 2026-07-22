@@ -133,6 +133,42 @@ router.post('/', async (req: AuthRequest, res) => {
   }
 });
 
+router.put('/:id', async (req: AuthRequest, res) => {
+  try {
+    const { id } = req.params;
+    const { guestName, email, phone, company, jobTitle, picId, isVip } = req.body;
+
+    const guestResult = await db.select().from(guests).where(eq(guests.id, id)).limit(1);
+    if (guestResult.length === 0) {
+      return res.status(404).json({ error: 'Guest not found' });
+    }
+
+    const eventResult = await db.select().from(events).where(eq(events.id, guestResult[0].eventId)).limit(1);
+    if (eventResult.length === 0) {
+      return res.status(404).json({ error: 'Event not found' });
+    }
+
+    if ((req.user!.role === 'office_admin' || req.user!.role === 'pic') && eventResult[0].officeId !== req.user!.officeId) {
+      return res.status(403).json({ error: 'Forbidden: Event does not belong to your office' });
+    }
+
+    const updated = await db.update(guests).set({
+      guestName,
+      email: email || null,
+      phone: phone || null,
+      company: company || null,
+      jobTitle: jobTitle || null,
+      picId: picId || null,
+      isVip: isVip !== undefined ? !!isVip : guestResult[0].isVip,
+    }).where(eq(guests.id, id)).returning();
+
+    res.json(updated[0]);
+  } catch (error) {
+    console.error('Update guest error:', error);
+    res.status(500).json({ error: 'Internal server error', cause: error });
+  }
+});
+
 router.get('/event/:eventId', async (req: AuthRequest, res) => {
   try {
     const { eventId } = req.params;

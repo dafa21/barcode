@@ -110,15 +110,15 @@ export function GuestRSVP() {
       const background = eventData.twibbonBackground || "https://images.unsplash.com/photo-1557683316-973673baf926?q=80&w=800&auto=format&fit=crop";
       let config = {
         logoX: 400 - 55,
-        logoY: 70,
+        logoY: 50,
         logoSize: 110,
         qrX: 400 - 175,
-        qrY: 380,
+        qrY: 390,
         qrSize: 350,
-        eventNameY: 230,
-        badgeY: 275,
-        guestNameY: 810,
-        guestLabelY: 860,
+        eventNameY: 210,
+        badgeY: 265,
+        guestNameY: 840,
+        guestLabelY: 895,
       };
       
       if (eventData.twibbonConfig) {

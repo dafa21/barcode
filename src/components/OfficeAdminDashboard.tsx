@@ -138,6 +138,7 @@ export function OfficeAdminDashboard({ user }: { user: User }) {
   const [newEventThemePrimary, setNewEventThemePrimary] = useState('#b45309');
   const [newEventThemeSecondary, setNewEventThemeSecondary] = useState('#fef3c7');
   const [printingGuest, setPrintingGuest] = useState<any | null>(null);
+  const [editingGuest, setEditingGuest] = useState<any | null>(null);
   const [newEventLocation, setNewEventLocation] = useState('');
   const [newEventMapsLink, setNewEventMapsLink] = useState('');
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
@@ -181,15 +182,15 @@ export function OfficeAdminDashboard({ user }: { user: User }) {
       const background = selectedEvent?.twibbonBackground || "https://images.unsplash.com/photo-1557683316-973673baf926?q=80&w=800&auto=format&fit=crop";
       let config = {
         logoX: 400 - 55,
-        logoY: 70,
+        logoY: 50,
         logoSize: 110,
         qrX: 400 - 175,
-        qrY: 380,
+        qrY: 390,
         qrSize: 350,
-        eventNameY: 230,
-        badgeY: 275,
-        guestNameY: 810,
-        guestLabelY: 860,
+        eventNameY: 210,
+        badgeY: 265,
+        guestNameY: 840,
+        guestLabelY: 895,
       };
       
       if (selectedEvent?.twibbonConfig) {
@@ -1605,6 +1606,9 @@ export function OfficeAdminDashboard({ user }: { user: User }) {
          <button onClick={() => setSelectedGuestDetail(guest)} className="inline-flex items-center justify-center py-1.5 px-3 bg-indigo-50 text-indigo-700 rounded border border-indigo-100 hover:bg-indigo-100 transition-colors ml-auto text-[10px] font-bold uppercase tracking-widest shadow-sm">
            Detail
          </button>
+         <button onClick={() => setEditingGuest(guest)} className="inline-flex items-center justify-center p-1.5 bg-amber-50 text-amber-700 rounded border border-amber-200 hover:bg-amber-100 transition-colors" title="Edit Data Tamu">
+            <Edit3 className="w-3.5 h-3.5" />
+         </button>
          <button onClick={() => handleDeleteGuest(guest.id)} className="inline-flex items-center justify-center p-1.5 bg-red-50 text-red-600 rounded border border-red-200 hover:bg-red-100 transition-colors" title="Delete Guest">
             <Trash2 className="w-3.5 h-3.5" />
          </button>
@@ -2414,11 +2418,167 @@ export function OfficeAdminDashboard({ user }: { user: User }) {
                 </div>
               )}
             </div>
-            <div className="p-4 border-t border-gray-100 bg-gray-50 flex justify-end">
-              <button onClick={() => setSelectedGuestDetail(null)} className="px-4 py-2 bg-white border border-gray-200 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors">
+            <div className="p-4 border-t border-gray-100 bg-gray-50 flex justify-between items-center">
+              <button 
+                onClick={() => {
+                  const g = selectedGuestDetail;
+                  setSelectedGuestDetail(null);
+                  setEditingGuest(g);
+                }} 
+                className="px-4 py-2 bg-amber-50 border border-amber-200 rounded-lg text-xs font-bold text-amber-800 hover:bg-amber-100 transition-colors flex items-center gap-1.5 shadow-sm"
+              >
+                <Edit3 className="w-4 h-4 text-amber-600" />
+                Edit Data Tamu
+              </button>
+              <button onClick={() => setSelectedGuestDetail(null)} className="px-4 py-2 bg-white border border-gray-200 rounded-lg text-xs font-medium text-gray-700 hover:bg-gray-50 transition-colors">
                 Tutup
               </button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Edit Guest Modal */}
+      {editingGuest && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-900/50 backdrop-blur-sm" onClick={() => setEditingGuest(null)}>
+          <div className="bg-white rounded-2xl shadow-xl w-full max-w-lg overflow-hidden flex flex-col max-h-[90vh]" onClick={e => e.stopPropagation()}>
+            <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between bg-gray-50">
+              <h3 className="font-bold text-gray-900 text-base flex items-center gap-2">
+                <Edit3 className="w-5 h-5 text-indigo-600" />
+                Edit Data Tamu Undangan
+              </h3>
+              <button onClick={() => setEditingGuest(null)} className="text-gray-400 hover:text-gray-600">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <form 
+              onSubmit={async (e) => {
+                e.preventDefault();
+                if (!editingGuest) return;
+                try {
+                  const res = await fetch(`/api/guests/${editingGuest.id}`, {
+                    method: 'PUT',
+                    headers: {
+                      'Content-Type': 'application/json',
+                      'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({
+                      guestName: editingGuest.guestName,
+                      company: editingGuest.company,
+                      jobTitle: editingGuest.jobTitle,
+                      phone: editingGuest.phone,
+                      email: editingGuest.email,
+                      picId: editingGuest.picId,
+                      isVip: editingGuest.isVip
+                    })
+                  });
+                  if (res.ok) {
+                    const updated = await res.json();
+                    setGuests(prev => prev.map(g => g.id === updated.id ? { ...g, ...updated } : g));
+                    setEditingGuest(null);
+                    alert('Data tamu berhasil diperbarui!');
+                  } else {
+                    const err = await res.json();
+                    alert(err.error || 'Gagal memperbarui data tamu');
+                  }
+                } catch (err) {
+                  console.error('Update guest failed:', err);
+                  alert('Terjadi kesalahan saat memperbarui data tamu');
+                }
+              }} 
+              className="p-6 space-y-4 overflow-y-auto flex-1"
+            >
+              <div>
+                <label className="block text-[10px] uppercase tracking-widest text-gray-500 font-bold mb-1">Nama Lengkap Tamu *</label>
+                <input 
+                  type="text" 
+                  required 
+                  value={editingGuest.guestName || ''} 
+                  onChange={e => setEditingGuest({ ...editingGuest, guestName: e.target.value })} 
+                  className="w-full px-3 py-2 text-xs rounded-lg border border-gray-200 focus:outline-none focus:border-indigo-500" 
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-[10px] uppercase tracking-widest text-gray-500 font-bold mb-1">Instansi / Perusahaan</label>
+                  <input 
+                    type="text" 
+                    value={editingGuest.company || ''} 
+                    onChange={e => setEditingGuest({ ...editingGuest, company: e.target.value })} 
+                    className="w-full px-3 py-2 text-xs rounded-lg border border-gray-200 focus:outline-none focus:border-indigo-500" 
+                  />
+                </div>
+                <div>
+                  <label className="block text-[10px] uppercase tracking-widest text-gray-500 font-bold mb-1">Jabatan</label>
+                  <input 
+                    type="text" 
+                    value={editingGuest.jobTitle || ''} 
+                    onChange={e => setEditingGuest({ ...editingGuest, jobTitle: e.target.value })} 
+                    className="w-full px-3 py-2 text-xs rounded-lg border border-gray-200 focus:outline-none focus:border-indigo-500" 
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-[10px] uppercase tracking-widest text-gray-500 font-bold mb-1">No. WhatsApp / HP</label>
+                  <input 
+                    type="text" 
+                    value={editingGuest.phone || ''} 
+                    onChange={e => setEditingGuest({ ...editingGuest, phone: e.target.value })} 
+                    placeholder="e.g. 08123456789" 
+                    className="w-full px-3 py-2 text-xs rounded-lg border border-gray-200 focus:outline-none focus:border-indigo-500" 
+                  />
+                </div>
+                <div>
+                  <label className="block text-[10px] uppercase tracking-widest text-gray-500 font-bold mb-1">Email</label>
+                  <input 
+                    type="email" 
+                    value={editingGuest.email || ''} 
+                    onChange={e => setEditingGuest({ ...editingGuest, email: e.target.value })} 
+                    className="w-full px-3 py-2 text-xs rounded-lg border border-gray-200 focus:outline-none focus:border-indigo-500" 
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3 pt-2">
+                <div>
+                  <label className="block text-[10px] uppercase tracking-widest text-gray-500 font-bold mb-1">PIC / Pengundang</label>
+                  <select 
+                    value={editingGuest.picId || ''} 
+                    onChange={e => setEditingGuest({ ...editingGuest, picId: e.target.value || null })} 
+                    className="w-full px-3 py-2 text-xs rounded-lg border border-gray-200 focus:outline-none focus:border-indigo-500"
+                  >
+                    <option value="">Tanpa PIC</option>
+                    {pics.map(pic => (
+                      <option key={pic.id} value={pic.id}>{pic.username}</option>
+                    ))}
+                  </select>
+                </div>
+                <div className="flex items-end pb-2">
+                  <label className="flex items-center gap-2 cursor-pointer text-xs font-bold text-gray-700">
+                    <input 
+                      type="checkbox" 
+                      checked={editingGuest.isVip || false} 
+                      onChange={e => setEditingGuest({ ...editingGuest, isVip: e.target.checked })} 
+                      className="w-4 h-4 text-indigo-600 rounded" 
+                    />
+                    Tamu VIP
+                  </label>
+                </div>
+              </div>
+
+              <div className="flex justify-end gap-2 pt-4 border-t border-gray-100">
+                <button type="button" onClick={() => setEditingGuest(null)} className="px-4 py-2 text-xs font-bold text-gray-600 hover:bg-gray-100 rounded-lg">
+                  Batal
+                </button>
+                <button type="submit" className="px-4 py-2 text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-700 rounded-lg shadow-sm">
+                  Simpan Perubahan
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}
