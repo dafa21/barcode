@@ -1,7 +1,7 @@
 import React from "react";
 import { useState, useEffect, useRef } from 'react';
 import { User, Event, Guest } from '../types.ts';
-import { Calendar, Plus, Edit, Trash2, Users, MapPin, Search, QrCode, BarChart2, LayoutList, Activity, Download, MessageCircle, X, UserPlus, Printer, Crown, Upload, FileText, Menu, ChevronLeft, ChevronRight, PanelLeftClose, PanelLeftOpen } from 'lucide-react';
+import { Calendar, Plus, Edit, Edit3, Trash2, Users, MapPin, Search, QrCode, BarChart2, LayoutList, Activity, Download, MessageCircle, X, UserPlus, Printer, Crown, Upload, FileText, Menu, ChevronLeft, ChevronRight, PanelLeftClose, PanelLeftOpen } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { AnalyticsDashboard } from './AnalyticsDashboard.tsx';
 import { TwibbonConfigurator } from "./TwibbonConfigurator.tsx";
