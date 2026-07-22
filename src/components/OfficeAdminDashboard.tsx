@@ -696,8 +696,20 @@ export function OfficeAdminDashboard({ user }: { user: User }) {
     iframeDoc.close();
   };
 
-  const selectEvent = (event: Event) => {
-    setSelectedEvent(event);
+  const selectEvent = async (event: Event) => {
+    try {
+      const res = await fetch(`/api/events/${event.id}`, {
+        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+      });
+      if (res.ok) {
+        const fullEvent = await res.json();
+        setSelectedEvent(fullEvent);
+      } else {
+        setSelectedEvent(event);
+      }
+    } catch (e) {
+      setSelectedEvent(event);
+    }
     fetchGuests(event.id);
     setSelectedGuestIds([]);
   };
