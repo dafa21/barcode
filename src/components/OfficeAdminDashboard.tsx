@@ -1805,14 +1805,18 @@ export function OfficeAdminDashboard({ user }: { user: User }) {
                   />
                 </div>
                 <div>
-                  <label className="block text-[10px] uppercase tracking-widest text-gray-500 mb-1.5">Event Logo (Optional)</label>
+                  <div className="flex items-center justify-between mb-1.5">
+                    <label className="block text-[10px] uppercase tracking-widest text-gray-500 font-bold">Event Logo (Optional)</label>
+                    {newEventLogo && <span className="text-[10px] bg-emerald-50 text-emerald-700 px-2 py-0.5 rounded border border-emerald-200 font-bold">✓ Logo Terpasang</span>}
+                  </div>
                   {newEventLogo && (
-                    <div className="mb-2 relative w-16 h-16 rounded-lg overflow-hidden border border-gray-200">
+                    <div className="mb-2 relative w-16 h-16 rounded-lg overflow-hidden border border-gray-200 bg-gray-50">
                       <img src={newEventLogo} alt="Logo" className="w-full h-full object-contain" />
                       <button
                         type="button"
                         onClick={() => setNewEventLogo(undefined)}
                         className="absolute top-1 right-1 w-5 h-5 bg-white rounded-full flex items-center justify-center text-red-500 shadow-sm"
+                        title="Hapus Logo"
                       >
                         <X className="w-3 h-3" />
                       </button>
@@ -1823,45 +1827,49 @@ export function OfficeAdminDashboard({ user }: { user: User }) {
                     accept="image/*"
                     onChange={(e) => {
                       const file = e.target.files?.[0];
-                      if (file) {
-                        const img = new Image();
-                        const url = URL.createObjectURL(file);
-                        img.onload = () => {
-                          URL.revokeObjectURL(url);
-                          const canvas = document.createElement('canvas');
-                          let width = img.width;
-                          let height = img.height;
-                          const max = 300;
-                          if (width > max || height > max) {
-                            const ratio = Math.min(max / width, max / height);
-                            width = width * ratio;
-                            height = height * ratio;
-                          }
-                          canvas.width = width;
-                          canvas.height = height;
-                          const ctx = canvas.getContext('2d');
-                          if(ctx) {
-                             ctx.drawImage(img, 0, 0, width, height);
-                             setNewEventLogo(canvas.toDataURL('image/jpeg', 0.85));
-                          }
-                        };
-                        img.src = url;
-                      } else {
-                        setNewEventLogo(undefined);
-                      }
+                      if (!file) return;
+                      const img = new Image();
+                      const url = URL.createObjectURL(file);
+                      img.onload = () => {
+                        URL.revokeObjectURL(url);
+                        const canvas = document.createElement('canvas');
+                        let width = img.width;
+                        let height = img.height;
+                        const max = 300;
+                        if (width > max || height > max) {
+                          const ratio = Math.min(max / width, max / height);
+                          width = width * ratio;
+                          height = height * ratio;
+                        }
+                        canvas.width = width;
+                        canvas.height = height;
+                        const ctx = canvas.getContext('2d');
+                        if(ctx) {
+                           ctx.drawImage(img, 0, 0, width, height);
+                           setNewEventLogo(canvas.toDataURL('image/jpeg', 0.85));
+                        }
+                      };
+                      img.src = url;
                     }}
-                    className="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100"
+                    className="w-full text-xs text-gray-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-full file:border-0 file:text-[10px] file:font-bold file:uppercase file:tracking-widest file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 cursor-pointer"
                   />
                 </div>
                 <div className="mt-4">
-                  <label className="block text-[10px] uppercase tracking-widest text-gray-500 mb-1.5">File Undangan (PDF)</label>
+                  <div className="flex items-center justify-between mb-1.5">
+                    <label className="block text-[10px] uppercase tracking-widest text-gray-500 font-bold">File Undangan (PDF)</label>
+                    {newEventInvitationFile && <span className="text-[10px] bg-emerald-50 text-emerald-700 px-2 py-0.5 rounded border border-emerald-200 font-bold">✓ PDF Terpasang</span>}
+                  </div>
                   {newEventInvitationFile && (
-                    <div className="mb-2 p-2 rounded-lg border border-gray-200 bg-gray-50 flex items-center justify-between">
-                      <span className="text-xs text-gray-600 truncate">File PDF terpilih</span>
+                    <div className="mb-2 p-2.5 rounded-lg border border-gray-200 bg-gray-50 flex items-center justify-between">
+                      <span className="text-xs font-bold text-emerald-800 flex items-center gap-1.5 truncate">
+                        <FileText className="w-4 h-4 text-emerald-600 shrink-0" />
+                        File PDF Undangan Terpasang
+                      </span>
                       <button
                         type="button"
                         onClick={() => setNewEventInvitationFile(null)}
-                        className="w-5 h-5 bg-white rounded-full flex items-center justify-center text-red-500 shadow-sm"
+                        className="w-5 h-5 bg-white rounded-full flex items-center justify-center text-red-500 shadow-sm hover:bg-red-50 transition-colors shrink-0"
+                        title="Hapus File PDF"
                       >
                         <X className="w-3 h-3" />
                       </button>
@@ -1872,15 +1880,12 @@ export function OfficeAdminDashboard({ user }: { user: User }) {
                     accept="application/pdf"
                     onChange={(e) => {
                       const file = e.target.files?.[0];
-                      if (file) {
-                        const reader = new FileReader();
-                        reader.onloadend = () => setNewEventInvitationFile(reader.result as string);
-                        reader.readAsDataURL(file);
-                      } else {
-                        setNewEventInvitationFile(null);
-                      }
+                      if (!file) return;
+                      const reader = new FileReader();
+                      reader.onloadend = () => setNewEventInvitationFile(reader.result as string);
+                      reader.readAsDataURL(file);
                     }}
-                    className="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100"
+                    className="w-full text-xs text-gray-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-full file:border-0 file:text-[10px] file:font-bold file:uppercase file:tracking-widest file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 cursor-pointer"
                   />
                 </div>
 
@@ -1899,7 +1904,10 @@ export function OfficeAdminDashboard({ user }: { user: User }) {
                       </select>
                     </div>
                     <div>
-                      <label className="block text-[10px] uppercase tracking-widest text-gray-500 mb-1.5 font-bold">Background Undangan Digital</label>
+                      <div className="flex items-center justify-between mb-1.5">
+                        <label className="block text-[10px] uppercase tracking-widest text-gray-500 font-bold">Background Undangan Digital</label>
+                        {newEventLetterBackground && <span className="text-[10px] bg-emerald-50 text-emerald-700 px-2 py-0.5 rounded border border-emerald-200 font-bold">✓ Background Terpasang</span>}
+                      </div>
                       {newEventLetterBackground && (
                         <div className="mb-2 relative w-full h-24 rounded-lg overflow-hidden border border-gray-200 bg-gray-50">
                           <img src={newEventLetterBackground} alt="Background Surat" className="w-full h-full object-contain" />
@@ -1907,6 +1915,7 @@ export function OfficeAdminDashboard({ user }: { user: User }) {
                             type="button"
                             onClick={() => setNewEventLetterBackground(null)}
                             className="absolute top-1 right-1 w-5 h-5 bg-white rounded-full flex items-center justify-center text-red-500 shadow-sm"
+                            title="Hapus Background"
                           >
                             <X className="w-3 h-3" />
                           </button>
@@ -1917,11 +1926,8 @@ export function OfficeAdminDashboard({ user }: { user: User }) {
                         accept="image/*"
                         onChange={(e) => {
                           const file = e.target.files?.[0];
-                          if (file) {
-                            compressImage(file).then(setNewEventLetterBackground);
-                          } else {
-                            setNewEventLetterBackground(null);
-                          }
+                          if (!file) return;
+                          compressImage(file).then(setNewEventLetterBackground);
                         }}
                         className="w-full text-xs text-gray-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-full file:border-0 file:text-[10px] file:font-bold file:uppercase file:tracking-widest file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 cursor-pointer"
                       />
