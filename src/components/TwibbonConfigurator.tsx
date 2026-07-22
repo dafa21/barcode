@@ -219,8 +219,8 @@ export function TwibbonConfigurator({ event, onClose, onSave }: { event: Event, 
         </div>
 
         {/* Configuration Panel */}
-        <div className="w-full md:w-96 p-6 border-l border-gray-200 overflow-y-auto flex flex-col h-full bg-white">
-          <div className="flex items-center justify-between mb-6 pb-4 border-b border-gray-100">
+        <div className="w-full md:w-96 p-6 border-l border-gray-200 flex flex-col h-full max-h-[90vh] bg-white overflow-hidden">
+          <div className="flex items-center justify-between mb-4 pb-3 border-b border-gray-100 shrink-0">
             <h3 className="text-sm font-semibold tracking-widest uppercase text-gray-900 flex items-center gap-2">
               <Settings className="w-4 h-4 text-indigo-600" />
               Customize Layout
@@ -230,7 +230,7 @@ export function TwibbonConfigurator({ event, onClose, onSave }: { event: Event, 
             </button>
           </div>
 
-          <div className="space-y-6 flex-1">
+          <div className="space-y-6 flex-1 overflow-y-auto pr-2 min-h-0">
             {/* Background Image Upload */}
             <div>
               <label className="block text-[10px] uppercase tracking-widest text-gray-500 mb-2">Background Image</label>
@@ -354,7 +354,7 @@ export function TwibbonConfigurator({ event, onClose, onSave }: { event: Event, 
             </div>
           </div>
 
-          <div className="mt-6 pt-4 border-t border-gray-100 flex gap-3">
+          <div className="mt-4 pt-4 border-t border-gray-100 flex gap-3 shrink-0">
             <button
               onClick={() => {
                 setConfig(DEFAULT_CONFIG);
