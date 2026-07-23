@@ -62,6 +62,7 @@ export const guests = pgTable('guests', {
   rsvpStatus: rsvpEnum('rsvp_status').default('pending'),
   isVip: boolean('is_vip').default(false),
   paxCount: integer('pax_count').default(1),
+  customInvitationFile: text('custom_invitation_file'),
 });
 
 export const attendances = pgTable('attendances', {

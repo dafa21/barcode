@@ -151,6 +151,7 @@ export function OfficeAdminDashboard({ user }: { user: User }) {
   const [newGuestJobTitle, setNewGuestJobTitle] = useState('');
   const [newGuestPicId, setNewGuestPicId] = useState('');
   const [newGuestIsVip, setNewGuestIsVip] = useState(false);
+  const [newGuestCustomFile, setNewGuestCustomFile] = useState<string>('');
   const [pics, setPics] = useState<User[]>([]);
   const [newPicName, setNewPicName] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
@@ -609,7 +610,8 @@ export function OfficeAdminDashboard({ user }: { user: User }) {
           company: newGuestCompany,
           jobTitle: newGuestJobTitle,
           picId: newGuestPicId || undefined,
-          isVip: newGuestIsVip
+          isVip: newGuestIsVip,
+          customInvitationFile: newGuestCustomFile || undefined
         })
       });
       if (res.ok) {
@@ -621,6 +623,7 @@ export function OfficeAdminDashboard({ user }: { user: User }) {
         setNewGuestJobTitle('');
         setNewGuestPicId('');
         setNewGuestIsVip(false);
+        setNewGuestCustomFile('');
         fetchGuests(selectedEvent.id);
         setGeneratedBarcode({ uid: guestData.barcodeUid, name: guestData.guestName });
       }
@@ -723,15 +726,16 @@ export function OfficeAdminDashboard({ user }: { user: User }) {
         const phoneStr = guest.phone!.replace(/[^0-9]/g, '');
         const formattedPhone = phoneStr.startsWith('0') ? '62' + phoneStr.slice(1) : phoneStr;
         
-        if (guest.rsvpStatus === 'attending') {
-          const idCardUrl = `${getBaseUrl()}/rsvp/${guest.barcodeUid}?view=idcard`;
-          const message = `Yth. Bapak/Ibu ${guest.guestName},\n\nTerima kasih atas konfirmasi kehadiran Bapak/Ibu pada acara *${selectedEvent.eventName}*.\n\nBerikut adalah tautan ID Card (Tiket Masuk) Bapak/Ibu. Mohon berkenan menunjukkan ID Card pada tautan di bawah ini atau menyebutkan Kode Kehadiran kepada petugas kami saat registrasi ulang di lokasi acara:\n\n\u{1F517} Tautan ID Card: ${idCardUrl}\n\u{1F4DD} Kode UID: *${guest.barcodeUid}*\n\nKami menantikan kehadiran Bapak/Ibu.\n\nHormat kami,\nPanitia Acara`;
-          window.open(`https://wa.me/${formattedPhone}?text=${encodeURIComponent(message)}`, '_blank');
-        } else {
-          const rsvpUrl = `${getBaseUrl()}/rsvp/${guest.barcodeUid}`;
-          const message = `Yth. Bapak/Ibu ${guest.guestName},\n\nKami dengan hormat mengundang Bapak/Ibu untuk hadir pada acara *${selectedEvent.eventName}* yang akan diselenggarakan pada:\n\nWaktu: ${new Date(selectedEvent.eventDate).toLocaleString()}\nLokasi: ${selectedEvent.location || 'Akan diinformasikan'}\n\nMohon berkenan untuk memberikan konfirmasi kehadiran Bapak/Ibu melalui tautan berikut:\n\u{1F517} ${rsvpUrl}\n\nSetelah Bapak/Ibu melakukan konfirmasi kehadiran, kami akan mengirimkan tiket barcode akses masuk secara otomatis.\n\nKehadiran Bapak/Ibu sangat berarti bagi kami. Atas perhatian dan perkenannya, kami ucapkan terima kasih.\n\nHormat kami,\nPanitia Acara`;
-          window.open(`https://wa.me/${formattedPhone}?text=${encodeURIComponent(message)}`, '_blank');
-        }
+        const rsvpUrl = `${getBaseUrl()}/rsvp/${guest.barcodeUid}`;
+        const fileUrl = guest.customInvitationFile ? `${getBaseUrl()}/api/guests/public/invitation/${guest.barcodeUid}` : `${getBaseUrl()}/api/events/public/invitation/${selectedEvent?.eventName?.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`;
+        const eventDateStr = new Date(selectedEvent?.eventDate || '').toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+        const eventTimeStr = new Date(selectedEvent?.eventDate || '').toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+        
+        const message = guest.rsvpStatus === 'attending' 
+          ? `*Tiket Resmi Acara* \u{1F3AB}\n\nKepada Yth.\n*Bapak/Ibu ${guest.guestName}*\n\nTerima kasih telah mengonfirmasi kehadiran Anda pada acara *${selectedEvent?.eventName}*.\n\nBerikut adalah tautan ID Card (Tiket Masuk) Anda. Mohon tunjukkan ID Card pada tautan di bawah ini atau menyebutkan Kode Kehadiran kepada petugas registrasi saat tiba di lokasi acara:\n\n\u{1F517} *Tautan Tiket:*\n${rsvpUrl}?view=idcard\n\nKami menantikan kehadiran Anda pada:\n\u{1F4C5} *Hari/Tanggal:* ${eventDateStr}\n\u{23F0} *Waktu:* ${eventTimeStr}\n\u{1F4CD} *Lokasi:* ${selectedEvent?.location || 'Akan diinformasikan'}\n\nSampai jumpa di acara!\n\nHormat kami,\n*Panitia Penyelenggara*`
+          : `*Undangan Resmi Acara* \u{1F4E9}\n\nKepada Yth.\n*Bapak/Ibu ${guest.guestName}*\n\nDengan hormat,\n\nMelalui pesan ini, kami bermaksud mengundang Bapak/Ibu untuk berkenan hadir pada acara *${selectedEvent?.eventName}* yang akan diselenggarakan pada:\n\n\u{1F4C5} *Hari/Tanggal:* ${eventDateStr}\n\u{23F0} *Waktu:* ${eventTimeStr}\n\u{1F4CD} *Lokasi:* ${selectedEvent?.location || 'Akan diinformasikan'}\n\n\u{1F4CE} *Tautan File Undangan Resmi:*\n${fileUrl}\n\nMengingat pentingnya acara ini, kami sangat mengharapkan kehadiran Bapak/Ibu. Untuk kelancaran persiapan acara, mohon berkenan memberikan konfirmasi kehadiran (RSVP) melalui sistem registrasi kami pada tautan di bawah ini:\n\n\u{1F517} *Tautan Konfirmasi Kehadiran (RSVP):*\n${rsvpUrl}\n\nSetelah Bapak/Ibu melakukan konfirmasi kehadiran melalui tautan di atas, sistem akan secara otomatis menerbitkan Kartu Identitas Tamu (ID Card) beserta QR Code sebagai tiket akses masuk resmi Bapak/Ibu.\n\nDemikian undangan ini kami sampaikan. Atas perhatian dan perkenan Bapak/Ibu, kami mengucapkan terima kasih yang sebesar-besarnya.\n\nHormat kami,\n\n*Panitia Penyelenggara*`;
+
+        window.open(`https://wa.me/${formattedPhone}?text=${encodeURIComponent(message)}`, '_blank');
       });
       
     setSelectedGuestIds([]);
@@ -1639,7 +1643,7 @@ export function OfficeAdminDashboard({ user }: { user: User }) {
          </button>
          <button onClick={() => {
             const rsvpUrl = `${getBaseUrl()}/rsvp/${guest.barcodeUid}`;
-            const fileUrl = `${getBaseUrl()}/api/events/public/invitation/${selectedEvent?.slug}`;
+            const fileUrl = guest.customInvitationFile ? `${getBaseUrl()}/api/guests/public/invitation/${guest.barcodeUid}` : `${getBaseUrl()}/api/events/public/invitation/${selectedEvent?.eventName?.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`;
             const eventDateStr = new Date(selectedEvent?.eventDate || '').toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
             const eventTimeStr = new Date(selectedEvent?.eventDate || '').toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
             
@@ -2172,6 +2176,24 @@ export function OfficeAdminDashboard({ user }: { user: User }) {
                     </div>
                   </div>
                 </div>
+                <div className="pt-2">
+                  <label className="block text-[10px] uppercase tracking-widest text-gray-500 mb-1.5">File Undangan Pribadi (PDF Khusus Tamu Ini - Opsional)</label>
+                  <input
+                    type="file"
+                    accept=".pdf"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (file) {
+                        const reader = new FileReader();
+                        reader.onloadend = () => setNewGuestCustomFile(reader.result as string);
+                        reader.readAsDataURL(file);
+                      } else {
+                        setNewGuestCustomFile('');
+                      }
+                    }}
+                    className="w-full text-xs text-gray-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-full file:border-0 file:text-[10px] file:font-bold file:uppercase file:tracking-widest file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 cursor-pointer"
+                  />
+                </div>
                 <button type="submit" className="w-full py-3 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg transition-colors text-[10px] font-bold uppercase tracking-widest mt-4 shadow-md border border-indigo-500/50">
                   Save Changes
                 </button>
@@ -2255,6 +2277,24 @@ export function OfficeAdminDashboard({ user }: { user: User }) {
                   <label htmlFor="isVip" className="text-sm font-medium text-amber-900 cursor-pointer select-none">
                     Tandai sebagai Tamu VIP
                   </label>
+                </div>
+                <div className="pt-2">
+                  <label className="block text-[10px] uppercase tracking-widest text-gray-500 mb-1.5">File Undangan Pribadi (PDF Khusus Tamu Ini - Opsional)</label>
+                  <input
+                    type="file"
+                    accept=".pdf"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (file) {
+                        const reader = new FileReader();
+                        reader.onloadend = () => setNewGuestCustomFile(reader.result as string);
+                        reader.readAsDataURL(file);
+                      } else {
+                        setNewGuestCustomFile('');
+                      }
+                    }}
+                    className="w-full text-xs text-gray-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-full file:border-0 file:text-[10px] file:font-bold file:uppercase file:tracking-widest file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 cursor-pointer"
+                  />
                 </div>
                 <button type="submit" className="w-full py-3 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg transition-colors text-[10px] font-bold uppercase tracking-widest mt-4 shadow-md border border-indigo-500/50">
                   Generate Barcode
@@ -2501,7 +2541,8 @@ export function OfficeAdminDashboard({ user }: { user: User }) {
                       phone: editingGuest.phone,
                       email: editingGuest.email,
                       picId: editingGuest.picId,
-                      isVip: editingGuest.isVip
+                      isVip: editingGuest.isVip,
+                      customInvitationFile: editingGuest.customInvitationFile || undefined
                     })
                   });
                   if (res.ok) {
@@ -2599,6 +2640,25 @@ export function OfficeAdminDashboard({ user }: { user: User }) {
                     Tamu VIP
                   </label>
                 </div>
+              </div>
+
+              <div className="pt-2">
+                <label className="block text-[10px] uppercase tracking-widest text-gray-500 mb-1.5">File Undangan Pribadi (PDF Khusus Tamu Ini - Opsional)</label>
+                <input
+                  type="file"
+                  accept=".pdf"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (file) {
+                      const reader = new FileReader();
+                      reader.onloadend = () => setEditingGuest({ ...editingGuest, customInvitationFile: reader.result as string });
+                      reader.readAsDataURL(file);
+                    } else {
+                      setEditingGuest({ ...editingGuest, customInvitationFile: '' });
+                    }
+                  }}
+                  className="w-full text-xs text-gray-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-full file:border-0 file:text-[10px] file:font-bold file:uppercase file:tracking-widest file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 cursor-pointer"
+                />
               </div>
 
               <div className="flex justify-end gap-2 pt-4 border-t border-gray-100">

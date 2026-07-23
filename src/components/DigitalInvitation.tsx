@@ -23,6 +23,7 @@ interface Props {
   isPrint?: boolean;
   eventSlug?: string;
   hasInvitationFile?: boolean;
+  customInvitationFileUrl?: string;
   openingQuote?: string | null;
   eventEndDate?: string | null;
   rundown?: string | null;
@@ -494,7 +495,7 @@ export function DigitalInvitation({
                     </div>
                   </div>
                   
-                  {hasInvitationFile && eventSlug && !isPrint && (
+                  {(customInvitationFileUrl || (hasInvitationFile && eventSlug)) && !isPrint && (
                     <motion.div
                       initial={{ opacity: 0, scale: 0.9 }}
                       whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }}
@@ -502,7 +503,7 @@ export function DigitalInvitation({
                       className="w-full mt-6"
                     >
                       <a 
-                        href={`/api/events/public/invitation/${eventSlug}`}
+                        href={customInvitationFileUrl ? customInvitationFileUrl : `/api/events/public/invitation/${eventSlug}`}
                         target="_blank" rel="noopener noreferrer"
                         className="flex items-center justify-center gap-3 bg-gradient-to-r from-[var(--theme-primary)] to-amber-700 text-white px-6 py-4 rounded-2xl font-bold shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all w-full"
                       >

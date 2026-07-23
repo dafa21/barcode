@@ -9,6 +9,7 @@ interface RSVPData {
   guestName: string;
   company: string | null;
   jobTitle?: string | null;
+  customInvitationFile?: string | null;
   rsvpStatus: 'pending' | 'attending' | 'not_attending';
   paxCount: number;
   event: {
@@ -346,6 +347,7 @@ export function GuestRSVP() {
         isPreview={false}
         eventSlug={data.event.eventName.toLowerCase().replace(/[^a-z0-9]+/g, '-')}
         hasInvitationFile={true}
+        customInvitationFileUrl={data.customInvitationFile ? `/api/guests/public/invitation/${barcodeUid}` : undefined}
       >
         {rsvpContent}
       </DigitalInvitation>

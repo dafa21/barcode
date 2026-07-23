@@ -51,6 +51,7 @@ export interface Guest {
   paxCount?: number;
   status?: 'attended' | 'invalid' | null;
   scannedAt?: string | null;
+  customInvitationFile?: string | null;
 }
 
 export interface Attendance {

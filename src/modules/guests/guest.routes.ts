@@ -19,6 +19,7 @@ router.get('/rsvp/:barcodeUid', async (req, res) => {
       jobTitle: guests.jobTitle,
       rsvpStatus: guests.rsvpStatus,
       paxCount: guests.paxCount,
+      customInvitationFile: guests.customInvitationFile,
       event: {
         id: events.id,
         eventName: events.eventName,
@@ -98,11 +99,42 @@ router.post('/rsvp/:barcodeUid', async (req, res) => {
   }
 });
 
+router.get('/public/invitation/:barcodeUid', async (req, res) => {
+  try {
+    const { barcodeUid } = req.params;
+    
+    const guestResult = await db.select({
+      customInvitationFile: guests.customInvitationFile,
+      guestName: guests.guestName
+    }).from(guests).where(eq(guests.barcodeUid, barcodeUid)).limit(1);
+    
+    const guest = guestResult[0];
+
+    if (!guest || !guest.customInvitationFile) {
+      return res.status(404).send('File undangan khusus tidak ditemukan untuk tamu ini');
+    }
+
+    const matches = guest.customInvitationFile.match(/^data:(.+);base64,(.+)$/);
+    if (matches && matches.length === 3) {
+      const mimeType = matches[1];
+      const base64Data = matches[2];
+      const buffer = Buffer.from(base64Data, 'base64');
+      res.setHeader('Content-Type', mimeType);
+      res.setHeader('Content-Disposition', `inline; filename="${guest.guestName}_Undangan.pdf"`);
+      return res.send(buffer);
+    } else {
+      return res.send(guest.customInvitationFile);
+    }
+  } catch (error) {
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
 router.use(jwtAuthGuard, tenantGuard);
 
 router.post('/', async (req: AuthRequest, res) => {
   try {
-    const { eventId, guestName, email, phone, company, jobTitle, picId, isVip } = req.body;
+    const { eventId, guestName, email, phone, company, jobTitle, picId, isVip, customInvitationFile } = req.body;
     
     // Verify event belongs to office if not super_admin
     const eventResult = await db.select().from(events).where(eq(events.id, eventId)).limit(1);
@@ -125,6 +157,7 @@ router.post('/', async (req: AuthRequest, res) => {
       picId,
       barcodeUid,
       isVip,
+      customInvitationFile,
     }).returning();
 
     res.json(result[0]);
@@ -136,7 +169,7 @@ router.post('/', async (req: AuthRequest, res) => {
 router.put('/:id', async (req: AuthRequest, res) => {
   try {
     const { id } = req.params;
-    const { guestName, email, phone, company, jobTitle, picId, isVip } = req.body;
+    const { guestName, email, phone, company, jobTitle, picId, isVip, customInvitationFile } = req.body;
 
     const guestResult = await db.select().from(guests).where(eq(guests.id, id)).limit(1);
     if (guestResult.length === 0) {
@@ -160,6 +193,7 @@ router.put('/:id', async (req: AuthRequest, res) => {
       jobTitle: jobTitle || null,
       picId: picId || null,
       isVip: isVip !== undefined ? !!isVip : guestResult[0].isVip,
+      customInvitationFile: customInvitationFile !== undefined ? customInvitationFile : guestResult[0].customInvitationFile,
     }).where(eq(guests.id, id)).returning();
 
     res.json(updated[0]);
