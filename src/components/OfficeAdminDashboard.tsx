@@ -31,18 +31,18 @@ const getWhatsAppMessage = (
   socialYoutube: string | undefined, 
   socialInstagram: string | undefined
 ) => {
-  const iconTicket = String.fromCodePoint(127915); // 1F3AB
-  const iconEnvelope = String.fromCodePoint(128233); // 1F4E9
-  const iconCalendar = String.fromCodePoint(128197); // 1F4C5
-  const iconClock = String.fromCodePoint(9200); // 23F0
-  const iconPin = String.fromCodePoint(128205); // 1F4CD
-  const iconClipboard = String.fromCodePoint(128203); // 1F4CB
-  const iconSparkles = String.fromCodePoint(10024); // 2728
-  const iconLink = String.fromCodePoint(128279); // 1F517
-  const iconClip = String.fromCodePoint(128206); // 1F4CE
-  const iconGlobe = String.fromCodePoint(127760); // 1F310
-  const iconYoutube = String.fromCodePoint(128250); // 1F4FA
-  const iconInstagram = String.fromCodePoint(128247); // 1F4F7
+  const iconTicket = decodeURIComponent('%F0%9F%8E%AB'); // 1F3AB
+  const iconEnvelope = decodeURIComponent('%F0%9F%93%A9'); // 1F4E9
+  const iconCalendar = decodeURIComponent('%F0%9F%93%85'); // 1F4C5
+  const iconClock = decodeURIComponent('%E2%8F%B0'); // 23F0
+  const iconPin = decodeURIComponent('%F0%9F%93%8D'); // 1F4CD
+  const iconClipboard = decodeURIComponent('%F0%9F%93%8B'); // 1F4CB
+  const iconSparkles = decodeURIComponent('%E2%9C%A8'); // 2728
+  const iconLink = decodeURIComponent('%F0%9F%94%97'); // 1F517
+  const iconClip = decodeURIComponent('%F0%9F%93%8E'); // 1F4CE
+  const iconGlobe = decodeURIComponent('%F0%9F%8C%90'); // 1F310
+  const iconYoutube = decodeURIComponent('%F0%9F%93%BA'); // 1F4FA
+  const iconInstagram = decodeURIComponent('%F0%9F%93%B7'); // 1F4F7
   const iconBullet = '-'; // safely replacing bullet
 
   const socialFooter = [
