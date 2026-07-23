@@ -18,6 +18,47 @@ const getBaseUrl = () => {
   return origin;
 };
 
+const getWhatsAppMessage = (
+  guestName: string, 
+  eventName: string | undefined, 
+  rsvpUrl: string, 
+  fileUrl: string, 
+  eventDateStr: string, 
+  eventTimeStr: string, 
+  location: string | undefined, 
+  rsvpStatus: string, 
+  socialWebsite: string | undefined, 
+  socialYoutube: string | undefined, 
+  socialInstagram: string | undefined
+) => {
+  const iconTicket = String.fromCodePoint(127915); // 1F3AB
+  const iconEnvelope = String.fromCodePoint(128233); // 1F4E9
+  const iconCalendar = String.fromCodePoint(128197); // 1F4C5
+  const iconClock = String.fromCodePoint(9200); // 23F0
+  const iconPin = String.fromCodePoint(128205); // 1F4CD
+  const iconClipboard = String.fromCodePoint(128203); // 1F4CB
+  const iconSparkles = String.fromCodePoint(10024); // 2728
+  const iconLink = String.fromCodePoint(128279); // 1F517
+  const iconClip = String.fromCodePoint(128206); // 1F4CE
+  const iconGlobe = String.fromCodePoint(127760); // 1F310
+  const iconYoutube = String.fromCodePoint(128250); // 1F4FA
+  const iconInstagram = String.fromCodePoint(128247); // 1F4F7
+  const iconBullet = '-'; // safely replacing bullet
+
+  const socialFooter = [
+    socialWebsite ? `${iconGlobe} Website: ${socialWebsite}` : '',
+    socialYoutube ? `${iconYoutube} YouTube: ${socialYoutube}` : '',
+    socialInstagram ? `${iconInstagram} Instagram: ${socialInstagram}` : ''
+  ].filter(Boolean).join('\n');
+  const footer = socialFooter ? `\n\n${socialFooter}` : '';
+
+  if (rsvpStatus === 'attending') {
+    return `${iconTicket} *Tiket Resmi Acara*\n\nAssalamu'alaikum Warahmatullahi Wabarakatuh,\n\nKepada Yth.\n*Bapak/Ibu ${guestName}*\n\nTerima kasih telah mengonfirmasi kehadiran Anda pada acara:\n${iconSparkles} *${eventName}*\n\nBerikut adalah tautan ID Card (Tiket Masuk) Anda. Mohon tunjukkan ID Card pada tautan di bawah ini atau menyebutkan Kode Kehadiran kepada petugas registrasi saat tiba di lokasi acara:\n\n${iconLink} *Tautan Tiket:*\n${rsvpUrl}?view=idcard\n\nKami menantikan kehadiran Anda pada:\n${iconCalendar} *Hari/Tanggal:* ${eventDateStr}\n${iconClock} *Waktu:* ${eventTimeStr}\n${iconPin} *Lokasi:* ${location || 'Akan diinformasikan'}\n\n${iconClipboard} *Hal yang perlu dibawa:*\n${iconBullet} ID Card / Kartu Identitas Tamu (dari tautan tiket di atas)\n\nSampai jumpa di acara!\n\nWassalamu'alaikum Warahmatullahi Wabarakatuh,\n\n*Panitia Penyelenggara*${footer}`;
+  } else {
+    return `${iconEnvelope} *Undangan Resmi Acara*\n\nAssalamu'alaikum Warahmatullahi Wabarakatuh,\n\nKepada Yth.\n*Bapak/Ibu ${guestName}*\n\nDengan hormat,\n\nMelalui pesan ini, kami bermaksud mengundang Bapak/Ibu untuk berkenan hadir pada acara:\n${iconSparkles} *${eventName}*\n\nYang akan diselenggarakan pada:\n${iconCalendar} *Hari/Tanggal:* ${eventDateStr}\n${iconClock} *Waktu:* ${eventTimeStr}\n${iconPin} *Lokasi:* ${location || 'Akan diinformasikan'}\n\n${iconClip} *Tautan File Undangan Resmi:*\n${fileUrl}\n\n${iconClipboard} *Hal yang perlu dibawa:*\n${iconBullet} ID Card / Kartu Identitas Tamu (tersedia setelah konfirmasi RSVP)\n\nMengingat pentingnya acara ini, kami sangat mengharapkan kehadiran Bapak/Ibu. Mohon berkenan memberikan konfirmasi kehadiran (RSVP) melalui tautan di bawah ini:\n\n${iconLink} *Tautan Konfirmasi Kehadiran (RSVP):*\n${rsvpUrl}\n\nSetelah Bapak/Ibu melakukan konfirmasi kehadiran, sistem akan otomatis menerbitkan Kartu Identitas Tamu (ID Card) beserta QR Code sebagai tiket masuk resmi.\n\nDemikian undangan ini kami sampaikan. Atas perhatian dan perkenan Bapak/Ibu, kami mengucapkan terima kasih.\n\nWassalamu'alaikum Warahmatullahi Wabarakatuh,\n\n*Panitia Penyelenggara*${footer}`;
+  }
+}
+
 const compressImage = (file: File): Promise<string> => {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
@@ -746,16 +787,19 @@ export function OfficeAdminDashboard({ user }: { user: User }) {
         const eventDateStr = new Date(selectedEvent?.eventDate || '').toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
         const eventTimeStr = new Date(selectedEvent?.eventDate || '').toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
         
-        const socialFooter = [
-          selectedEvent?.socialWebsite ? `🌐 Website: ${selectedEvent.socialWebsite}` : '',
-          selectedEvent?.socialYoutube ? `📺 YouTube: ${selectedEvent.socialYoutube}` : '',
-          selectedEvent?.socialInstagram ? `📷 Instagram: ${selectedEvent.socialInstagram}` : ''
-        ].filter(Boolean).join('\n');
-        const footer = socialFooter ? `\n\n${socialFooter}` : '';
-
-        const message = guest.rsvpStatus === 'attending' 
-          ? `🎟️ *Tiket Resmi Acara*\n\nAssalamu'alaikum Warahmatullahi Wabarakatuh,\n\nKepada Yth.\n*Bapak/Ibu ${guest.guestName}*\n\nTerima kasih telah mengonfirmasi kehadiran Anda pada acara:\n✨ *${selectedEvent?.eventName}*\n\nBerikut adalah tautan ID Card (Tiket Masuk) Anda. Mohon tunjukkan ID Card pada tautan di bawah ini atau menyebutkan Kode Kehadiran kepada petugas registrasi saat tiba di lokasi acara:\n\n🔗 *Tautan Tiket:*\n${rsvpUrl}?view=idcard\n\nKami menantikan kehadiran Anda pada:\n📅 *Hari/Tanggal:* ${eventDateStr}\n⏰ *Waktu:* ${eventTimeStr}\n📍 *Lokasi:* ${selectedEvent?.location || 'Akan diinformasikan'}\n\n📋 *Hal yang perlu dibawa:*\n• ID Card / Kartu Identitas Tamu (dari tautan tiket di atas)\n\nSampai jumpa di acara!\n\nWassalamu'alaikum Warahmatullahi Wabarakatuh,\n\n*Panitia Penyelenggara*${footer}`
-          : `📩 *Undangan Resmi Acara*\n\nAssalamu'alaikum Warahmatullahi Wabarakatuh,\n\nKepada Yth.\n*Bapak/Ibu ${guest.guestName}*\n\nDengan hormat,\n\nMelalui pesan ini, kami bermaksud mengundang Bapak/Ibu untuk berkenan hadir pada acara:\n✨ *${selectedEvent?.eventName}*\n\nYang akan diselenggarakan pada:\n📅 *Hari/Tanggal:* ${eventDateStr}\n⏰ *Waktu:* ${eventTimeStr}\n📍 *Lokasi:* ${selectedEvent?.location || 'Akan diinformasikan'}\n\n📎 *Tautan File Undangan Resmi:*\n${fileUrl}\n\n📋 *Hal yang perlu dibawa:*\n• ID Card / Kartu Identitas Tamu (tersedia setelah konfirmasi RSVP)\n\nMengingat pentingnya acara ini, kami sangat mengharapkan kehadiran Bapak/Ibu. Mohon berkenan memberikan konfirmasi kehadiran (RSVP) melalui tautan di bawah ini:\n\n🔗 *Tautan Konfirmasi Kehadiran (RSVP):*\n${rsvpUrl}\n\nSetelah Bapak/Ibu melakukan konfirmasi kehadiran, sistem akan otomatis menerbitkan Kartu Identitas Tamu (ID Card) beserta QR Code sebagai tiket masuk resmi.\n\nDemikian undangan ini kami sampaikan. Atas perhatian dan perkenan Bapak/Ibu, kami mengucapkan terima kasih.\n\nWassalamu'alaikum Warahmatullahi Wabarakatuh,\n\n*Panitia Penyelenggara*${footer}`;
+        const message = getWhatsAppMessage(
+          guest.guestName,
+          selectedEvent?.eventName,
+          rsvpUrl,
+          fileUrl,
+          eventDateStr,
+          eventTimeStr,
+          selectedEvent?.location,
+          guest.rsvpStatus,
+          selectedEvent?.socialWebsite,
+          selectedEvent?.socialYoutube,
+          selectedEvent?.socialInstagram
+        );
 
         window.open(`https://wa.me/${formattedPhone}?text=${encodeURIComponent(message)}`, '_blank');
       });
@@ -1696,16 +1740,19 @@ export function OfficeAdminDashboard({ user }: { user: User }) {
             const eventDateStr = new Date(selectedEvent?.eventDate || '').toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
             const eventTimeStr = new Date(selectedEvent?.eventDate || '').toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
             
-            const socialFooter = [
-              selectedEvent?.socialWebsite ? `🌐 Website: ${selectedEvent.socialWebsite}` : '',
-              selectedEvent?.socialYoutube ? `📺 YouTube: ${selectedEvent.socialYoutube}` : '',
-              selectedEvent?.socialInstagram ? `📷 Instagram: ${selectedEvent.socialInstagram}` : ''
-            ].filter(Boolean).join('\n');
-            const footer = socialFooter ? `\n\n${socialFooter}` : '';
-
-            const message = guest.rsvpStatus === 'attending' 
-              ? `🎟️ *Tiket Resmi Acara*\n\nAssalamu'alaikum Warahmatullahi Wabarakatuh,\n\nKepada Yth.\n*Bapak/Ibu ${guest.guestName}*\n\nTerima kasih telah mengonfirmasi kehadiran Anda pada acara:\n✨ *${selectedEvent?.eventName}*\n\nBerikut adalah tautan ID Card (Tiket Masuk) Anda. Mohon tunjukkan ID Card pada tautan di bawah ini atau menyebutkan Kode Kehadiran kepada petugas registrasi saat tiba di lokasi acara:\n\n🔗 *Tautan Tiket:*\n${rsvpUrl}?view=idcard\n\nKami menantikan kehadiran Anda pada:\n📅 *Hari/Tanggal:* ${eventDateStr}\n⏰ *Waktu:* ${eventTimeStr}\n📍 *Lokasi:* ${selectedEvent?.location || 'Akan diinformasikan'}\n\n📋 *Hal yang perlu dibawa:*\n• ID Card / Kartu Identitas Tamu (dari tautan tiket di atas)\n\nSampai jumpa di acara!\n\nWassalamu'alaikum Warahmatullahi Wabarakatuh,\n\n*Panitia Penyelenggara*${footer}`
-              : `📩 *Undangan Resmi Acara*\n\nAssalamu'alaikum Warahmatullahi Wabarakatuh,\n\nKepada Yth.\n*Bapak/Ibu ${guest.guestName}*\n\nDengan hormat,\n\nMelalui pesan ini, kami bermaksud mengundang Bapak/Ibu untuk berkenan hadir pada acara:\n✨ *${selectedEvent?.eventName}*\n\nYang akan diselenggarakan pada:\n📅 *Hari/Tanggal:* ${eventDateStr}\n⏰ *Waktu:* ${eventTimeStr}\n📍 *Lokasi:* ${selectedEvent?.location || 'Akan diinformasikan'}\n\n📎 *Tautan File Undangan Resmi:*\n${fileUrl}\n\n📋 *Hal yang perlu dibawa:*\n• ID Card / Kartu Identitas Tamu (tersedia setelah konfirmasi RSVP)\n\nMengingat pentingnya acara ini, kami sangat mengharapkan kehadiran Bapak/Ibu. Mohon berkenan memberikan konfirmasi kehadiran (RSVP) melalui tautan di bawah ini:\n\n🔗 *Tautan Konfirmasi Kehadiran (RSVP):*\n${rsvpUrl}\n\nSetelah Bapak/Ibu melakukan konfirmasi kehadiran, sistem akan otomatis menerbitkan Kartu Identitas Tamu (ID Card) beserta QR Code sebagai tiket masuk resmi.\n\nDemikian undangan ini kami sampaikan. Atas perhatian dan perkenan Bapak/Ibu, kami mengucapkan terima kasih.\n\nWassalamu'alaikum Warahmatullahi Wabarakatuh,\n\n*Panitia Penyelenggara*${footer}`;
+            const message = getWhatsAppMessage(
+              guest.guestName,
+              selectedEvent?.eventName,
+              rsvpUrl,
+              fileUrl,
+              eventDateStr,
+              eventTimeStr,
+              selectedEvent?.location,
+              guest.rsvpStatus,
+              selectedEvent?.socialWebsite,
+              selectedEvent?.socialYoutube,
+              selectedEvent?.socialInstagram
+            );
             
             const phoneStr = guest.phone.replace(/[^0-9]/g, '');
             const formattedPhone = phoneStr.startsWith('0') ? '62' + phoneStr.slice(1) : phoneStr;
