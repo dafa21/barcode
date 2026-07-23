@@ -1014,7 +1014,7 @@ var pic_routes_default = router7;
 // server.ts
 async function startServer() {
   const app = (0, import_express8.default)();
-  const PORT = 3e3;
+  const PORT = process.env.PORT || 3e3;
   app.use(import_express8.default.json({ limit: "200mb" }));
   app.use(import_express8.default.urlencoded({ limit: "200mb", extended: true }));
   app.get("/undangan/:slug", (req, res) => {
