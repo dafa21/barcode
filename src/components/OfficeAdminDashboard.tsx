@@ -141,6 +141,9 @@ export function OfficeAdminDashboard({ user }: { user: User }) {
   const [editingGuest, setEditingGuest] = useState<any | null>(null);
   const [newEventLocation, setNewEventLocation] = useState('');
   const [newEventMapsLink, setNewEventMapsLink] = useState('');
+  const [newEventSocialWebsite, setNewEventSocialWebsite] = useState('');
+  const [newEventSocialYoutube, setNewEventSocialYoutube] = useState('');
+  const [newEventSocialInstagram, setNewEventSocialInstagram] = useState('');
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
   const [guests, setGuests] = useState<Guest[]>([]);
   
@@ -444,7 +447,10 @@ export function OfficeAdminDashboard({ user }: { user: User }) {
           backsound: newEventBacksound,
           gallery: JSON.stringify(newEventGallery),
           themePrimary: newEventThemePrimary,
-          themeSecondary: newEventThemeSecondary
+          themeSecondary: newEventThemeSecondary,
+          socialWebsite: newEventSocialWebsite,
+          socialYoutube: newEventSocialYoutube,
+          socialInstagram: newEventSocialInstagram
         })
       });
       if (res.ok) {
@@ -467,9 +473,12 @@ export function OfficeAdminDashboard({ user }: { user: User }) {
         setNewEventGallery([]);
       setNewEventThemePrimary('#b45309');
       setNewEventThemeSecondary('#fef3c7');
+      setNewEventSocialWebsite('');
+      setNewEventSocialYoutube('');
+      setNewEventSocialInstagram('');
         fetchEvents();
         if (selectedEvent?.id === editingEventId) {
-          setSelectedEvent({ ...selectedEvent, eventName: newEventName, eventDate: new Date(newEventDate).toISOString(), eventEndDate: newEventEndDate ? new Date(newEventEndDate).toISOString() : undefined, location: newEventLocation, mapsLink: newEventMapsLink, logo: newEventLogo, invitationFile: newEventInvitationFile, letterBackground: newEventLetterBackground, letterSize: newEventLetterSize, letterContent: newEventLetterContent, openingQuote: newEventOpeningQuote, rundown: newEventRundown });
+          setSelectedEvent({ ...selectedEvent, eventName: newEventName, eventDate: new Date(newEventDate).toISOString(), eventEndDate: newEventEndDate ? new Date(newEventEndDate).toISOString() : undefined, location: newEventLocation, mapsLink: newEventMapsLink, logo: newEventLogo, invitationFile: newEventInvitationFile, letterBackground: newEventLetterBackground, letterSize: newEventLetterSize, letterContent: newEventLetterContent, openingQuote: newEventOpeningQuote, rundown: newEventRundown, socialWebsite: newEventSocialWebsite, socialYoutube: newEventSocialYoutube, socialInstagram: newEventSocialInstagram });
         }
       } else {
         alert("Gagal memperbarui acara. File mungkin terlalu besar.");
@@ -544,7 +553,10 @@ export function OfficeAdminDashboard({ user }: { user: User }) {
           backsound: newEventBacksound,
           gallery: JSON.stringify(newEventGallery),
           themePrimary: newEventThemePrimary,
-          themeSecondary: newEventThemeSecondary
+          themeSecondary: newEventThemeSecondary,
+          socialWebsite: newEventSocialWebsite,
+          socialYoutube: newEventSocialYoutube,
+          socialInstagram: newEventSocialInstagram
         })
       });
       if (res.ok) {
@@ -562,6 +574,9 @@ export function OfficeAdminDashboard({ user }: { user: User }) {
         setNewEventGallery([]);
       setNewEventThemePrimary('#b45309');
       setNewEventThemeSecondary('#fef3c7');
+      setNewEventSocialWebsite('');
+      setNewEventSocialYoutube('');
+      setNewEventSocialInstagram('');
         fetchEvents();
       } else {
         alert("Gagal membuat acara. File mungkin terlalu besar.");
@@ -731,9 +746,16 @@ export function OfficeAdminDashboard({ user }: { user: User }) {
         const eventDateStr = new Date(selectedEvent?.eventDate || '').toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
         const eventTimeStr = new Date(selectedEvent?.eventDate || '').toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
         
+        const socialFooter = [
+          selectedEvent?.socialWebsite ? `🌐 Website: ${selectedEvent.socialWebsite}` : '',
+          selectedEvent?.socialYoutube ? `📺 YouTube: ${selectedEvent.socialYoutube}` : '',
+          selectedEvent?.socialInstagram ? `📷 Instagram: ${selectedEvent.socialInstagram}` : ''
+        ].filter(Boolean).join('\n');
+        const footer = socialFooter ? `\n\n${socialFooter}` : '';
+
         const message = guest.rsvpStatus === 'attending' 
-          ? `*Tiket Resmi Acara* \u{1F3AB}\n\nKepada Yth.\n*Bapak/Ibu ${guest.guestName}*\n\nTerima kasih telah mengonfirmasi kehadiran Anda pada acara *${selectedEvent?.eventName}*.\n\nBerikut adalah tautan ID Card (Tiket Masuk) Anda. Mohon tunjukkan ID Card pada tautan di bawah ini atau menyebutkan Kode Kehadiran kepada petugas registrasi saat tiba di lokasi acara:\n\n\u{1F517} *Tautan Tiket:*\n${rsvpUrl}?view=idcard\n\nKami menantikan kehadiran Anda pada:\n\u{1F4C5} *Hari/Tanggal:* ${eventDateStr}\n\u{23F0} *Waktu:* ${eventTimeStr}\n\u{1F4CD} *Lokasi:* ${selectedEvent?.location || 'Akan diinformasikan'}\n\nSampai jumpa di acara!\n\nHormat kami,\n*Panitia Penyelenggara*`
-          : `*Undangan Resmi Acara* \u{1F4E9}\n\nKepada Yth.\n*Bapak/Ibu ${guest.guestName}*\n\nDengan hormat,\n\nMelalui pesan ini, kami bermaksud mengundang Bapak/Ibu untuk berkenan hadir pada acara *${selectedEvent?.eventName}* yang akan diselenggarakan pada:\n\n\u{1F4C5} *Hari/Tanggal:* ${eventDateStr}\n\u{23F0} *Waktu:* ${eventTimeStr}\n\u{1F4CD} *Lokasi:* ${selectedEvent?.location || 'Akan diinformasikan'}\n\n\u{1F4CE} *Tautan File Undangan Resmi:*\n${fileUrl}\n\nMengingat pentingnya acara ini, kami sangat mengharapkan kehadiran Bapak/Ibu. Untuk kelancaran persiapan acara, mohon berkenan memberikan konfirmasi kehadiran (RSVP) melalui sistem registrasi kami pada tautan di bawah ini:\n\n\u{1F517} *Tautan Konfirmasi Kehadiran (RSVP):*\n${rsvpUrl}\n\nSetelah Bapak/Ibu melakukan konfirmasi kehadiran melalui tautan di atas, sistem akan secara otomatis menerbitkan Kartu Identitas Tamu (ID Card) beserta QR Code sebagai tiket akses masuk resmi Bapak/Ibu.\n\nDemikian undangan ini kami sampaikan. Atas perhatian dan perkenan Bapak/Ibu, kami mengucapkan terima kasih yang sebesar-besarnya.\n\nHormat kami,\n\n*Panitia Penyelenggara*`;
+          ? `🎟️ *Tiket Resmi Acara*\n\nAssalamu'alaikum Warahmatullahi Wabarakatuh,\n\nKepada Yth.\n*Bapak/Ibu ${guest.guestName}*\n\nTerima kasih telah mengonfirmasi kehadiran Anda pada acara:\n✨ *${selectedEvent?.eventName}*\n\nBerikut adalah tautan ID Card (Tiket Masuk) Anda. Mohon tunjukkan ID Card pada tautan di bawah ini atau menyebutkan Kode Kehadiran kepada petugas registrasi saat tiba di lokasi acara:\n\n🔗 *Tautan Tiket:*\n${rsvpUrl}?view=idcard\n\nKami menantikan kehadiran Anda pada:\n📅 *Hari/Tanggal:* ${eventDateStr}\n⏰ *Waktu:* ${eventTimeStr}\n📍 *Lokasi:* ${selectedEvent?.location || 'Akan diinformasikan'}\n\n📋 *Hal yang perlu dibawa:*\n• ID Card / Kartu Identitas Tamu (dari tautan tiket di atas)\n\nSampai jumpa di acara!\n\nWassalamu'alaikum Warahmatullahi Wabarakatuh,\n\n*Panitia Penyelenggara*${footer}`
+          : `📩 *Undangan Resmi Acara*\n\nAssalamu'alaikum Warahmatullahi Wabarakatuh,\n\nKepada Yth.\n*Bapak/Ibu ${guest.guestName}*\n\nDengan hormat,\n\nMelalui pesan ini, kami bermaksud mengundang Bapak/Ibu untuk berkenan hadir pada acara:\n✨ *${selectedEvent?.eventName}*\n\nYang akan diselenggarakan pada:\n📅 *Hari/Tanggal:* ${eventDateStr}\n⏰ *Waktu:* ${eventTimeStr}\n📍 *Lokasi:* ${selectedEvent?.location || 'Akan diinformasikan'}\n\n📎 *Tautan File Undangan Resmi:*\n${fileUrl}\n\n📋 *Hal yang perlu dibawa:*\n• ID Card / Kartu Identitas Tamu (tersedia setelah konfirmasi RSVP)\n\nMengingat pentingnya acara ini, kami sangat mengharapkan kehadiran Bapak/Ibu. Mohon berkenan memberikan konfirmasi kehadiran (RSVP) melalui tautan di bawah ini:\n\n🔗 *Tautan Konfirmasi Kehadiran (RSVP):*\n${rsvpUrl}\n\nSetelah Bapak/Ibu melakukan konfirmasi kehadiran, sistem akan otomatis menerbitkan Kartu Identitas Tamu (ID Card) beserta QR Code sebagai tiket masuk resmi.\n\nDemikian undangan ini kami sampaikan. Atas perhatian dan perkenan Bapak/Ibu, kami mengucapkan terima kasih.\n\nWassalamu'alaikum Warahmatullahi Wabarakatuh,\n\n*Panitia Penyelenggara*${footer}`;
 
         window.open(`https://wa.me/${formattedPhone}?text=${encodeURIComponent(message)}`, '_blank');
       });
@@ -1009,6 +1031,27 @@ export function OfficeAdminDashboard({ user }: { user: User }) {
                         placeholder="Google Maps Link (Optional)"
                         value={newEventMapsLink}
                         onChange={e => setNewEventMapsLink(e.target.value)}
+                        className="w-full text-sm bg-gray-50 border border-gray-200 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 text-gray-900 placeholder-gray-400 py-2 px-3 mb-3"
+                      />
+                      <input
+                        type="url"
+                        placeholder="Website Link (Optional)"
+                        value={newEventSocialWebsite}
+                        onChange={e => setNewEventSocialWebsite(e.target.value)}
+                        className="w-full text-sm bg-gray-50 border border-gray-200 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 text-gray-900 placeholder-gray-400 py-2 px-3 mb-3"
+                      />
+                      <input
+                        type="url"
+                        placeholder="YouTube Link (Optional)"
+                        value={newEventSocialYoutube}
+                        onChange={e => setNewEventSocialYoutube(e.target.value)}
+                        className="w-full text-sm bg-gray-50 border border-gray-200 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 text-gray-900 placeholder-gray-400 py-2 px-3 mb-3"
+                      />
+                      <input
+                        type="url"
+                        placeholder="Instagram Link (Optional)"
+                        value={newEventSocialInstagram}
+                        onChange={e => setNewEventSocialInstagram(e.target.value)}
                         className="w-full text-sm bg-gray-50 border border-gray-200 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 text-gray-900 placeholder-gray-400 py-2 px-3"
                       />
                       <div>
@@ -1334,6 +1377,9 @@ export function OfficeAdminDashboard({ user }: { user: User }) {
                                       gallery={JSON.stringify(newEventGallery)}
                                       themePrimary={newEventThemePrimary}
                                       themeSecondary={newEventThemeSecondary}
+                                      socialWebsite={newEventSocialWebsite}
+                                      socialYoutube={newEventSocialYoutube}
+                                      socialInstagram={newEventSocialInstagram}
                                       isPreview={true}
                                     />
                                   </div>
@@ -1411,6 +1457,9 @@ export function OfficeAdminDashboard({ user }: { user: User }) {
                         setNewEventGallery(selectedEvent.gallery ? JSON.parse(selectedEvent.gallery) : []);
                         setNewEventThemePrimary(selectedEvent.themePrimary || '#b45309');
                         setNewEventThemeSecondary(selectedEvent.themeSecondary || '#fef3c7');
+                        setNewEventSocialWebsite(selectedEvent.socialWebsite || "");
+                        setNewEventSocialYoutube(selectedEvent.socialYoutube || "");
+                        setNewEventSocialInstagram(selectedEvent.socialInstagram || "");
                         setIsEditEventModalOpen(true);
                       }}
                       className="inline-flex items-center justify-center w-10 h-10 bg-white text-gray-500 border border-gray-200 rounded-lg hover:bg-gray-50 hover:text-indigo-600 transition-colors shadow-sm"
@@ -1647,9 +1696,16 @@ export function OfficeAdminDashboard({ user }: { user: User }) {
             const eventDateStr = new Date(selectedEvent?.eventDate || '').toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
             const eventTimeStr = new Date(selectedEvent?.eventDate || '').toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
             
+            const socialFooter = [
+              selectedEvent?.socialWebsite ? `🌐 Website: ${selectedEvent.socialWebsite}` : '',
+              selectedEvent?.socialYoutube ? `📺 YouTube: ${selectedEvent.socialYoutube}` : '',
+              selectedEvent?.socialInstagram ? `📷 Instagram: ${selectedEvent.socialInstagram}` : ''
+            ].filter(Boolean).join('\n');
+            const footer = socialFooter ? `\n\n${socialFooter}` : '';
+
             const message = guest.rsvpStatus === 'attending' 
-              ? `*Tiket Resmi Acara* \u{1F3AB}\n\nKepada Yth.\n*Bapak/Ibu ${guest.guestName}*\n\nTerima kasih telah mengonfirmasi kehadiran Anda pada acara *${selectedEvent?.eventName}*.\n\nBerikut adalah tautan ID Card (Tiket Masuk) Anda. Mohon tunjukkan ID Card pada tautan di bawah ini atau menyebutkan Kode Kehadiran kepada petugas registrasi saat tiba di lokasi acara:\n\n\u{1F517} *Tautan Tiket:*\n${rsvpUrl}?view=idcard\n\nKami menantikan kehadiran Anda pada:\n\u{1F4C5} *Hari/Tanggal:* ${eventDateStr}\n\u{23F0} *Waktu:* ${eventTimeStr}\n\u{1F4CD} *Lokasi:* ${selectedEvent?.location || 'Akan diinformasikan'}\n\nSampai jumpa di acara!\n\nHormat kami,\n*Panitia Penyelenggara*`
-              : `*Undangan Resmi Acara* \u{1F4E9}\n\nKepada Yth.\n*Bapak/Ibu ${guest.guestName}*\n\nDengan hormat,\n\nMelalui pesan ini, kami bermaksud mengundang Bapak/Ibu untuk berkenan hadir pada acara *${selectedEvent?.eventName}* yang akan diselenggarakan pada:\n\n\u{1F4C5} *Hari/Tanggal:* ${eventDateStr}\n\u{23F0} *Waktu:* ${eventTimeStr}\n\u{1F4CD} *Lokasi:* ${selectedEvent?.location || 'Akan diinformasikan'}\n\n\u{1F4CE} *Tautan File Undangan Resmi:*\n${fileUrl}\n\nMengingat pentingnya acara ini, kami sangat mengharapkan kehadiran Bapak/Ibu. Untuk kelancaran persiapan acara, mohon berkenan memberikan konfirmasi kehadiran (RSVP) melalui sistem registrasi kami pada tautan di bawah ini:\n\n\u{1F517} *Tautan Konfirmasi Kehadiran (RSVP):*\n${rsvpUrl}\n\nSetelah Bapak/Ibu melakukan konfirmasi kehadiran melalui tautan di atas, sistem akan secara otomatis menerbitkan Kartu Identitas Tamu (ID Card) beserta QR Code sebagai tiket akses masuk resmi Bapak/Ibu.\n\nDemikian undangan ini kami sampaikan. Atas perhatian dan perkenan Bapak/Ibu, kami mengucapkan terima kasih yang sebesar-besarnya.\n\nHormat kami,\n\n*Panitia Penyelenggara*`;
+              ? `🎟️ *Tiket Resmi Acara*\n\nAssalamu'alaikum Warahmatullahi Wabarakatuh,\n\nKepada Yth.\n*Bapak/Ibu ${guest.guestName}*\n\nTerima kasih telah mengonfirmasi kehadiran Anda pada acara:\n✨ *${selectedEvent?.eventName}*\n\nBerikut adalah tautan ID Card (Tiket Masuk) Anda. Mohon tunjukkan ID Card pada tautan di bawah ini atau menyebutkan Kode Kehadiran kepada petugas registrasi saat tiba di lokasi acara:\n\n🔗 *Tautan Tiket:*\n${rsvpUrl}?view=idcard\n\nKami menantikan kehadiran Anda pada:\n📅 *Hari/Tanggal:* ${eventDateStr}\n⏰ *Waktu:* ${eventTimeStr}\n📍 *Lokasi:* ${selectedEvent?.location || 'Akan diinformasikan'}\n\n📋 *Hal yang perlu dibawa:*\n• ID Card / Kartu Identitas Tamu (dari tautan tiket di atas)\n\nSampai jumpa di acara!\n\nWassalamu'alaikum Warahmatullahi Wabarakatuh,\n\n*Panitia Penyelenggara*${footer}`
+              : `📩 *Undangan Resmi Acara*\n\nAssalamu'alaikum Warahmatullahi Wabarakatuh,\n\nKepada Yth.\n*Bapak/Ibu ${guest.guestName}*\n\nDengan hormat,\n\nMelalui pesan ini, kami bermaksud mengundang Bapak/Ibu untuk berkenan hadir pada acara:\n✨ *${selectedEvent?.eventName}*\n\nYang akan diselenggarakan pada:\n📅 *Hari/Tanggal:* ${eventDateStr}\n⏰ *Waktu:* ${eventTimeStr}\n📍 *Lokasi:* ${selectedEvent?.location || 'Akan diinformasikan'}\n\n📎 *Tautan File Undangan Resmi:*\n${fileUrl}\n\n📋 *Hal yang perlu dibawa:*\n• ID Card / Kartu Identitas Tamu (tersedia setelah konfirmasi RSVP)\n\nMengingat pentingnya acara ini, kami sangat mengharapkan kehadiran Bapak/Ibu. Mohon berkenan memberikan konfirmasi kehadiran (RSVP) melalui tautan di bawah ini:\n\n🔗 *Tautan Konfirmasi Kehadiran (RSVP):*\n${rsvpUrl}\n\nSetelah Bapak/Ibu melakukan konfirmasi kehadiran, sistem akan otomatis menerbitkan Kartu Identitas Tamu (ID Card) beserta QR Code sebagai tiket masuk resmi.\n\nDemikian undangan ini kami sampaikan. Atas perhatian dan perkenan Bapak/Ibu, kami mengucapkan terima kasih.\n\nWassalamu'alaikum Warahmatullahi Wabarakatuh,\n\n*Panitia Penyelenggara*${footer}`;
             
             const phoneStr = guest.phone.replace(/[^0-9]/g, '');
             const formattedPhone = phoneStr.startsWith('0') ? '62' + phoneStr.slice(1) : phoneStr;
@@ -1817,6 +1873,30 @@ export function OfficeAdminDashboard({ user }: { user: User }) {
                     value={newEventMapsLink}
                     onChange={e => setNewEventMapsLink(e.target.value)}
                     placeholder="https://maps.google.com/..."
+                    className="w-full text-sm bg-gray-50 border border-gray-200 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 text-gray-900 py-2.5 px-3 mb-3"
+                  />
+                  <label className="block text-[10px] uppercase tracking-widest text-gray-500 mb-1.5 mt-3">Website Link (Optional)</label>
+                  <input
+                    type="url"
+                    value={newEventSocialWebsite}
+                    onChange={e => setNewEventSocialWebsite(e.target.value)}
+                    placeholder="https://website.com/..."
+                    className="w-full text-sm bg-gray-50 border border-gray-200 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 text-gray-900 py-2.5 px-3 mb-3"
+                  />
+                  <label className="block text-[10px] uppercase tracking-widest text-gray-500 mb-1.5 mt-3">YouTube Link (Optional)</label>
+                  <input
+                    type="url"
+                    value={newEventSocialYoutube}
+                    onChange={e => setNewEventSocialYoutube(e.target.value)}
+                    placeholder="https://youtube.com/..."
+                    className="w-full text-sm bg-gray-50 border border-gray-200 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 text-gray-900 py-2.5 px-3 mb-3"
+                  />
+                  <label className="block text-[10px] uppercase tracking-widest text-gray-500 mb-1.5 mt-3">Instagram Link (Optional)</label>
+                  <input
+                    type="url"
+                    value={newEventSocialInstagram}
+                    onChange={e => setNewEventSocialInstagram(e.target.value)}
+                    placeholder="https://instagram.com/..."
                     className="w-full text-sm bg-gray-50 border border-gray-200 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 text-gray-900 py-2.5 px-3"
                   />
                 </div>
@@ -2168,6 +2248,9 @@ export function OfficeAdminDashboard({ user }: { user: User }) {
                                       gallery={JSON.stringify(newEventGallery)}
                                       themePrimary={newEventThemePrimary}
                                       themeSecondary={newEventThemeSecondary}
+                                      socialWebsite={newEventSocialWebsite}
+                                      socialYoutube={newEventSocialYoutube}
+                                      socialInstagram={newEventSocialInstagram}
                                       isPreview={true}
                                     />
                                   </div>
@@ -2385,6 +2468,9 @@ export function OfficeAdminDashboard({ user }: { user: User }) {
                   backsound={selectedEvent.backsound || null}
                   themePrimary={selectedEvent.themePrimary || null}
                   themeSecondary={selectedEvent.themeSecondary || null}
+                  socialWebsite={selectedEvent.socialWebsite || null}
+                  socialYoutube={selectedEvent.socialYoutube || null}
+                  socialInstagram={selectedEvent.socialInstagram || null}
                   isPreview={true}
                   isPrint={true}
                 />

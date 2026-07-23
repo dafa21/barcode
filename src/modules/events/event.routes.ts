@@ -59,7 +59,7 @@ router.use(jwtAuthGuard, tenantGuard);
 router.post('/', async (req: AuthRequest, res) => {
   try {
     const { eventName, eventDate, location, mapsLink, isActive, logo, twibbonBackground, twibbonConfig, invitationFile, letterBackground, letterSize, letterContent, backsound, heroImage,
-      gallery, themePrimary, themeSecondary, openingQuote, eventEndDate, rundown } = req.body;
+      gallery, themePrimary, themeSecondary, openingQuote, eventEndDate, rundown, socialWebsite, socialYoutube, socialInstagram } = req.body;
     let targetOfficeId = req.user!.officeId;
     
     if (req.user!.role === 'super_admin') {
@@ -91,6 +91,9 @@ router.post('/', async (req: AuthRequest, res) => {
       openingQuote,
       eventEndDate: eventEndDate ? new Date(eventEndDate) : null,
       rundown,
+      socialWebsite,
+      socialYoutube,
+      socialInstagram,
     }).returning();
     
     res.json(result[0]);
@@ -148,7 +151,7 @@ router.put('/:id', async (req: AuthRequest, res) => {
   try {
     const { id } = req.params;
     const { eventName, eventDate, location, mapsLink, isActive, logo, twibbonBackground, twibbonConfig, invitationFile, letterBackground, letterSize, letterContent, backsound, heroImage,
-      gallery, themePrimary, themeSecondary, openingQuote, eventEndDate, rundown } = req.body;
+      gallery, themePrimary, themeSecondary, openingQuote, eventEndDate, rundown, socialWebsite, socialYoutube, socialInstagram } = req.body;
     const { role, officeId } = req.user!;
     
     // Authorization check
@@ -180,6 +183,9 @@ router.put('/:id', async (req: AuthRequest, res) => {
       openingQuote,
       eventEndDate: eventEndDate ? new Date(eventEndDate) : null,
       rundown,
+      socialWebsite,
+      socialYoutube,
+      socialInstagram,
       })
       .where(eq(events.id, id))
       .returning();

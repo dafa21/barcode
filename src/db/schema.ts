@@ -47,6 +47,9 @@ export const events = pgTable('events', {
   openingQuote: text('opening_quote'),
   eventEndDate: timestamp('event_end_date'),
   rundown: text('rundown'),
+  socialWebsite: text('social_website'),
+  socialYoutube: text('social_youtube'),
+  socialInstagram: text('social_instagram'),
 });
 
 export const guests = pgTable('guests', {

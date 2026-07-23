@@ -1,6 +1,6 @@
 
 import React, { useEffect, useRef, useState } from 'react';
-import { Calendar, MapPin, X, Music, VolumeX, FileText, Clock } from 'lucide-react';
+import { Calendar, MapPin, X, Music, VolumeX, FileText, Clock, Globe, Youtube, Instagram } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface Props {
@@ -27,6 +27,9 @@ interface Props {
   openingQuote?: string | null;
   eventEndDate?: string | null;
   rundown?: string | null;
+  socialWebsite?: string | null;
+  socialYoutube?: string | null;
+  socialInstagram?: string | null;
   children?: React.ReactNode;
 }
 
@@ -197,6 +200,9 @@ export function DigitalInvitation({
   openingQuote,
   eventEndDate,
   rundown,
+  socialWebsite,
+  socialYoutube,
+  socialInstagram,
   children
 }: Props) {
   const audioRef = useRef<HTMLAudioElement>(null);
@@ -590,6 +596,38 @@ export function DigitalInvitation({
                       <img src={img} alt={`Gallery ${idx}`} className="w-full h-full object-cover hover:scale-110 transition-transform duration-500" />
                     </motion.div>
                   ))}
+                </div>
+              </motion.div>
+            )}
+
+            {(socialWebsite || socialYoutube || socialInstagram) && (
+              <motion.div
+                initial={isPrint ? false : { opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-50px" }}
+                transition={{ delay: 1.4, duration: 1 }}
+                className="w-full mt-8 flex flex-col items-center justify-center gap-4"
+              >
+                <div className="flex items-center justify-center w-full max-w-[200px] mb-2 opacity-50">
+                  <div className="h-[1px] bg-[var(--theme-primary)] flex-1"></div>
+                  <div className="px-3 text-[10px] tracking-[0.2em] uppercase text-[var(--theme-primary)] font-bold">Connect</div>
+                  <div className="h-[1px] bg-[var(--theme-primary)] flex-1"></div>
+                </div>
+                <div className="flex justify-center gap-4">
+                  {socialWebsite && (
+                    <a href={socialWebsite} target="_blank" rel="noopener noreferrer" className="p-3 bg-white/50 backdrop-blur-sm rounded-full text-[var(--theme-primary)] shadow-sm border border-[var(--theme-secondary)] hover:bg-white hover:-translate-y-1 hover:shadow-md transition-all duration-300">
+                      <Globe className="w-5 h-5" />
+                    </a>
+                  )}
+                  {socialYoutube && (
+                    <a href={socialYoutube} target="_blank" rel="noopener noreferrer" className="p-3 bg-white/50 backdrop-blur-sm rounded-full text-[var(--theme-primary)] shadow-sm border border-[var(--theme-secondary)] hover:bg-white hover:-translate-y-1 hover:shadow-md transition-all duration-300">
+                      <Youtube className="w-5 h-5" />
+                    </a>
+                  )}
+                  {socialInstagram && (
+                    <a href={socialInstagram} target="_blank" rel="noopener noreferrer" className="p-3 bg-white/50 backdrop-blur-sm rounded-full text-[var(--theme-primary)] shadow-sm border border-[var(--theme-secondary)] hover:bg-white hover:-translate-y-1 hover:shadow-md transition-all duration-300">
+                      <Instagram className="w-5 h-5" />
+                    </a>
+                  )}
                 </div>
               </motion.div>
             )}

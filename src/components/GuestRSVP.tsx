@@ -384,6 +384,9 @@ export function GuestRSVP() {
         rundown={data.event.rundown || null}
         themePrimary={data.event.themePrimary}
         themeSecondary={data.event.themeSecondary}
+        socialWebsite={data.event.socialWebsite}
+        socialYoutube={data.event.socialYoutube}
+        socialInstagram={data.event.socialInstagram}
         isPreview={false}
         eventSlug={data.event.eventName.toLowerCase().replace(/[^a-z0-9]+/g, '-')}
         hasInvitationFile={true}

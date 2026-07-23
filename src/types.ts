@@ -34,6 +34,9 @@ export interface Event {
   themeSecondary?: string;
   openingQuote?: string;
   rundown?: string;
+  socialWebsite?: string;
+  socialYoutube?: string;
+  socialInstagram?: string;
 }
 
 export interface Guest {
