@@ -48,8 +48,7 @@ async function deploy() {
       validate: function(itemPath) {
         const baseName = path.basename(itemPath);
         return !baseName.startsWith('.git') && 
-               !itemPath.includes('node_modules') && 
-               !itemPath.includes('dist');
+               !itemPath.includes('node_modules');
       },
       tick: function(localPath, remotePath, error) {
         if (error) {
@@ -70,10 +69,7 @@ async function deploy() {
     console.log('npm install output:', npmInstall.stdout);
     if (npmInstall.stderr) console.error('npm install errors:', npmInstall.stderr);
 
-    console.log('Building the project...');
-    const npmBuild = await ssh.execCommand('npm run build', { cwd: remoteDir });
-    console.log('npm build output:', npmBuild.stdout);
-    if (npmBuild.stderr) console.error('npm build errors:', npmBuild.stderr);
+    console.log('Skipping remote build because we upload the local dist folder...');
 
     console.log('Configuring PM2...');
     // check if PM2 process exists
