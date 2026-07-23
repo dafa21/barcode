@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import React from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useSearchParams } from 'react-router-dom';
 import { CheckCircle2, XCircle, MapPin, Calendar as CalendarIcon, Users, FileText, X, Music } from 'lucide-react';
 import { DigitalInvitation } from './DigitalInvitation.tsx';
 
@@ -88,6 +88,8 @@ const drawWrappedText = (
 
 export function GuestRSVP() {
   const { barcodeUid } = useParams<{ barcodeUid: string }>();
+  const [searchParams] = useSearchParams();
+  const viewMode = searchParams.get('view');
   const [data, setData] = useState<RSVPData | null>(null);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
@@ -324,6 +326,44 @@ export function GuestRSVP() {
     return <div className="min-h-screen flex items-center justify-center bg-gray-50">Invitation not found.</div>;
   }
 
+  // ID Card only view (for ?view=idcard)
+  if (viewMode === 'idcard') {
+    if (data.rsvpStatus !== 'attending') {
+      return (
+        <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
+          <div className="text-center">
+            <XCircle className="w-12 h-12 text-gray-400 mx-auto mb-3" />
+            <h3 className="text-lg font-bold text-gray-900 mb-1">ID Card Not Available</h3>
+            <p className="text-gray-600 text-sm">ID Card hanya tersedia untuk tamu yang sudah konfirmasi kehadiran.</p>
+          </div>
+        </div>
+      );
+    }
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 p-4">
+        {isGeneratingTwibbon ? (
+          <div className="flex flex-col items-center justify-center py-6 gap-3">
+            <div className="w-8 h-8 border-2 border-gray-300 border-t-gray-800 rounded-full animate-spin"></div>
+            <p className="text-xs uppercase tracking-widest text-gray-500 font-semibold">Generating ID Card...</p>
+          </div>
+        ) : generatedTwibbon ? (
+          <div className="w-full max-w-[320px] mx-auto">
+            <img src={generatedTwibbon} alt="Guest ID Card" className="w-full h-auto rounded-xl shadow-lg border border-gray-100" />
+            <a
+              href={generatedTwibbon}
+              download={`${data.guestName.replace(/\s+/g, "_")}_ID_Card.png`}
+              className="mt-4 block w-full py-3 bg-gray-900 text-white text-xs font-bold uppercase tracking-widest rounded-xl hover:bg-gray-700 transition-colors shadow-md text-center"
+            >
+              Download ID Card
+            </a>
+          </div>
+        ) : (
+          <p className="text-gray-500 text-sm">Loading ID Card...</p>
+        )}
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-[#fdfbf7] flex flex-col items-center w-full overflow-x-hidden" style={{ "--theme-primary": data.event.themePrimary || "#b45309", "--theme-secondary": data.event.themeSecondary || "#fef3c7" } as React.CSSProperties}>
       <DigitalInvitation
@@ -349,7 +389,143 @@ export function GuestRSVP() {
         hasInvitationFile={true}
         customInvitationFileUrl={data.customInvitationFile ? `/api/guests/public/invitation/${barcodeUid}` : undefined}
       >
-        {rsvpContent}
+        <div className="w-full text-center">
+          {success ? (
+            <div className="bg-[var(--theme-secondary)] p-6 rounded-xl border border-[var(--theme-secondary)] animate-in fade-in zoom-in duration-300">
+              {data.rsvpStatus === 'attending' ? (
+                <>
+                  <CheckCircle2 className="w-12 h-12 text-[var(--theme-primary)] mx-auto mb-3" />
+                  <h3 className="text-lg font-bold text-gray-900 mb-1 font-serif">RSVP Confirmed!</h3>
+                  <p className="text-gray-600 text-xs mb-6">Thank you for confirming your attendance.</p>
+                  
+                  {isGeneratingTwibbon ? (
+                    <div className="flex flex-col items-center justify-center py-6 gap-3">
+                      <div className="w-6 h-6 border-2 border-[var(--theme-secondary)] border-t-[var(--theme-primary)] rounded-full animate-spin"></div>
+                      <p className="text-[10px] uppercase tracking-widest text-gray-500 font-semibold">Generating ID Card...</p>
+                    </div>
+                  ) : generatedTwibbon ? (
+                    <div className="w-full max-w-[280px] mx-auto mt-2">
+                      <img src={generatedTwibbon} alt="Guest ID Card" className="w-full h-auto rounded-xl shadow-lg border border-gray-100" />
+                      <a
+                        href={generatedTwibbon}
+                        download={`${data.guestName.replace(/\s+/g, "_")}_ID_Card.png`}
+                        className="mt-4 block w-full py-3 bg-[var(--theme-primary)] text-white text-[10px] font-bold uppercase tracking-widest rounded-xl hover:bg-[var(--theme-primary)] hover:brightness-90 transition-colors shadow-md"
+                      >
+                        Download ID Card
+                      </a>
+                    </div>
+                  ) : (
+                    <div className="mt-2 py-2 px-4 bg-[var(--theme-secondary)] text-[var(--theme-primary)] rounded-lg text-xs font-bold inline-block border border-[var(--theme-secondary)]">
+                      {data.paxCount} Guest(s)
+                    </div>
+                  )}
+                </>
+              ) : (
+                <>
+                  <XCircle className="w-12 h-12 text-gray-400 mx-auto mb-3" />
+                  <h3 className="text-lg font-bold text-gray-900 mb-1 font-serif">RSVP Confirmed</h3>
+                  <p className="text-gray-600 text-xs">We're sorry you won't be able to make it.</p>
+                </>
+              )}
+            </div>
+          ) : (
+            <div className="space-y-6">
+              <div>
+                <label className="block text-xs font-semibold uppercase tracking-wider text-gray-700 mb-3 text-left">
+                  How many people will be attending?
+                </label>
+                <div className="flex items-center gap-4 bg-gray-50 p-3 rounded-xl border border-gray-200 focus-within:border-[var(--theme-primary)] focus-within:ring-2 focus-within:ring-[var(--theme-secondary)] transition-all">
+                  <Users className="w-4 h-4 text-gray-400" />
+                  <input
+                    type="number"
+                    min="1"
+                    max="10"
+                    value={paxInput}
+                    onChange={(e) => setPaxInput(e.target.value)}
+                    className="w-full bg-transparent outline-none text-base font-medium text-gray-900"
+                  />
+                </div>
+              </div>
+              
+              {pax > 1 && (
+                <div className="space-y-4 pt-4 border-t border-gray-100 text-left">
+                  <h3 className="text-xs font-bold text-gray-800 uppercase tracking-wide">Detail Tamu Tambahan</h3>
+                  <p className="text-[10px] text-gray-500 mb-4 leading-relaxed">Mohon isi data tamu tambahan yang akan hadir bersama Anda.</p>
+                  
+                  {additionalGuests.map((ag, index) => (
+                    <div key={index} className="p-4 bg-[var(--theme-secondary)] rounded-xl border border-[var(--theme-secondary)] space-y-3">
+                      <p className="text-[10px] font-bold text-[var(--theme-primary)] uppercase tracking-widest">Tamu #{index + 2}</p>
+                      <div>
+                        <label className="block text-[10px] uppercase font-semibold text-gray-600 mb-1">Nama Lengkap *</label>
+                        <input 
+                          type="text"
+                          required
+                          value={ag.guestName}
+                          onChange={e => {
+                            const newGuests = [...additionalGuests];
+                            newGuests[index].guestName = e.target.value;
+                            setAdditionalGuests(newGuests);
+                          }}
+                          className="w-full text-sm bg-white border border-gray-200 rounded-lg px-3 py-2 outline-none focus:border-[var(--theme-primary)] focus:ring-2 focus:ring-[var(--theme-secondary)] transition-all"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-[10px] uppercase font-semibold text-gray-600 mb-1">No. WhatsApp *</label>
+                        <input 
+                          type="tel"
+                          required
+                          value={ag.phone}
+                          onChange={e => {
+                            const newGuests = [...additionalGuests];
+                            newGuests[index].phone = e.target.value;
+                            setAdditionalGuests(newGuests);
+                          }}
+                          className="w-full text-sm bg-white border border-gray-200 rounded-lg px-3 py-2 outline-none focus:border-[var(--theme-primary)] focus:ring-2 focus:ring-[var(--theme-secondary)] transition-all"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-[10px] uppercase font-semibold text-gray-600 mb-1">Jabatan (Opsional)</label>
+                        <input 
+                          type="text"
+                          value={ag.jobTitle}
+                          onChange={e => {
+                            const newGuests = [...additionalGuests];
+                            newGuests[index].jobTitle = e.target.value;
+                            setAdditionalGuests(newGuests);
+                          }}
+                          className="w-full text-sm bg-white border border-gray-200 rounded-lg px-3 py-2 outline-none focus:border-[var(--theme-primary)] focus:ring-2 focus:ring-[var(--theme-secondary)] transition-all"
+                        />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+              
+              {formError && (
+                <div className="p-3 bg-red-50 text-red-600 text-xs rounded-lg border border-red-200 text-left">
+                  {formError}
+                </div>
+              )}
+              
+              <div className="grid grid-cols-2 gap-3 pt-2">
+                <button
+                  onClick={() => handleSubmit('not_attending')}
+                  disabled={submitting}
+                  className="px-4 py-3 rounded-xl font-bold uppercase tracking-widest text-[10px] border-2 border-gray-200 text-gray-500 hover:bg-gray-50 transition-colors disabled:opacity-50"
+                >
+                  Can't Make It
+                </button>
+                <button
+                  onClick={() => handleSubmit('attending')}
+                  disabled={submitting}
+                  className="px-4 py-3 rounded-xl font-bold uppercase tracking-widest text-[10px] bg-[var(--theme-primary)] text-white shadow-md shadow-[var(--theme-secondary)] hover:bg-[var(--theme-primary)] hover:brightness-90 hover:shadow-lg transition-all disabled:opacity-50 disabled:transform-none active:scale-95"
+                >
+                  Confirm RSVP
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
       </DigitalInvitation>
     </div>
   );

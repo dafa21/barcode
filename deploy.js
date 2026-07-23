@@ -1,19 +1,34 @@
 import { NodeSSH } from 'node-ssh';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import readline from 'readline';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const ssh = new NodeSSH();
 
+const rl = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout
+});
+
+const askPassword = () => new Promise(resolve => {
+  rl.question('Enter SSH password for root@148.230.98.197: ', (answer) => {
+    resolve(answer);
+  });
+});
+
 async function deploy() {
   try {
+    const password = await askPassword();
+    rl.close();
+
     console.log('Connecting to server...');
     await ssh.connect({
       host: '148.230.98.197',
       username: 'root',
-      password: 'Bismillah212'
+      password: password
     });
     console.log('Connected!');
 
