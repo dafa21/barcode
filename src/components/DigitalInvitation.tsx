@@ -192,6 +192,7 @@ export function DigitalInvitation({
   isPrint = false,
   eventSlug,
   hasInvitationFile = false,
+  customInvitationFileUrl,
   logo,
   openingQuote,
   eventEndDate,
