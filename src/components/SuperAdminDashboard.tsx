@@ -215,6 +215,7 @@ export function SuperAdminDashboard() {
           </div>
         )}
       </div>
+      <CustomModal config={modalConfig} onClose={() => setModalConfig(prev => ({ ...prev, isOpen: false }))} />
     </div>
   );
 }

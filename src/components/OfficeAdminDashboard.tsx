@@ -2824,6 +2824,7 @@ const handleCreateEvent = async (e: React.FormEvent) => {
           </div>
         </div>
       )}
+      <CustomModal config={modalConfig} onClose={() => setModalConfig(prev => ({ ...prev, isOpen: false }))} />
     </>
 
       
