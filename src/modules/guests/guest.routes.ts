@@ -231,6 +231,7 @@ router.get('/event/:eventId', async (req: AuthRequest, res) => {
         barcodeUid: guests.barcodeUid,
         rsvpStatus: guests.rsvpStatus,
         paxCount: guests.paxCount,
+        customInvitationFile: guests.customInvitationFile,
         status: attendances.status,
         scannedAt: attendances.scannedAt
       })
