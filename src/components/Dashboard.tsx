@@ -32,7 +32,24 @@ export function Dashboard({ user, onLogout }: { user: User; onLogout: () => void
     <div className="min-h-screen bg-slate-50 text-slate-900 font-sans flex flex-col overflow-hidden">
       <header className="h-16 md:h-20 border-b border-slate-200/60 px-4 md:px-8 flex items-center justify-between gap-4 bg-white/70 backdrop-blur-xl z-50 sticky top-0 shadow-sm transition-all duration-300">
         <div className="flex items-center gap-3 md:gap-4 group cursor-default">
-          <img src="/logo.png" alt="Laznas Dewan Dakwah Logo" className="h-10 md:h-12 object-contain" />
+          <div className="flex items-center gap-3">
+            <img 
+              src="/logo.png" 
+              alt="Laznas Dewan Dakwah Logo" 
+              className="h-10 md:h-12 object-contain" 
+              onError={(e) => {
+                e.currentTarget.style.display = 'none';
+                if (e.currentTarget.nextElementSibling) {
+                  (e.currentTarget.nextElementSibling as HTMLElement).style.display = 'block';
+                }
+              }} 
+            />
+            <div style={{ display: 'none' }}>
+              <h1 className="text-lg md:text-xl font-serif font-bold tracking-tight text-slate-800">
+                Laznas <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-teal-600">Dewan Dakwah</span>
+              </h1>
+            </div>
+          </div>
         </div>
         <div className="flex items-center gap-4 md:gap-6">
           <div className="flex flex-col items-end">
