@@ -22,9 +22,8 @@ export function CustomModal({ config, onClose }: CustomModalProps) {
   const handleConfirm = () => {
     if (config.onConfirm) {
       config.onConfirm();
-    } else {
-      onClose();
     }
+    onClose();
   };
 
   const handleCancel = () => {
