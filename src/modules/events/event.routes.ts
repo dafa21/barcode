@@ -8,6 +8,55 @@ import { tenantGuard } from '../../core/middlewares/tenantGuard.ts';
 const router = Router();
 
 // Public routes
+router.get('/public/image/:id/:field', async (req, res) => {
+  try {
+    const { id, field } = req.params;
+    const allowedFields = ['logo', 'twibbonBackground', 'heroImage', 'letterBackground'];
+    if (!allowedFields.includes(field)) return res.status(400).send('Invalid field');
+
+    const result = await db.select({
+      [field]: (events as any)[field]
+    }).from(events).where(eq(events.id, id)).limit(1);
+
+    if (result.length === 0 || !result[0][field]) return res.status(404).send('Not found');
+
+    const base64Str = result[0][field] as string;
+    const matches = base64Str.match(/^data:(.+);base64,(.+)$/);
+    if (matches && matches.length === 3) {
+      res.setHeader('Content-Type', matches[1]);
+      res.setHeader('Cache-Control', 'public, max-age=31536000');
+      return res.send(Buffer.from(matches[2], 'base64'));
+    }
+    return res.send(base64Str);
+  } catch (error) {
+    res.status(500).send('Error');
+  }
+});
+
+router.get('/public/gallery/:id/:index', async (req, res) => {
+  try {
+    const { id, index } = req.params;
+    const result = await db.select({ gallery: events.gallery }).from(events).where(eq(events.id, id)).limit(1);
+    
+    if (result.length === 0 || !result[0].gallery) return res.status(404).send('Not found');
+    
+    const galleryArr = JSON.parse(result[0].gallery);
+    const idx = parseInt(index);
+    if (isNaN(idx) || idx < 0 || idx >= galleryArr.length) return res.status(404).send('Not found');
+    
+    const base64Str = galleryArr[idx];
+    const matches = base64Str.match(/^data:(.+);base64,(.+)$/);
+    if (matches && matches.length === 3) {
+      res.setHeader('Content-Type', matches[1]);
+      res.setHeader('Cache-Control', 'public, max-age=31536000');
+      return res.send(Buffer.from(matches[2], 'base64'));
+    }
+    return res.send(base64Str);
+  } catch (error) {
+    res.status(500).send('Error');
+  }
+});
+
 router.get('/public/invitation/:slug', async (req, res) => {
   try {
     const { slug } = req.params;

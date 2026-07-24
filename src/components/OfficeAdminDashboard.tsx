@@ -149,6 +149,22 @@ const drawWrappedText = (
 
 
 export function OfficeAdminDashboard({ user }: { user: User }) {
+  const [modalConfig, setModalConfig] = useState<{
+    isOpen: boolean;
+    type: 'alert' | 'confirm' | 'success';
+    title: string;
+    message: string;
+    onConfirm?: () => void;
+    onCancel?: () => void;
+  }>({ isOpen: false, type: 'alert', title: '', message: '' });
+
+  const showAlert = (title: string, message: string, type: 'alert' | 'success' = 'alert') => {
+    setModalConfig({ isOpen: true, type, title, message });
+  };
+
+  const showConfirm = (title: string, message: string, onConfirm: () => void) => {
+    setModalConfig({ isOpen: true, type: 'confirm', title, message, onConfirm });
+  };
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<'events' | 'guests' | 'analytics' | 'pics'>('events');
@@ -428,11 +444,11 @@ export function OfficeAdminDashboard({ user }: { user: User }) {
         fetchGuests(selectedEvent.id);
       } else {
         const error = await res.json();
-        alert(error.error || 'Failed to check in manually');
+        showAlert('Pemberitahuan', String(error.error || 'Failed to check in manually'));
       }
     } catch (err) {
       console.error(err);
-      alert('Network error during manual check-in');
+      showAlert('Pemberitahuan', 'Network error during manual check-in');
     }
   };
 
@@ -522,53 +538,55 @@ export function OfficeAdminDashboard({ user }: { user: User }) {
           setSelectedEvent({ ...selectedEvent, eventName: newEventName, eventDate: new Date(newEventDate).toISOString(), eventEndDate: newEventEndDate ? new Date(newEventEndDate).toISOString() : undefined, location: newEventLocation, mapsLink: newEventMapsLink, logo: newEventLogo, invitationFile: newEventInvitationFile, letterBackground: newEventLetterBackground, letterSize: newEventLetterSize, letterContent: newEventLetterContent, openingQuote: newEventOpeningQuote, rundown: newEventRundown, socialWebsite: newEventSocialWebsite, socialYoutube: newEventSocialYoutube, socialInstagram: newEventSocialInstagram });
         }
       } else {
-        alert("Gagal memperbarui acara. File mungkin terlalu besar.");
+        showAlert('Pemberitahuan', "Gagal memperbarui acara. File mungkin terlalu besar.");
       }
     } catch (error) {
       console.error(error);
-      alert("Error: " + (error instanceof Error ? error.message : "Gagal menghubungi server."));
+      showAlert('Pemberitahuan', String("Error: " + (error instanceof Error ? error.message : "Gagal menghubungi server.")));
     }
   };
 
-  const handleDeleteEvent = async (id: string) => {
-    if (!confirm("Are you sure you want to delete this event? This will also delete all guests and attendances associated with it.")) return;
-    try {
-      const res = await fetch(`/api/events/${id}`, {
-        method: "DELETE",
-        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
-      });
-      if (res.ok) {
-        fetchEvents();
-        if (selectedEvent?.id === id) {
-          setSelectedEvent(null);
+    const handleDeleteEvent = async (id: string) => {
+    showConfirm("Hapus Acara", "Apakah Anda yakin ingin menghapus acara ini? Semua tamu dan absensi akan ikut terhapus.", async () => {
+      try {
+        const res = await fetch(`/api/events/${id}`, {
+          method: "DELETE",
+          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
+        });
+        if (res.ok) {
+          fetchEvents();
+          if (selectedEvent?.id === id) {
+            setSelectedEvent(null);
+          }
         }
+      } catch (error) {
+        console.error(error);
       }
-    } catch (error) {
-      console.error(error);
-    }
+    });
   };
 
   const handleDeleteGuest = async (id: string) => {
-    if (!confirm("Are you sure you want to delete this guest?")) return;
-    try {
-      const res = await fetch(`/api/guests/${id}`, {
-        method: "DELETE",
-        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
-      });
-      if (res.ok) {
-        if (selectedEvent) {
-          fetchGuests(selectedEvent.id);
+    showConfirm("Hapus Tamu", "Apakah Anda yakin ingin menghapus tamu ini?", async () => {
+      try {
+        const res = await fetch(`/api/guests/${id}`, {
+          method: "DELETE",
+          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
+        });
+        if (res.ok) {
+          if (selectedEvent) {
+            fetchGuests(selectedEvent.id);
+          }
+        } else {
+          showAlert("Pemberitahuan", "Gagal menghapus tamu");
         }
-      } else {
-        alert("Gagal menghapus tamu");
+      } catch (error) {
+        console.error(error);
+        showAlert("Pemberitahuan", "Terjadi kesalahan");
       }
-    } catch (error) {
-      console.error(error);
-      alert("Terjadi kesalahan");
-    }
+    });
   };
 
-  const handleCreateEvent = async (e: React.FormEvent) => {
+const handleCreateEvent = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
       const res = await fetch('/api/events', {
@@ -620,11 +638,11 @@ export function OfficeAdminDashboard({ user }: { user: User }) {
       setNewEventSocialInstagram('');
         fetchEvents();
       } else {
-        alert("Gagal membuat acara. File mungkin terlalu besar.");
+        showAlert('Pemberitahuan', "Gagal membuat acara. File mungkin terlalu besar.");
       }
     } catch (error) {
       console.error(error);
-      alert("Error: " + (error instanceof Error ? error.message : "Gagal menghubungi server."));
+      showAlert('Pemberitahuan', String("Error: " + (error instanceof Error ? error.message : "Gagal menghubungi server.")));
     }
   };
 
@@ -875,7 +893,7 @@ export function OfficeAdminDashboard({ user }: { user: User }) {
         })).filter(g => g.guestName);
 
         if (newGuests.length === 0) {
-          alert('Tidak ada data tamu yang valid ditemukan. Pastikan format kolom sesuai dengan template.');
+          showAlert('Pemberitahuan', 'Tidak ada data tamu yang valid ditemukan. Pastikan format kolom sesuai dengan template.');
           return;
         }
 
@@ -890,14 +908,14 @@ export function OfficeAdminDashboard({ user }: { user: User }) {
 
         if (res.ok) {
           fetchGuests(selectedEvent.id);
-          alert(`${newGuests.length} tamu berhasil ditambahkan.`);
+          showAlert('Pemberitahuan', `${newGuests.length} tamu berhasil ditambahkan.`);
         } else {
           const err = await res.json();
-          alert(`Gagal mengupload: ${err.error}`);
+          showAlert('Pemberitahuan', `Gagal mengupload: ${err.error}`);
         }
       } catch (error) {
         console.error('Error parsing file:', error);
-        alert('Gagal memproses file Excel.');
+        showAlert('Pemberitahuan', 'Gagal memproses file Excel.');
       }
     };
     reader.readAsBinaryString(file);
@@ -939,7 +957,7 @@ export function OfficeAdminDashboard({ user }: { user: User }) {
       XLSX.writeFile(workbook, `${selectedEvent.eventName}_Guests.xlsx`);
     } catch (err) {
       console.error("Failed to export Excel", err);
-      alert("Failed to generate Excel file.");
+      showAlert('Pemberitahuan', "Failed to generate Excel file.");
     }
   };
 
@@ -2549,7 +2567,7 @@ export function OfficeAdminDashboard({ user }: { user: User }) {
                     pdf.save(`Surat_Undangan_${printingGuest.guestName.replace(/\s+/g, '_')}.pdf`);
                   } catch (err) {
                     console.error(err);
-                    alert('Gagal mencetak surat.');
+                    showAlert('Pemberitahuan', 'Gagal mencetak surat.');
                   }
                 }}
                 className="w-full py-4 bg-gray-900 hover:bg-gray-800 text-white rounded-xl transition-colors text-sm font-bold uppercase tracking-widest shadow-md"
@@ -2682,14 +2700,14 @@ export function OfficeAdminDashboard({ user }: { user: User }) {
                     const updated = await res.json();
                     setGuests(prev => prev.map(g => g.id === updated.id ? { ...g, ...updated } : g));
                     setEditingGuest(null);
-                    alert('Data tamu berhasil diperbarui!');
+                    showAlert('Pemberitahuan', 'Data tamu berhasil diperbarui!');
                   } else {
                     const err = await res.json();
-                    alert(err.error || 'Gagal memperbarui data tamu');
+                    showAlert('Pemberitahuan', String(err.error || 'Gagal memperbarui data tamu'));
                   }
                 } catch (err) {
                   console.error('Update guest failed:', err);
-                  alert('Terjadi kesalahan saat memperbarui data tamu');
+                  showAlert('Pemberitahuan', 'Terjadi kesalahan saat memperbarui data tamu');
                 }
               }} 
               className="p-6 space-y-4 overflow-y-auto flex-1"

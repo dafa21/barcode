@@ -49,7 +49,28 @@ router.get('/rsvp/:barcodeUid', async (req, res) => {
       return res.status(404).json({ error: 'Guest not found' });
     }
 
-    res.json(guestResult[0]);
+    const guest = guestResult[0];
+    if (guest.event) {
+      const e = guest.event as any;
+      const getUrl = (field: string) => `/api/events/public/image/${e.id}/${field}`;
+      
+      if (e.logo && e.logo.startsWith('data:image')) e.logo = getUrl('logo');
+      if (e.heroImage && e.heroImage.startsWith('data:image')) e.heroImage = getUrl('heroImage');
+      if (e.twibbonBackground && e.twibbonBackground.startsWith('data:image')) e.twibbonBackground = getUrl('twibbonBackground');
+      if (e.letterBackground && e.letterBackground.startsWith('data:image')) e.letterBackground = getUrl('letterBackground');
+      
+      if (e.gallery) {
+        try {
+          const galleryArr = JSON.parse(e.gallery);
+          const newGallery = galleryArr.map((img: string, index: number) => 
+            img.startsWith('data:image') ? `/api/events/public/gallery/${e.id}/${index}` : img
+          );
+          e.gallery = JSON.stringify(newGallery);
+        } catch (err) {}
+      }
+    }
+
+    res.json(guest);
   } catch (error) {
     res.status(500).json({ error: 'Internal server error', cause: error });
   }
@@ -284,6 +305,37 @@ router.post('/bulk', jwtAuthGuard, tenantGuard, async (req: AuthRequest, res) =>
     res.json(result);
   } catch (error) {
     console.error('Bulk insert error:', error);
+    res.status(500).json({ error: 'Internal server error', cause: error });
+  }
+});
+
+router.delete('/:id', async (req: AuthRequest, res) => {
+  try {
+    const { id } = req.params;
+    
+    const guestResult = await db.select().from(guests).where(eq(guests.id, id)).limit(1);
+    if (guestResult.length === 0) {
+      return res.status(404).json({ error: 'Guest not found' });
+    }
+
+    const eventResult = await db.select().from(events).where(eq(events.id, guestResult[0].eventId)).limit(1);
+    if (eventResult.length === 0) {
+      return res.status(404).json({ error: 'Event not found' });
+    }
+
+    if ((req.user!.role === 'office_admin' || req.user!.role === 'pic') && eventResult[0].officeId !== req.user!.officeId) {
+      return res.status(403).json({ error: 'Forbidden: Event does not belong to your office' });
+    }
+
+    // Delete attendances first due to foreign key constraint
+    await db.delete(attendances).where(eq(attendances.guestId, id));
+    
+    // Delete guest
+    await db.delete(guests).where(eq(guests.id, id));
+
+    res.json({ success: true });
+  } catch (error) {
+    console.error('Delete guest error:', error);
     res.status(500).json({ error: 'Internal server error', cause: error });
   }
 });

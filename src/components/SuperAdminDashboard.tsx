@@ -70,10 +70,10 @@ export function SuperAdminDashboard() {
       if (res.ok) {
         setNewAdminUsername('');
         setNewAdminPassword('');
-        alert('Admin created successfully');
+        showAlert('Berhasil', 'Admin created successfully', 'success');
       } else {
         const err = await res.json();
-        alert(err.error);
+        showAlert('Pemberitahuan', String(err.error));
       }
     } catch (error) {
       console.error(error);
