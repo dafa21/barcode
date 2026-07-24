@@ -435,7 +435,7 @@ export function GuestRSVP() {
             <div className="space-y-6">
               <div>
                 <label className="block text-xs font-semibold uppercase tracking-wider text-gray-700 mb-3 text-left">
-                  How many people will be attending?
+                  Berapa orang yang akan hadir?
                 </label>
                 <div className="flex items-center gap-4 bg-gray-50 p-3 rounded-xl border border-gray-200 focus-within:border-[var(--theme-primary)] focus-within:ring-2 focus-within:ring-[var(--theme-secondary)] transition-all">
                   <Users className="w-4 h-4 text-gray-400" />
@@ -516,14 +516,14 @@ export function GuestRSVP() {
                   disabled={submitting}
                   className="px-4 py-3 rounded-xl font-bold uppercase tracking-widest text-[10px] border-2 border-gray-200 text-gray-500 hover:bg-gray-50 transition-colors disabled:opacity-50"
                 >
-                  Can't Make It
+                  Tidak Bisa Hadir
                 </button>
                 <button
                   onClick={() => handleSubmit('attending')}
                   disabled={submitting}
                   className="px-4 py-3 rounded-xl font-bold uppercase tracking-widest text-[10px] bg-[var(--theme-primary)] text-white shadow-md shadow-[var(--theme-secondary)] hover:bg-[var(--theme-primary)] hover:brightness-90 hover:shadow-lg transition-all disabled:opacity-50 disabled:transform-none active:scale-95"
                 >
-                  Confirm RSVP
+                  Konfirmasi Kehadiran
                 </button>
               </div>
             </div>

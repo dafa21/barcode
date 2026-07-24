@@ -31,18 +31,18 @@ const getWhatsAppMessage = (
   socialYoutube: string | undefined, 
   socialInstagram: string | undefined
 ) => {
-  const iconTicket = decodeURIComponent('%F0%9F%8E%AB'); // 1F3AB
-  const iconEnvelope = decodeURIComponent('%F0%9F%93%A9'); // 1F4E9
-  const iconCalendar = decodeURIComponent('%F0%9F%93%85'); // 1F4C5
-  const iconClock = decodeURIComponent('%E2%8F%B0'); // 23F0
-  const iconPin = decodeURIComponent('%F0%9F%93%8D'); // 1F4CD
-  const iconClipboard = decodeURIComponent('%F0%9F%93%8B'); // 1F4CB
-  const iconSparkles = decodeURIComponent('%E2%9C%A8'); // 2728
-  const iconLink = decodeURIComponent('%F0%9F%94%97'); // 1F517
-  const iconClip = decodeURIComponent('%F0%9F%93%8E'); // 1F4CE
-  const iconGlobe = decodeURIComponent('%F0%9F%8C%90'); // 1F310
-  const iconYoutube = decodeURIComponent('%F0%9F%93%BA'); // 1F4FA
-  const iconInstagram = decodeURIComponent('%F0%9F%93%B7'); // 1F4F7
+  const iconTicket = '🎟️'; // 1F3AB
+  const iconEnvelope = '📩'; // 1F4E9
+  const iconCalendar = '📅'; // 1F4C5
+  const iconClock = '⏱️'; // 23F0
+  const iconPin = '📍'; // 1F4CD
+  const iconClipboard = '📋'; // 1F4CB
+  const iconSparkles = '✨'; // 2728
+  const iconLink = '🔗'; // 1F517
+  const iconClip = '📎'; // 1F4CE
+  const iconGlobe = '🌐'; // 1F310
+  const iconYoutube = '📺'; // 1F4FA
+  const iconInstagram = '📸'; // 1F4F7
   const iconBullet = '-'; // safely replacing bullet
 
   const socialFooter = [
@@ -801,7 +801,7 @@ export function OfficeAdminDashboard({ user }: { user: User }) {
           selectedEvent?.socialInstagram
         );
 
-        window.open(`https://wa.me/${formattedPhone}?text=${encodeURIComponent(message)}`, '_blank');
+        window.open(`https://web.whatsapp.com/send?phone=${formattedPhone}&text=${encodeURIComponent(message)}`, '_blank');
       });
       
     setSelectedGuestIds([]);
@@ -1756,7 +1756,7 @@ export function OfficeAdminDashboard({ user }: { user: User }) {
             
             const phoneStr = guest.phone.replace(/[^0-9]/g, '');
             const formattedPhone = phoneStr.startsWith('0') ? '62' + phoneStr.slice(1) : phoneStr;
-            window.open(`https://wa.me/${formattedPhone}?text=${encodeURIComponent(message)}`, '_blank');
+            window.open(`https://web.whatsapp.com/send?phone=${formattedPhone}&text=${encodeURIComponent(message)}`, '_blank');
          }} disabled={!guest.phone} className="inline-flex items-center justify-center p-1.5 bg-gray-50 text-gray-600 rounded border border-gray-200 hover:bg-white hover:text-green-600 transition-colors disabled:opacity-50" title={guest.rsvpStatus === 'attending' ? 'Kirim Tiket Barcode WA' : 'Kirim Link Konfirmasi RSVP WA'}>
             <MessageCircle className="w-3.5 h-3.5" />
          </button>
