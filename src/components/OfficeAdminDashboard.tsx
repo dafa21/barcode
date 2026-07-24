@@ -472,9 +472,15 @@ export function OfficeAdminDashboard({ user }: { user: User }) {
         const updated = await res.json();
         setSelectedEvent({ ...selectedEvent, twibbonBackground: updated.twibbonBackground, twibbonConfig: updated.twibbonConfig });
         setIsTwibbonConfigOpen(false);
+        showAlert('Berhasil', 'Konfigurasi layout berhasil disimpan!', 'success');
+      } else {
+        const errData = await res.json().catch(() => ({}));
+        console.error("Save Twibbon Config Error:", errData);
+        showAlert('Gagal Menyimpan', errData.error || 'Terjadi kesalahan pada server saat menyimpan layout.', 'alert');
       }
     } catch (error) {
       console.error(error);
+      showAlert('Gagal Menyimpan', 'Terjadi kesalahan jaringan atau server.', 'alert');
     }
   };
 
