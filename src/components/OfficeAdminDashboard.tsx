@@ -1,4 +1,5 @@
 import React from "react";
+import { CustomModal } from './CustomModal.tsx';
 import { useState, useEffect, useRef } from 'react';
 import { User, Event, Guest } from '../types.ts';
 import { Calendar, Plus, Edit, Edit3, Trash2, Users, MapPin, Search, QrCode, BarChart2, LayoutList, Activity, Download, MessageCircle, X, UserPlus, Printer, Crown, Upload, FileText, Menu, ChevronLeft, ChevronRight, PanelLeftClose, PanelLeftOpen } from 'lucide-react';

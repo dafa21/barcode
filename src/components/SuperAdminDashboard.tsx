@@ -1,4 +1,5 @@
 import React from "react";
+import { CustomModal } from './CustomModal.tsx';
 import { useState, useEffect } from 'react';
 import { Office } from '../types.ts';
 import { Building2, Plus, Users, ChevronRight } from 'lucide-react';
