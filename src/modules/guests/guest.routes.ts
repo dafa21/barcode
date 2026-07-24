@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { db } from '../../db/index.ts';
 import { guests, events, attendances, users } from '../../db/schema.ts';
-import { eq } from 'drizzle-orm';
+import { eq, sql } from 'drizzle-orm';
 import { v4 as uuidv4 } from 'uuid';
 import { jwtAuthGuard, AuthRequest } from '../../core/middlewares/jwtAuthGuard.ts';
 import { tenantGuard } from '../../core/middlewares/tenantGuard.ts';
@@ -19,7 +19,7 @@ router.get('/rsvp/:barcodeUid', async (req, res) => {
       jobTitle: guests.jobTitle,
       rsvpStatus: guests.rsvpStatus,
       paxCount: guests.paxCount,
-      customInvitationFile: guests.customInvitationFile,
+      customInvitationFile: sql<string>`CASE WHEN ${guests.customInvitationFile} IS NOT NULL THEN 'exists' ELSE NULL END`.as('customInvitationFile'),
       event: {
         id: events.id,
         eventName: events.eventName,
@@ -231,7 +231,7 @@ router.get('/event/:eventId', async (req: AuthRequest, res) => {
         barcodeUid: guests.barcodeUid,
         rsvpStatus: guests.rsvpStatus,
         paxCount: guests.paxCount,
-        customInvitationFile: guests.customInvitationFile,
+        customInvitationFile: sql<string>`CASE WHEN ${guests.customInvitationFile} IS NOT NULL THEN 'exists' ELSE NULL END`.as('customInvitationFile'),
         status: attendances.status,
         scannedAt: attendances.scannedAt
       })

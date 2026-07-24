@@ -406,6 +406,19 @@ export function DigitalInvitation({
                 </p>
               )}
               <p className="text-[9px] text-gray-400 mt-2 italic">*Mohon maaf apabila terdapat kesalahan penulisan nama/gelar</p>
+              
+              {children && (
+                <div className="mt-6 w-full flex justify-center">
+                  <button 
+                    onClick={() => {
+                      document.getElementById('rsvp-section')?.scrollIntoView({ behavior: 'smooth' });
+                    }}
+                    className="flex items-center gap-2 bg-[var(--theme-primary)] text-white px-6 py-2.5 rounded-full font-sans font-bold text-xs uppercase tracking-wider shadow-lg hover:bg-[var(--theme-primary)] hover:brightness-90 hover:scale-105 transition-all"
+                  >
+                    Reservasi Kehadiran
+                  </button>
+                </div>
+              )}
             </motion.div>
 
             {openingQuote && (
@@ -634,10 +647,11 @@ export function DigitalInvitation({
 
             {children && (
               <motion.div
+                id="rsvp-section"
                 initial={isPrint ? false : { opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-50px" }}
                 transition={{ delay: 1.3, duration: 1 }}
-                className="w-full mt-8"
+                className="w-full mt-8 scroll-mt-10"
               >
                 {children}
               </motion.div>
