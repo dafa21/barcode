@@ -790,6 +790,7 @@ const handleCreateEvent = async (e: React.FormEvent) => {
     }
     fetchGuests(event.id);
     setSelectedGuestIds([]);
+    setActiveTab('guests');
   };
 
   const handleBulkSendInvitations = () => {
@@ -999,33 +1000,33 @@ const handleCreateEvent = async (e: React.FormEvent) => {
         <button
           onClick={() => { setActiveTab('events'); setIsMobileMenuOpen(false); }}
           className={`w-full flex items-center ${isSidebarOpen ? 'px-3' : 'justify-center'} py-2 rounded-xl transition-colors group ${
-            activeTab === 'events' ? 'bg-indigo-50 text-indigo-700 shadow-sm' : 'text-gray-600 hover:bg-gray-100'
+            activeTab === 'events' ? 'bg-emerald-50 text-emerald-700 shadow-sm' : 'text-gray-600 hover:bg-gray-100'
           }`}
           title="Event Management"
         >
-          <Calendar className={`w-4 h-4 shrink-0 ${isSidebarOpen ? 'mr-3' : ''} ${activeTab === 'events' ? 'text-indigo-600' : 'text-gray-400 group-hover:text-gray-600'}`} />
+          <Calendar className={`w-4 h-4 shrink-0 ${isSidebarOpen ? 'mr-3' : ''} ${activeTab === 'events' ? 'text-emerald-600' : 'text-gray-400 group-hover:text-gray-600'}`} />
           {isSidebarOpen && <span className="text-xs font-semibold">Event Management</span>}
         </button>
 
         <button
           onClick={() => { setActiveTab('guests'); setIsMobileMenuOpen(false); }}
           className={`w-full flex items-center ${isSidebarOpen ? 'px-3' : 'justify-center'} py-2 rounded-xl transition-colors group ${
-            activeTab === 'guests' ? 'bg-indigo-50 text-indigo-700 shadow-sm' : 'text-gray-600 hover:bg-gray-100'
+            activeTab === 'guests' ? 'bg-emerald-50 text-emerald-700 shadow-sm' : 'text-gray-600 hover:bg-gray-100'
           }`}
           title="Daftar Tamu"
         >
-          <Users className={`w-4 h-4 shrink-0 ${isSidebarOpen ? 'mr-3' : ''} ${activeTab === 'guests' ? 'text-indigo-600' : 'text-gray-400 group-hover:text-gray-600'}`} />
+          <Users className={`w-4 h-4 shrink-0 ${isSidebarOpen ? 'mr-3' : ''} ${activeTab === 'guests' ? 'text-emerald-600' : 'text-gray-400 group-hover:text-gray-600'}`} />
           {isSidebarOpen && <span className="text-xs font-semibold">Daftar Tamu</span>}
         </button>
 
         <button
           onClick={() => { setActiveTab('analytics'); setIsMobileMenuOpen(false); }}
           className={`w-full flex items-center ${isSidebarOpen ? 'px-3' : 'justify-center'} py-2 rounded-xl transition-colors group ${
-            activeTab === 'analytics' ? 'bg-indigo-50 text-indigo-700 shadow-sm' : 'text-gray-600 hover:bg-gray-100'
+            activeTab === 'analytics' ? 'bg-emerald-50 text-emerald-700 shadow-sm' : 'text-gray-600 hover:bg-gray-100'
           }`}
           title="Analytics"
         >
-          <Activity className={`w-4 h-4 shrink-0 ${isSidebarOpen ? 'mr-3' : ''} ${activeTab === 'analytics' ? 'text-indigo-600' : 'text-gray-400 group-hover:text-gray-600'}`} />
+          <Activity className={`w-4 h-4 shrink-0 ${isSidebarOpen ? 'mr-3' : ''} ${activeTab === 'analytics' ? 'text-emerald-600' : 'text-gray-400 group-hover:text-gray-600'}`} />
           {isSidebarOpen && <span className="text-xs font-semibold">Analytics</span>}
         </button>
       </div>
@@ -1038,12 +1039,12 @@ const handleCreateEvent = async (e: React.FormEvent) => {
             <div className="bg-white/90 backdrop-blur-xl rounded-3xl border border-gray-100 overflow-hidden flex flex-col h-full shadow-[0_8px_30px_rgb(0,0,0,0.04)] transition-all duration-300">
               <div className="p-5 border-b border-gray-100 bg-white/50 flex items-center justify-between sticky top-0 z-10">
                 <h2 className="text-xs font-bold uppercase tracking-widest text-gray-900 flex items-center gap-2">
-                  <Calendar className="w-4 h-4 text-indigo-600" />
+                  <Calendar className="w-4 h-4 text-emerald-600" />
                   Active Events
                 </h2>
                 <button
                   onClick={() => setShowNewEvent(!showNewEvent)}
-                  className="w-9 h-9 flex items-center justify-center bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-xl hover:from-indigo-500 hover:to-purple-500 transition-all duration-300 shadow-md shadow-indigo-500/25 transform hover:-translate-y-0.5"
+                  className="w-9 h-9 flex items-center justify-center bg-gradient-to-r from-emerald-600 to-teal-600 text-white rounded-xl hover:from-emerald-500 hover:to-teal-500 transition-all duration-300 shadow-md shadow-emerald-500/25 transform hover:-translate-y-0.5"
                 >
                   <Plus className="w-5 h-5" />
                 </button>
@@ -1051,7 +1052,7 @@ const handleCreateEvent = async (e: React.FormEvent) => {
               <div className="p-4 flex-1 overflow-y-auto space-y-3">
                 {showNewEvent && (
                   <div className="bg-white p-4 rounded-xl border border-gray-200 shadow-sm">
-                    <h3 className="text-[10px] uppercase tracking-widest text-indigo-700 mb-3 font-bold">Initialize Event</h3>
+                    <h3 className="text-[10px] uppercase tracking-widest text-emerald-700 mb-3 font-bold">Initialize Event</h3>
                     <form onSubmit={handleCreateEvent} className="space-y-3">
                       <input
                         type="text"
@@ -1059,7 +1060,7 @@ const handleCreateEvent = async (e: React.FormEvent) => {
                         required
                         value={newEventName}
                         onChange={e => setNewEventName(e.target.value)}
-                        className="w-full text-sm bg-gray-50 border border-gray-200 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 text-gray-900 placeholder-gray-400 py-2 px-3"
+                        className="w-full text-sm bg-gray-50 border border-gray-200 rounded-lg focus:ring-emerald-500 focus:border-emerald-500 text-gray-900 placeholder-gray-400 py-2 px-3"
                       />
                       <div className="flex gap-3">
                         <div className="flex-1">
@@ -1069,7 +1070,7 @@ const handleCreateEvent = async (e: React.FormEvent) => {
                             required
                             value={newEventDate}
                             onChange={e => setNewEventDate(e.target.value)}
-                            className="w-full text-sm bg-gray-50 border border-gray-200 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 text-gray-900 placeholder-gray-400 py-2 px-3 [color-scheme:light]"
+                            className="w-full text-sm bg-gray-50 border border-gray-200 rounded-lg focus:ring-emerald-500 focus:border-emerald-500 text-gray-900 placeholder-gray-400 py-2 px-3 [color-scheme:light]"
                           />
                         </div>
                         <div className="flex-1">
@@ -1078,7 +1079,7 @@ const handleCreateEvent = async (e: React.FormEvent) => {
                             type="datetime-local"
                             value={newEventEndDate}
                             onChange={e => setNewEventEndDate(e.target.value)}
-                            className="w-full text-sm bg-gray-50 border border-gray-200 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 text-gray-900 placeholder-gray-400 py-2 px-3 [color-scheme:light]"
+                            className="w-full text-sm bg-gray-50 border border-gray-200 rounded-lg focus:ring-emerald-500 focus:border-emerald-500 text-gray-900 placeholder-gray-400 py-2 px-3 [color-scheme:light]"
                           />
                         </div>
                       </div>
@@ -1087,35 +1088,35 @@ const handleCreateEvent = async (e: React.FormEvent) => {
                         placeholder="Location (Optional)"
                         value={newEventLocation}
                         onChange={e => setNewEventLocation(e.target.value)}
-                        className="w-full text-sm bg-gray-50 border border-gray-200 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 text-gray-900 placeholder-gray-400 py-2 px-3 mb-3"
+                        className="w-full text-sm bg-gray-50 border border-gray-200 rounded-lg focus:ring-emerald-500 focus:border-emerald-500 text-gray-900 placeholder-gray-400 py-2 px-3 mb-3"
                       />
                       <input
                         type="url"
                         placeholder="Google Maps Link (Optional)"
                         value={newEventMapsLink}
                         onChange={e => setNewEventMapsLink(e.target.value)}
-                        className="w-full text-sm bg-gray-50 border border-gray-200 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 text-gray-900 placeholder-gray-400 py-2 px-3 mb-3"
+                        className="w-full text-sm bg-gray-50 border border-gray-200 rounded-lg focus:ring-emerald-500 focus:border-emerald-500 text-gray-900 placeholder-gray-400 py-2 px-3 mb-3"
                       />
                       <input
                         type="url"
                         placeholder="Website Link (Optional)"
                         value={newEventSocialWebsite}
                         onChange={e => setNewEventSocialWebsite(e.target.value)}
-                        className="w-full text-sm bg-gray-50 border border-gray-200 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 text-gray-900 placeholder-gray-400 py-2 px-3 mb-3"
+                        className="w-full text-sm bg-gray-50 border border-gray-200 rounded-lg focus:ring-emerald-500 focus:border-emerald-500 text-gray-900 placeholder-gray-400 py-2 px-3 mb-3"
                       />
                       <input
                         type="url"
                         placeholder="YouTube Link (Optional)"
                         value={newEventSocialYoutube}
                         onChange={e => setNewEventSocialYoutube(e.target.value)}
-                        className="w-full text-sm bg-gray-50 border border-gray-200 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 text-gray-900 placeholder-gray-400 py-2 px-3 mb-3"
+                        className="w-full text-sm bg-gray-50 border border-gray-200 rounded-lg focus:ring-emerald-500 focus:border-emerald-500 text-gray-900 placeholder-gray-400 py-2 px-3 mb-3"
                       />
                       <input
                         type="url"
                         placeholder="Instagram Link (Optional)"
                         value={newEventSocialInstagram}
                         onChange={e => setNewEventSocialInstagram(e.target.value)}
-                        className="w-full text-sm bg-gray-50 border border-gray-200 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 text-gray-900 placeholder-gray-400 py-2 px-3"
+                        className="w-full text-sm bg-gray-50 border border-gray-200 rounded-lg focus:ring-emerald-500 focus:border-emerald-500 text-gray-900 placeholder-gray-400 py-2 px-3"
                       />
                       <div>
                         <label className="block text-[10px] uppercase tracking-widest text-gray-500 mb-1.5 font-bold">Event Logo (Optional)</label>
@@ -1142,7 +1143,7 @@ const handleCreateEvent = async (e: React.FormEvent) => {
                               setNewEventLogo(undefined);
                             }
                           }}
-                          className="w-full text-xs text-gray-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-full file:border-0 file:text-[10px] file:font-bold file:uppercase file:tracking-widest file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 cursor-pointer"
+                          className="w-full text-xs text-gray-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-full file:border-0 file:text-[10px] file:font-bold file:uppercase file:tracking-widest file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100 cursor-pointer"
                         />
                       </div>
                       <div className="mt-4">
@@ -1172,7 +1173,7 @@ const handleCreateEvent = async (e: React.FormEvent) => {
                               setNewEventInvitationFile(null);
                             }
                           }}
-                          className="w-full text-xs text-gray-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-full file:border-0 file:text-[10px] file:font-bold file:uppercase file:tracking-widest file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 cursor-pointer"
+                          className="w-full text-xs text-gray-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-full file:border-0 file:text-[10px] file:font-bold file:uppercase file:tracking-widest file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100 cursor-pointer"
                         />
                       </div>
 
@@ -1184,7 +1185,7 @@ const handleCreateEvent = async (e: React.FormEvent) => {
                             <select
                               value={newEventLetterSize}
                               onChange={e => setNewEventLetterSize(e.target.value as any)}
-                              className="hidden w-full text-xs bg-gray-50 border border-gray-200 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 text-gray-900 py-2.5 px-3"
+                              className="hidden w-full text-xs bg-gray-50 border border-gray-200 rounded-lg focus:ring-emerald-500 focus:border-emerald-500 text-gray-900 py-2.5 px-3"
                             >
                               <option value="A4">A4</option>
                               <option value="LETTER">Letter</option>
@@ -1215,7 +1216,7 @@ const handleCreateEvent = async (e: React.FormEvent) => {
                                   setNewEventLetterBackground(null);
                                 }
                               }}
-                              className="w-full text-xs text-gray-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-full file:border-0 file:text-[10px] file:font-bold file:uppercase file:tracking-widest file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 cursor-pointer"
+                              className="w-full text-xs text-gray-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-full file:border-0 file:text-[10px] file:font-bold file:uppercase file:tracking-widest file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100 cursor-pointer"
                             />
                           </div>
                           
@@ -1242,7 +1243,7 @@ const handleCreateEvent = async (e: React.FormEvent) => {
                                     compressImage(file).then(setNewEventHeroImage);
                                   }
                                 }}
-                                className="w-full text-xs text-gray-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-full file:border-0 file:text-[10px] file:font-bold file:uppercase file:tracking-widest file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 cursor-pointer"
+                                className="w-full text-xs text-gray-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-full file:border-0 file:text-[10px] file:font-bold file:uppercase file:tracking-widest file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100 cursor-pointer"
                               />
                             </div>
                             <div>
@@ -1272,7 +1273,7 @@ const handleCreateEvent = async (e: React.FormEvent) => {
                                     reader.readAsDataURL(file);
                                   }
                                 }}
-                                className="w-full text-xs text-gray-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-full file:border-0 file:text-[10px] file:font-bold file:uppercase file:tracking-widest file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 cursor-pointer"
+                                className="w-full text-xs text-gray-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-full file:border-0 file:text-[10px] file:font-bold file:uppercase file:tracking-widest file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100 cursor-pointer"
                               />
                             </div>
 
@@ -1311,7 +1312,7 @@ const handleCreateEvent = async (e: React.FormEvent) => {
                                     });
                                   }
                                 }}
-                                className="w-full text-xs text-gray-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-full file:border-0 file:text-[10px] file:font-bold file:uppercase file:tracking-widest file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 cursor-pointer"
+                                className="w-full text-xs text-gray-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-full file:border-0 file:text-[10px] file:font-bold file:uppercase file:tracking-widest file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100 cursor-pointer"
                               />
                             </div>
                             <div className="grid grid-cols-2 gap-3">
@@ -1328,7 +1329,7 @@ const handleCreateEvent = async (e: React.FormEvent) => {
                                     type="text" 
                                     value={newEventThemePrimary} 
                                     onChange={(e) => setNewEventThemePrimary(e.target.value)} 
-                                    className="w-full text-xs px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg outline-none focus:ring-2 focus:ring-indigo-500 font-mono"
+                                    className="w-full text-xs px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg outline-none focus:ring-2 focus:ring-emerald-500 font-mono"
                                   />
                                 </div>
                               </div>
@@ -1345,7 +1346,7 @@ const handleCreateEvent = async (e: React.FormEvent) => {
                                     type="text" 
                                     value={newEventThemeSecondary} 
                                     onChange={(e) => setNewEventThemeSecondary(e.target.value)} 
-                                    className="w-full text-xs px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg outline-none focus:ring-2 focus:ring-indigo-500 font-mono"
+                                    className="w-full text-xs px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg outline-none focus:ring-2 focus:ring-emerald-500 font-mono"
                                   />
                                 </div>
                               </div>
@@ -1366,7 +1367,7 @@ const handleCreateEvent = async (e: React.FormEvent) => {
                              <div>
                               <div className="flex items-center justify-between mb-1.5">
                                 <label className="block text-[10px] uppercase tracking-widest text-gray-500 font-bold">Rundown / Jadwal Acara (Opsional)</label>
-                                <label className="cursor-pointer text-[10px] font-bold text-indigo-600 hover:text-indigo-800 flex items-center gap-1 bg-indigo-50 px-2.5 py-1 rounded-lg border border-indigo-100 transition-colors">
+                                <label className="cursor-pointer text-[10px] font-bold text-emerald-600 hover:text-emerald-800 flex items-center gap-1 bg-emerald-50 px-2.5 py-1 rounded-lg border border-emerald-100 transition-colors">
                                   <Upload className="w-3 h-3" />
                                   Upload Gambar Rundown
                                   <input 
@@ -1451,7 +1452,7 @@ const handleCreateEvent = async (e: React.FormEvent) => {
                           </div>
                         </div>
                       </div>
-                      <button type="submit" className="w-full py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg transition-colors text-[10px] font-bold uppercase tracking-widest shadow-sm">
+                      <button type="submit" className="w-full py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg transition-colors text-[10px] font-bold uppercase tracking-widest shadow-sm">
                         Create
                       </button>
                     </form>
@@ -1461,15 +1462,15 @@ const handleCreateEvent = async (e: React.FormEvent) => {
                   <button
                     key={event.id}
                     onClick={() => selectEvent(event)}
-                    className={`w-full text-left p-5 rounded-2xl border transition-all duration-300 group ${
+                    className={`w-full text-left p-6 rounded-2xl border transition-all duration-300 group flex flex-col gap-2 relative overflow-hidden ${
                       selectedEvent?.id === event.id 
-                        ? 'bg-gradient-to-br from-indigo-50 to-purple-50 border-indigo-200 shadow-md ring-1 ring-indigo-500/20' 
-                        : 'bg-white border-gray-100 hover:border-indigo-200 hover:shadow-lg hover:-translate-y-0.5'
+                        ? 'bg-gradient-to-br from-emerald-50/80 to-teal-50/80 border-emerald-200 shadow-md ring-1 ring-emerald-500/20 border-l-4 border-l-emerald-600' 
+                        : 'bg-white border-gray-100 hover:border-emerald-200 hover:shadow-lg hover:-translate-y-0.5'
                     }`}
                   >
-                    <h3 className={`font-serif mb-2 leading-tight transition-colors ${selectedEvent?.id === event.id ? 'text-indigo-900 font-semibold' : 'text-gray-900 group-hover:text-indigo-600'}`}>{event.eventName}</h3>
+                    <h3 className={`font-serif mb-2 leading-tight transition-colors ${selectedEvent?.id === event.id ? 'text-emerald-900 font-semibold' : 'text-gray-900 group-hover:text-emerald-600'}`}>{event.eventName}</h3>
                     <div className="flex items-center gap-2 text-[10px] font-bold text-gray-500 mb-1.5 uppercase tracking-wider">
-                      <Calendar className="w-3.5 h-3.5 text-indigo-600" />
+                      <Calendar className="w-3.5 h-3.5 text-emerald-600" />
                       {new Date(event.eventDate).toLocaleDateString()}
                     </div>
                     {event.location && (
@@ -1495,7 +1496,7 @@ const handleCreateEvent = async (e: React.FormEvent) => {
                   <div>
                     <h2 className="text-2xl font-serif text-gray-900 mb-2">{selectedEvent.eventName}</h2>
                     <div className="flex flex-wrap items-center gap-4 text-xs font-bold uppercase tracking-widest text-gray-500">
-                      <span className="flex items-center gap-1.5"><Calendar className="w-4 h-4 text-indigo-600"/> {new Date(selectedEvent.eventDate).toLocaleString()}</span>
+                      <span className="flex items-center gap-1.5"><Calendar className="w-4 h-4 text-emerald-600"/> {new Date(selectedEvent.eventDate).toLocaleString()}</span>
                       {selectedEvent.location && <span className="flex items-center gap-1.5"><MapPin className="w-4 h-4 text-emerald-600"/> {selectedEvent.location}</span>}
                     </div>
                   </div>
@@ -1525,7 +1526,7 @@ const handleCreateEvent = async (e: React.FormEvent) => {
                         setNewEventSocialInstagram(selectedEvent.socialInstagram || "");
                         setIsEditEventModalOpen(true);
                       }}
-                      className="inline-flex items-center justify-center w-10 h-10 bg-white text-gray-500 border border-gray-200 rounded-lg hover:bg-gray-50 hover:text-indigo-600 transition-colors shadow-sm"
+                      className="inline-flex items-center justify-center w-10 h-10 bg-white text-gray-500 border border-gray-200 rounded-lg hover:bg-gray-50 hover:text-emerald-600 transition-colors shadow-sm"
                       title="Edit Event"
                     >
                       <Edit className="w-4 h-4" />
@@ -1540,7 +1541,7 @@ const handleCreateEvent = async (e: React.FormEvent) => {
                     <Link
                       to={`/scanner/${selectedEvent.id}`}
                       target="_blank"
-                      className="inline-flex items-center justify-center w-10 h-10 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors shadow-sm"
+                      className="inline-flex items-center justify-center w-10 h-10 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors shadow-sm"
                       title="Open Scanner"
                     >
                       <QrCode className="w-4 h-4" />
@@ -1561,8 +1562,8 @@ const handleCreateEvent = async (e: React.FormEvent) => {
                           <p className="text-[10px] font-bold uppercase tracking-widest text-gray-500 mb-1">Total Registered</p>
                           <p className="text-2xl font-serif text-gray-900">{guests.length}</p>
                         </div>
-                        <div className="w-10 h-10 rounded-full bg-indigo-50 flex items-center justify-center">
-                          <Users className="w-5 h-5 text-indigo-600" />
+                        <div className="w-10 h-10 rounded-full bg-emerald-50 flex items-center justify-center">
+                          <Users className="w-5 h-5 text-emerald-600" />
                         </div>
                       </div>
                       <div className="bg-white border border-gray-200 rounded-xl p-4 shadow-sm flex items-center justify-between">
@@ -1610,7 +1611,7 @@ const handleCreateEvent = async (e: React.FormEvent) => {
                         <div className="flex flex-wrap items-center gap-3 w-full md:w-auto">
                           <button
                             onClick={() => setIsRegisterModalOpen(true)}
-                            className="inline-flex items-center gap-2 px-3 py-1.5 bg-indigo-50 text-indigo-700 border border-indigo-200 text-xs font-medium rounded-lg hover:bg-indigo-100 transition-colors shadow-sm"
+                            className="inline-flex items-center gap-2 px-3 py-1.5 bg-emerald-50 text-emerald-700 border border-emerald-200 text-xs font-medium rounded-lg hover:bg-emerald-100 transition-colors shadow-sm"
                           >
                             <UserPlus className="w-4 h-4" />
                             Add Guest
@@ -1659,7 +1660,7 @@ const handleCreateEvent = async (e: React.FormEvent) => {
                           <select
                             value={statusFilter}
                             onChange={(e) => setStatusFilter(e.target.value as any)}
-                            className="px-3 py-1.5 text-sm bg-white border border-gray-200 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 text-gray-700 shadow-sm outline-none"
+                            className="px-3 py-1.5 text-sm bg-white border border-gray-200 rounded-lg focus:ring-emerald-500 focus:border-emerald-500 text-gray-700 shadow-sm outline-none"
                           >
                             <option value="all">All Status</option>
                             <option value="attending">Confirmed</option>
@@ -1674,7 +1675,7 @@ const handleCreateEvent = async (e: React.FormEvent) => {
                               placeholder="Query identities..." 
                               value={searchQuery}
                               onChange={(e) => setSearchQuery(e.target.value)}
-                              className="pl-9 pr-4 py-1.5 text-sm bg-gray-50 border border-gray-200 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 text-gray-900 placeholder-gray-400 w-full md:w-64" 
+                              className="pl-9 pr-4 py-1.5 text-sm bg-gray-50 border border-gray-200 rounded-lg focus:ring-emerald-500 focus:border-emerald-500 text-gray-900 placeholder-gray-400 w-full md:w-64" 
                             />
                           </div>
                         </div>
@@ -1684,11 +1685,11 @@ const handleCreateEvent = async (e: React.FormEvent) => {
                         <div className="overflow-x-auto flex-1">
                           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3">
   {paginatedGuests.map(guest => (
-    <div key={guest.id} className="bg-white border border-gray-200 rounded-xl p-4 shadow-sm flex flex-col gap-3 relative">
+    <div key={guest.id} className="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm hover:shadow-md transition-shadow flex flex-col gap-3 relative overflow-hidden group">
       <div className="absolute top-4 right-4">
         <input
           type="checkbox"
-          className="w-4 h-4 text-indigo-600 rounded border-gray-300 focus:ring-indigo-500 disabled:opacity-50"
+          className="w-4 h-4 text-emerald-600 rounded border-gray-300 focus:ring-emerald-500 disabled:opacity-50"
           checked={selectedGuestIds.includes(guest.id)}
           onChange={() => toggleSelectGuest(guest.id)}
           disabled={guest.status === 'attended' || !guest.phone}
@@ -1701,12 +1702,12 @@ const handleCreateEvent = async (e: React.FormEvent) => {
       </div>
       
       <div className="flex items-center gap-2 mt-1">
-        <div className="bg-indigo-50 p-1.5 rounded-lg shrink-0">
+        <div className="bg-emerald-50 p-1.5 rounded-lg shrink-0">
           <QRCodeSVG value={guest.barcodeUid} size={24} />
         </div>
         <div className="min-w-0">
           <p className="text-[10px] uppercase tracking-widest text-gray-400 font-bold">Barcode UID</p>
-          <p className="text-xs font-mono text-indigo-600 truncate">{guest.barcodeUid}</p>
+          <p className="text-xs font-mono text-emerald-600 truncate">{guest.barcodeUid}</p>
         </div>
       </div>
       
@@ -1718,7 +1719,7 @@ const handleCreateEvent = async (e: React.FormEvent) => {
         ) : (
           <button
             onClick={() => handleManualCheckIn(guest.barcodeUid)}
-            className="inline-flex items-center px-2 py-1 rounded text-[10px] font-bold uppercase tracking-widest bg-indigo-50 text-indigo-600 border border-indigo-200 hover:bg-indigo-100 transition-colors shadow-sm"
+            className="inline-flex items-center px-2 py-1 rounded text-[10px] font-bold uppercase tracking-widest bg-emerald-50 text-emerald-600 border border-emerald-200 hover:bg-emerald-100 transition-colors shadow-sm"
           >
             Check In
           </button>
@@ -1737,20 +1738,20 @@ const handleCreateEvent = async (e: React.FormEvent) => {
       
       <div className="flex flex-wrap items-center gap-1.5 mt-2">
          {guest.rsvpStatus === 'attending' && !guest.isPrinted && (
-           <button onClick={() => setPrintingGuest(guest)} className="inline-flex items-center justify-center p-1.5 bg-gray-50 text-gray-600 rounded border border-gray-200 hover:bg-white hover:text-indigo-600 transition-colors" title="Print ID Card">
+           <button onClick={() => setPrintingGuest(guest)} className="inline-flex items-center justify-center p-1.5 bg-gray-50 text-gray-600 rounded-lg border border-gray-200 hover:bg-white hover:text-emerald-600 transition-colors" title="Print ID Card">
              <Printer className="w-3.5 h-3.5" />
            </button>
          )}
-         <button onClick={() => handlePrintBarcode(guest.barcodeUid, guest.guestName)} className="inline-flex items-center justify-center p-1.5 bg-gray-50 text-gray-600 rounded border border-gray-200 hover:bg-white hover:text-indigo-600 transition-colors" title="Download Barcode">
+         <button onClick={() => handlePrintBarcode(guest.barcodeUid, guest.guestName)} className="inline-flex items-center justify-center p-1.5 bg-gray-50 text-gray-600 rounded-lg border border-gray-200 hover:bg-white hover:text-emerald-600 transition-colors" title="Download Barcode">
             <Download className="w-3.5 h-3.5" />
          </button>
-         <button onClick={() => setSelectedGuestDetail(guest)} className="inline-flex items-center justify-center py-1.5 px-3 bg-indigo-50 text-indigo-700 rounded border border-indigo-100 hover:bg-indigo-100 transition-colors ml-auto text-[10px] font-bold uppercase tracking-widest shadow-sm">
+         <button onClick={() => setSelectedGuestDetail(guest)} className="inline-flex items-center justify-center py-1.5 px-3 bg-emerald-50 text-emerald-700 rounded-lg border border-emerald-100 hover:bg-emerald-100 transition-colors ml-auto text-[10px] font-bold uppercase tracking-widest shadow-sm">
            Detail
          </button>
-         <button onClick={() => setEditingGuest(guest)} className="inline-flex items-center justify-center p-1.5 bg-amber-50 text-amber-700 rounded border border-amber-200 hover:bg-amber-100 transition-colors" title="Edit Data Tamu">
+         <button onClick={() => setEditingGuest(guest)} className="inline-flex items-center justify-center p-1.5 bg-amber-50 text-amber-700 rounded-lg border border-amber-200 hover:bg-amber-100 transition-colors" title="Edit Data Tamu">
             <Edit3 className="w-3.5 h-3.5" />
          </button>
-         <button onClick={() => handleDeleteGuest(guest.id)} className="inline-flex items-center justify-center p-1.5 bg-red-50 text-red-600 rounded border border-red-200 hover:bg-red-100 transition-colors" title="Delete Guest">
+         <button onClick={() => handleDeleteGuest(guest.id)} className="inline-flex items-center justify-center p-1.5 bg-red-50 text-red-600 rounded-lg border border-red-200 hover:bg-red-100 transition-colors" title="Delete Guest">
             <Trash2 className="w-3.5 h-3.5" />
          </button>
          <button onClick={() => {
@@ -1776,7 +1777,7 @@ const handleCreateEvent = async (e: React.FormEvent) => {
             const phoneStr = guest.phone.replace(/[^0-9]/g, '');
             const formattedPhone = phoneStr.startsWith('0') ? '62' + phoneStr.slice(1) : phoneStr;
             window.open(`https://api.whatsapp.com/send?phone=${formattedPhone}&text=${encodeURIComponent(message)}`, '_blank');
-         }} disabled={!guest.phone} className="inline-flex items-center justify-center p-1.5 bg-gray-50 text-gray-600 rounded border border-gray-200 hover:bg-white hover:text-green-600 transition-colors disabled:opacity-50" title={guest.rsvpStatus === 'attending' ? 'Kirim Tiket Barcode WA' : 'Kirim Link Konfirmasi RSVP WA'}>
+         }} disabled={!guest.phone} className="inline-flex items-center justify-center p-1.5 bg-gray-50 text-gray-600 rounded-lg border border-gray-200 hover:bg-white hover:text-green-600 transition-colors disabled:opacity-50" title={guest.rsvpStatus === 'attending' ? 'Kirim Tiket Barcode WA' : 'Kirim Link Konfirmasi RSVP WA'}>
             <MessageCircle className="w-3.5 h-3.5" />
          </button>
          
@@ -1795,7 +1796,7 @@ const handleCreateEvent = async (e: React.FormEvent) => {
                   setItemsPerPage(Number(e.target.value));
                   setCurrentPage(1);
                 }}
-                className="text-xs border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                className="text-xs border-gray-300 rounded-md shadow-sm focus:border-emerald-500 focus:ring-emerald-500"
               >
                 <option value={12}>12</option>
                 <option value={24}>24</option>
@@ -1885,7 +1886,7 @@ const handleCreateEvent = async (e: React.FormEvent) => {
           <div className="bg-white rounded-2xl shadow-xl w-full max-w-md max-h-[90vh] flex flex-col overflow-hidden" onClick={e => e.stopPropagation()}>
             <div className="p-6 border-b border-gray-100 flex items-center justify-between">
               <h3 className="text-sm font-semibold tracking-widest uppercase text-gray-900 flex items-center gap-2">
-                <Edit className="w-4 h-4 text-indigo-600" />
+                <Edit className="w-4 h-4 text-emerald-600" />
                 Edit Event
               </h3>
               <button onClick={() => setIsEditEventModalOpen(false)} className="text-gray-400 hover:text-gray-600 transition-colors">
@@ -1901,7 +1902,7 @@ const handleCreateEvent = async (e: React.FormEvent) => {
                     required
                     value={newEventName}
                     onChange={e => setNewEventName(e.target.value)}
-                    className="w-full text-sm bg-gray-50 border border-gray-200 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 text-gray-900 py-2.5 px-3"
+                    className="w-full text-sm bg-gray-50 border border-gray-200 rounded-lg focus:ring-emerald-500 focus:border-emerald-500 text-gray-900 py-2.5 px-3"
                   />
                 </div>
                 <div className="flex gap-3">
@@ -1912,7 +1913,7 @@ const handleCreateEvent = async (e: React.FormEvent) => {
                       required
                       value={newEventDate}
                       onChange={e => setNewEventDate(e.target.value)}
-                      className="w-full text-sm bg-gray-50 border border-gray-200 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 text-gray-900 py-2.5 px-3"
+                      className="w-full text-sm bg-gray-50 border border-gray-200 rounded-lg focus:ring-emerald-500 focus:border-emerald-500 text-gray-900 py-2.5 px-3"
                     />
                   </div>
                   <div className="flex-1">
@@ -1921,7 +1922,7 @@ const handleCreateEvent = async (e: React.FormEvent) => {
                       type="datetime-local"
                       value={newEventEndDate}
                       onChange={e => setNewEventEndDate(e.target.value)}
-                      className="w-full text-sm bg-gray-50 border border-gray-200 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 text-gray-900 py-2.5 px-3"
+                      className="w-full text-sm bg-gray-50 border border-gray-200 rounded-lg focus:ring-emerald-500 focus:border-emerald-500 text-gray-900 py-2.5 px-3"
                     />
                   </div>
                 </div>
@@ -1931,7 +1932,7 @@ const handleCreateEvent = async (e: React.FormEvent) => {
                     type="text"
                     value={newEventLocation}
                     onChange={e => setNewEventLocation(e.target.value)}
-                    className="w-full text-sm bg-gray-50 border border-gray-200 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 text-gray-900 py-2.5 px-3 mb-3"
+                    className="w-full text-sm bg-gray-50 border border-gray-200 rounded-lg focus:ring-emerald-500 focus:border-emerald-500 text-gray-900 py-2.5 px-3 mb-3"
                   />
                   <label className="block text-[10px] uppercase tracking-widest text-gray-500 mb-1.5 mt-3">Google Maps Link (Optional)</label>
                   <input
@@ -1939,7 +1940,7 @@ const handleCreateEvent = async (e: React.FormEvent) => {
                     value={newEventMapsLink}
                     onChange={e => setNewEventMapsLink(e.target.value)}
                     placeholder="https://maps.google.com/..."
-                    className="w-full text-sm bg-gray-50 border border-gray-200 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 text-gray-900 py-2.5 px-3 mb-3"
+                    className="w-full text-sm bg-gray-50 border border-gray-200 rounded-lg focus:ring-emerald-500 focus:border-emerald-500 text-gray-900 py-2.5 px-3 mb-3"
                   />
                   <label className="block text-[10px] uppercase tracking-widest text-gray-500 mb-1.5 mt-3">Website Link (Optional)</label>
                   <input
@@ -1947,7 +1948,7 @@ const handleCreateEvent = async (e: React.FormEvent) => {
                     value={newEventSocialWebsite}
                     onChange={e => setNewEventSocialWebsite(e.target.value)}
                     placeholder="https://website.com/..."
-                    className="w-full text-sm bg-gray-50 border border-gray-200 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 text-gray-900 py-2.5 px-3 mb-3"
+                    className="w-full text-sm bg-gray-50 border border-gray-200 rounded-lg focus:ring-emerald-500 focus:border-emerald-500 text-gray-900 py-2.5 px-3 mb-3"
                   />
                   <label className="block text-[10px] uppercase tracking-widest text-gray-500 mb-1.5 mt-3">YouTube Link (Optional)</label>
                   <input
@@ -1955,7 +1956,7 @@ const handleCreateEvent = async (e: React.FormEvent) => {
                     value={newEventSocialYoutube}
                     onChange={e => setNewEventSocialYoutube(e.target.value)}
                     placeholder="https://youtube.com/..."
-                    className="w-full text-sm bg-gray-50 border border-gray-200 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 text-gray-900 py-2.5 px-3 mb-3"
+                    className="w-full text-sm bg-gray-50 border border-gray-200 rounded-lg focus:ring-emerald-500 focus:border-emerald-500 text-gray-900 py-2.5 px-3 mb-3"
                   />
                   <label className="block text-[10px] uppercase tracking-widest text-gray-500 mb-1.5 mt-3">Instagram Link (Optional)</label>
                   <input
@@ -1963,13 +1964,13 @@ const handleCreateEvent = async (e: React.FormEvent) => {
                     value={newEventSocialInstagram}
                     onChange={e => setNewEventSocialInstagram(e.target.value)}
                     placeholder="https://instagram.com/..."
-                    className="w-full text-sm bg-gray-50 border border-gray-200 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 text-gray-900 py-2.5 px-3"
+                    className="w-full text-sm bg-gray-50 border border-gray-200 rounded-lg focus:ring-emerald-500 focus:border-emerald-500 text-gray-900 py-2.5 px-3"
                   />
                 </div>
                 <div>
                   <div className="flex items-center justify-between mb-1.5">
                     <label className="block text-[10px] uppercase tracking-widest text-gray-500 font-bold">Event Logo (Optional)</label>
-                    {newEventLogo && <span className="text-[10px] bg-emerald-50 text-emerald-700 px-2 py-0.5 rounded border border-emerald-200 font-bold">✓ Logo Terpasang</span>}
+                    {newEventLogo && <span className="text-[10px] bg-emerald-50 text-emerald-700 px-2 py-0.5 rounded-lg border border-emerald-200 font-bold">✓ Logo Terpasang</span>}
                   </div>
                   {newEventLogo && (
                     <div className="mb-2 relative w-16 h-16 rounded-lg overflow-hidden border border-gray-200 bg-gray-50">
@@ -2013,13 +2014,13 @@ const handleCreateEvent = async (e: React.FormEvent) => {
                       };
                       img.src = url;
                     }}
-                    className="w-full text-xs text-gray-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-full file:border-0 file:text-[10px] file:font-bold file:uppercase file:tracking-widest file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 cursor-pointer"
+                    className="w-full text-xs text-gray-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-full file:border-0 file:text-[10px] file:font-bold file:uppercase file:tracking-widest file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100 cursor-pointer"
                   />
                 </div>
                 <div className="mt-4">
                   <div className="flex items-center justify-between mb-1.5">
                     <label className="block text-[10px] uppercase tracking-widest text-gray-500 font-bold">File Undangan (PDF)</label>
-                    {newEventInvitationFile && <span className="text-[10px] bg-emerald-50 text-emerald-700 px-2 py-0.5 rounded border border-emerald-200 font-bold">✓ PDF Terpasang</span>}
+                    {newEventInvitationFile && <span className="text-[10px] bg-emerald-50 text-emerald-700 px-2 py-0.5 rounded-lg border border-emerald-200 font-bold">✓ PDF Terpasang</span>}
                   </div>
                   {newEventInvitationFile && (
                     <div className="mb-2 p-2.5 rounded-lg border border-gray-200 bg-gray-50 flex items-center justify-between">
@@ -2047,7 +2048,7 @@ const handleCreateEvent = async (e: React.FormEvent) => {
                       reader.onloadend = () => setNewEventInvitationFile(reader.result as string);
                       reader.readAsDataURL(file);
                     }}
-                    className="w-full text-xs text-gray-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-full file:border-0 file:text-[10px] file:font-bold file:uppercase file:tracking-widest file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 cursor-pointer"
+                    className="w-full text-xs text-gray-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-full file:border-0 file:text-[10px] file:font-bold file:uppercase file:tracking-widest file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100 cursor-pointer"
                   />
                 </div>
 
@@ -2059,7 +2060,7 @@ const handleCreateEvent = async (e: React.FormEvent) => {
                       <select
                         value={newEventLetterSize}
                         onChange={e => setNewEventLetterSize(e.target.value as any)}
-                        className="hidden w-full text-xs bg-gray-50 border border-gray-200 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 text-gray-900 py-2.5 px-3"
+                        className="hidden w-full text-xs bg-gray-50 border border-gray-200 rounded-lg focus:ring-emerald-500 focus:border-emerald-500 text-gray-900 py-2.5 px-3"
                       >
                         <option value="A4">A4</option>
                         <option value="LETTER">Letter</option>
@@ -2068,7 +2069,7 @@ const handleCreateEvent = async (e: React.FormEvent) => {
                     <div>
                       <div className="flex items-center justify-between mb-1.5">
                         <label className="block text-[10px] uppercase tracking-widest text-gray-500 font-bold">Background Undangan Digital</label>
-                        {newEventLetterBackground && <span className="text-[10px] bg-emerald-50 text-emerald-700 px-2 py-0.5 rounded border border-emerald-200 font-bold">✓ Background Terpasang</span>}
+                        {newEventLetterBackground && <span className="text-[10px] bg-emerald-50 text-emerald-700 px-2 py-0.5 rounded-lg border border-emerald-200 font-bold">✓ Background Terpasang</span>}
                       </div>
                       {newEventLetterBackground && (
                         <div className="mb-2 relative w-full h-24 rounded-lg overflow-hidden border border-gray-200 bg-gray-50">
@@ -2091,7 +2092,7 @@ const handleCreateEvent = async (e: React.FormEvent) => {
                           if (!file) return;
                           compressImage(file).then(setNewEventLetterBackground);
                         }}
-                        className="w-full text-xs text-gray-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-full file:border-0 file:text-[10px] file:font-bold file:uppercase file:tracking-widest file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 cursor-pointer"
+                        className="w-full text-xs text-gray-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-full file:border-0 file:text-[10px] file:font-bold file:uppercase file:tracking-widest file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100 cursor-pointer"
                       />
                     </div>
                     
@@ -2118,7 +2119,7 @@ const handleCreateEvent = async (e: React.FormEvent) => {
                             compressImage(file).then(setNewEventHeroImage);
                           }
                         }}
-                        className="w-full text-xs text-gray-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-full file:border-0 file:text-[10px] file:font-bold file:uppercase file:tracking-widest file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 cursor-pointer"
+                        className="w-full text-xs text-gray-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-full file:border-0 file:text-[10px] file:font-bold file:uppercase file:tracking-widest file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100 cursor-pointer"
                       />
                     </div>
                     <div>
@@ -2148,7 +2149,7 @@ const handleCreateEvent = async (e: React.FormEvent) => {
                             reader.readAsDataURL(file);
                           }
                         }}
-                        className="w-full text-xs text-gray-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-full file:border-0 file:text-[10px] file:font-bold file:uppercase file:tracking-widest file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 cursor-pointer"
+                        className="w-full text-xs text-gray-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-full file:border-0 file:text-[10px] file:font-bold file:uppercase file:tracking-widest file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100 cursor-pointer"
                       />
                     </div>
 
@@ -2187,7 +2188,7 @@ const handleCreateEvent = async (e: React.FormEvent) => {
                             });
                           }
                         }}
-                        className="w-full text-xs text-gray-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-full file:border-0 file:text-[10px] file:font-bold file:uppercase file:tracking-widest file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 cursor-pointer"
+                        className="w-full text-xs text-gray-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-full file:border-0 file:text-[10px] file:font-bold file:uppercase file:tracking-widest file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100 cursor-pointer"
                       />
                     </div>
                     <div className="grid grid-cols-2 gap-3">
@@ -2204,7 +2205,7 @@ const handleCreateEvent = async (e: React.FormEvent) => {
                             type="text" 
                             value={newEventThemePrimary} 
                             onChange={(e) => setNewEventThemePrimary(e.target.value)} 
-                            className="w-full text-xs px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg outline-none focus:ring-2 focus:ring-indigo-500 font-mono"
+                            className="w-full text-xs px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg outline-none focus:ring-2 focus:ring-emerald-500 font-mono"
                           />
                         </div>
                       </div>
@@ -2221,7 +2222,7 @@ const handleCreateEvent = async (e: React.FormEvent) => {
                             type="text" 
                             value={newEventThemeSecondary} 
                             onChange={(e) => setNewEventThemeSecondary(e.target.value)} 
-                            className="w-full text-xs px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg outline-none focus:ring-2 focus:ring-indigo-500 font-mono"
+                            className="w-full text-xs px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg outline-none focus:ring-2 focus:ring-emerald-500 font-mono"
                           />
                         </div>
                       </div>
@@ -2241,7 +2242,7 @@ const handleCreateEvent = async (e: React.FormEvent) => {
                     <div>
                       <div className="flex items-center justify-between mb-1.5">
                         <label className="block text-[10px] uppercase tracking-widest text-gray-500 font-bold">Rundown / Jadwal Acara (Opsional)</label>
-                        <label className="cursor-pointer text-[10px] font-bold text-indigo-600 hover:text-indigo-800 flex items-center gap-1 bg-indigo-50 px-2.5 py-1 rounded-lg border border-indigo-100 transition-colors">
+                        <label className="cursor-pointer text-[10px] font-bold text-emerald-600 hover:text-emerald-800 flex items-center gap-1 bg-emerald-50 px-2.5 py-1 rounded-lg border border-emerald-100 transition-colors">
                           <Upload className="w-3 h-3" />
                           Upload Gambar Rundown
                           <input 
@@ -2340,10 +2341,10 @@ const handleCreateEvent = async (e: React.FormEvent) => {
                         setNewGuestCustomFile('');
                       }
                     }}
-                    className="w-full text-xs text-gray-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-full file:border-0 file:text-[10px] file:font-bold file:uppercase file:tracking-widest file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 cursor-pointer"
+                    className="w-full text-xs text-gray-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-full file:border-0 file:text-[10px] file:font-bold file:uppercase file:tracking-widest file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100 cursor-pointer"
                   />
                 </div>
-                <button type="submit" className="w-full py-3 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg transition-colors text-[10px] font-bold uppercase tracking-widest mt-4 shadow-md border border-indigo-500/50">
+                <button type="submit" className="w-full py-3 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg transition-colors text-[10px] font-bold uppercase tracking-widest mt-4 shadow-md border border-emerald-500/50">
                   Save Changes
                 </button>
               </form>
@@ -2357,7 +2358,7 @@ const handleCreateEvent = async (e: React.FormEvent) => {
           <div className="bg-white rounded-2xl shadow-xl w-full max-w-md max-h-[90vh] flex flex-col" onClick={e => e.stopPropagation()}>
             <div className="p-6 border-b border-gray-100 flex items-center justify-between shrink-0">
               <h3 className="text-sm font-semibold tracking-widest uppercase text-gray-900 flex items-center gap-2">
-                <Users className="w-4 h-4 text-indigo-600" />
+                <Users className="w-4 h-4 text-emerald-600" />
                 Register Identity
               </h3>
               <button onClick={() => setIsRegisterModalOpen(false)} className="text-gray-400 hover:text-gray-600 transition-colors">
@@ -2373,7 +2374,7 @@ const handleCreateEvent = async (e: React.FormEvent) => {
                     required
                     value={newGuestName}
                     onChange={e => setNewGuestName(e.target.value)}
-                    className="w-full text-sm bg-gray-50 border border-gray-200 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 text-gray-900 placeholder-gray-400 py-2.5 px-3"
+                    className="w-full text-sm bg-gray-50 border border-gray-200 rounded-lg focus:ring-emerald-500 focus:border-emerald-500 text-gray-900 placeholder-gray-400 py-2.5 px-3"
                   />
                 </div>
                 <div>
@@ -2382,22 +2383,22 @@ const handleCreateEvent = async (e: React.FormEvent) => {
                     type="email"
                     value={newGuestEmail}
                     onChange={e => setNewGuestEmail(e.target.value)}
-                    className="w-full text-sm bg-gray-50 border border-gray-200 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 text-gray-900 placeholder-gray-400 py-2.5 px-3"
+                    className="w-full text-sm bg-gray-50 border border-gray-200 rounded-lg focus:ring-emerald-500 focus:border-emerald-500 text-gray-900 placeholder-gray-400 py-2.5 px-3"
                   />
                 </div>
                 <div className="grid grid-cols-2 gap-3">
                   <div>
                     <label className="block text-[10px] uppercase tracking-widest text-gray-500 mb-1.5">Instansi/Company (Optional)</label>
-                    <input type="text" value={newGuestCompany} onChange={e => setNewGuestCompany(e.target.value)} className="w-full text-sm bg-gray-50 border border-gray-200 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 text-gray-900 py-2.5 px-3" />
+                    <input type="text" value={newGuestCompany} onChange={e => setNewGuestCompany(e.target.value)} className="w-full text-sm bg-gray-50 border border-gray-200 rounded-lg focus:ring-emerald-500 focus:border-emerald-500 text-gray-900 py-2.5 px-3" />
                   </div>
                   <div>
                     <label className="block text-[10px] uppercase tracking-widest text-gray-500 mb-1.5">Jabatan/Job Title (Optional)</label>
-                    <input type="text" value={newGuestJobTitle} onChange={e => setNewGuestJobTitle(e.target.value)} className="w-full text-sm bg-gray-50 border border-gray-200 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 text-gray-900 py-2.5 px-3" />
+                    <input type="text" value={newGuestJobTitle} onChange={e => setNewGuestJobTitle(e.target.value)} className="w-full text-sm bg-gray-50 border border-gray-200 rounded-lg focus:ring-emerald-500 focus:border-emerald-500 text-gray-900 py-2.5 px-3" />
                   </div>
                 </div>
                 <div>
                   <label className="block text-[10px] uppercase tracking-widest text-gray-500 mb-1.5">PIC / Pengundang (Optional)</label>
-                  <select value={newGuestPicId} onChange={e => setNewGuestPicId(e.target.value)} className="w-full text-sm bg-gray-50 border border-gray-200 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 text-gray-900 py-2.5 px-3">
+                  <select value={newGuestPicId} onChange={e => setNewGuestPicId(e.target.value)} className="w-full text-sm bg-gray-50 border border-gray-200 rounded-lg focus:ring-emerald-500 focus:border-emerald-500 text-gray-900 py-2.5 px-3">
                     <option value="">-- Pilih PIC --</option>
                     {pics.map(pic => (
                       <option key={pic.id} value={pic.id}>{pic.username}</option>
@@ -2412,7 +2413,7 @@ const handleCreateEvent = async (e: React.FormEvent) => {
                     value={newGuestPhone}
                     onChange={e => setNewGuestPhone(e.target.value)}
                     placeholder="e.g. 08123456789 atau +628123456789"
-                    className="w-full text-sm bg-gray-50 border border-gray-200 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 text-gray-900 placeholder-gray-400 py-2.5 px-3"
+                    className="w-full text-sm bg-gray-50 border border-gray-200 rounded-lg focus:ring-emerald-500 focus:border-emerald-500 text-gray-900 placeholder-gray-400 py-2.5 px-3"
                   />
                 </div>
                 <div className="flex items-center gap-2 mt-4 bg-amber-50 p-3 rounded-lg border border-amber-100">
@@ -2442,10 +2443,10 @@ const handleCreateEvent = async (e: React.FormEvent) => {
                         setNewGuestCustomFile('');
                       }
                     }}
-                    className="w-full text-xs text-gray-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-full file:border-0 file:text-[10px] file:font-bold file:uppercase file:tracking-widest file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 cursor-pointer"
+                    className="w-full text-xs text-gray-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-full file:border-0 file:text-[10px] file:font-bold file:uppercase file:tracking-widest file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100 cursor-pointer"
                   />
                 </div>
-                <button type="submit" className="w-full py-3 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg transition-colors text-[10px] font-bold uppercase tracking-widest mt-4 shadow-md border border-indigo-500/50">
+                <button type="submit" className="w-full py-3 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg transition-colors text-[10px] font-bold uppercase tracking-widest mt-4 shadow-md border border-emerald-500/50">
                   Generate Barcode
                 </button>
               </form>
@@ -2454,7 +2455,7 @@ const handleCreateEvent = async (e: React.FormEvent) => {
                 <div className="mt-8 flex flex-col items-center relative z-10 w-full">
                   {isGeneratingTwibbon ? (
                     <div className="flex flex-col items-center justify-center py-12 gap-3">
-                      <div className="w-8 h-8 border-4 border-indigo-200 border-t-indigo-600 rounded-full animate-spin"></div>
+                      <div className="w-8 h-8 border-4 border-emerald-200 border-t-emerald-600 rounded-full animate-spin"></div>
                       <p className="text-xs uppercase tracking-widest text-gray-500 font-semibold">Generating ID Card...</p>
                     </div>
                   ) : generatedTwibbon ? (
@@ -2464,7 +2465,7 @@ const handleCreateEvent = async (e: React.FormEvent) => {
                         <a
                           href={generatedTwibbon}
                           download={`${generatedBarcode.name.replace(/\s+/g, "_")}_ID_Card.png`}
-                          className="flex-1 flex justify-center items-center gap-2 py-2.5 text-[10px] font-bold uppercase tracking-widest text-indigo-600 border border-indigo-200 hover:bg-indigo-50 bg-indigo-50/50 shadow-sm rounded-lg transition-colors"
+                          className="flex-1 flex justify-center items-center gap-2 py-2.5 text-[10px] font-bold uppercase tracking-widest text-emerald-600 border border-emerald-200 hover:bg-emerald-50 bg-emerald-50/50 shadow-sm rounded-lg transition-colors"
                         >
                           <Download className="w-4 h-4" />
                           Download
@@ -2586,7 +2587,7 @@ const handleCreateEvent = async (e: React.FormEvent) => {
           <div className="bg-white rounded-2xl w-full max-w-md shadow-2xl overflow-hidden">
             <div className="p-6 border-b border-gray-100 flex justify-between items-center bg-gray-50">
               <h2 className="text-lg font-bold text-gray-900 flex items-center gap-2">
-                <Users className="w-5 h-5 text-indigo-600" />
+                <Users className="w-5 h-5 text-emerald-600" />
                 Detail Tamu
               </h2>
               <button onClick={() => setSelectedGuestDetail(null)} className="text-gray-400 hover:text-gray-600 transition-colors">
@@ -2620,7 +2621,7 @@ const handleCreateEvent = async (e: React.FormEvent) => {
               </div>
               <div>
                 <p className="text-[10px] uppercase tracking-widest text-gray-500 font-bold mb-1">Barcode UID</p>
-                <p className="text-sm font-mono text-indigo-600 break-all">{selectedGuestDetail.barcodeUid}</p>
+                <p className="text-sm font-mono text-emerald-600 break-all">{selectedGuestDetail.barcodeUid}</p>
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
@@ -2667,7 +2668,7 @@ const handleCreateEvent = async (e: React.FormEvent) => {
           <div className="bg-white rounded-2xl shadow-xl w-full max-w-lg overflow-hidden flex flex-col max-h-[90vh]" onClick={e => e.stopPropagation()}>
             <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between bg-gray-50">
               <h3 className="font-bold text-gray-900 text-base flex items-center gap-2">
-                <Edit3 className="w-5 h-5 text-indigo-600" />
+                <Edit3 className="w-5 h-5 text-emerald-600" />
                 Edit Data Tamu Undangan
               </h3>
               <button onClick={() => setEditingGuest(null)} className="text-gray-400 hover:text-gray-600">
@@ -2720,7 +2721,7 @@ const handleCreateEvent = async (e: React.FormEvent) => {
                   required 
                   value={editingGuest.guestName || ''} 
                   onChange={e => setEditingGuest({ ...editingGuest, guestName: e.target.value })} 
-                  className="w-full px-3 py-2 text-xs rounded-lg border border-gray-200 focus:outline-none focus:border-indigo-500" 
+                  className="w-full px-3 py-2 text-xs rounded-lg border border-gray-200 focus:outline-none focus:border-emerald-500" 
                 />
               </div>
 
@@ -2731,7 +2732,7 @@ const handleCreateEvent = async (e: React.FormEvent) => {
                     type="text" 
                     value={editingGuest.company || ''} 
                     onChange={e => setEditingGuest({ ...editingGuest, company: e.target.value })} 
-                    className="w-full px-3 py-2 text-xs rounded-lg border border-gray-200 focus:outline-none focus:border-indigo-500" 
+                    className="w-full px-3 py-2 text-xs rounded-lg border border-gray-200 focus:outline-none focus:border-emerald-500" 
                   />
                 </div>
                 <div>
@@ -2740,7 +2741,7 @@ const handleCreateEvent = async (e: React.FormEvent) => {
                     type="text" 
                     value={editingGuest.jobTitle || ''} 
                     onChange={e => setEditingGuest({ ...editingGuest, jobTitle: e.target.value })} 
-                    className="w-full px-3 py-2 text-xs rounded-lg border border-gray-200 focus:outline-none focus:border-indigo-500" 
+                    className="w-full px-3 py-2 text-xs rounded-lg border border-gray-200 focus:outline-none focus:border-emerald-500" 
                   />
                 </div>
               </div>
@@ -2753,7 +2754,7 @@ const handleCreateEvent = async (e: React.FormEvent) => {
                     value={editingGuest.phone || ''} 
                     onChange={e => setEditingGuest({ ...editingGuest, phone: e.target.value })} 
                     placeholder="e.g. 08123456789" 
-                    className="w-full px-3 py-2 text-xs rounded-lg border border-gray-200 focus:outline-none focus:border-indigo-500" 
+                    className="w-full px-3 py-2 text-xs rounded-lg border border-gray-200 focus:outline-none focus:border-emerald-500" 
                   />
                 </div>
                 <div>
@@ -2762,7 +2763,7 @@ const handleCreateEvent = async (e: React.FormEvent) => {
                     type="email" 
                     value={editingGuest.email || ''} 
                     onChange={e => setEditingGuest({ ...editingGuest, email: e.target.value })} 
-                    className="w-full px-3 py-2 text-xs rounded-lg border border-gray-200 focus:outline-none focus:border-indigo-500" 
+                    className="w-full px-3 py-2 text-xs rounded-lg border border-gray-200 focus:outline-none focus:border-emerald-500" 
                   />
                 </div>
               </div>
@@ -2773,7 +2774,7 @@ const handleCreateEvent = async (e: React.FormEvent) => {
                   <select 
                     value={editingGuest.picId || ''} 
                     onChange={e => setEditingGuest({ ...editingGuest, picId: e.target.value || null })} 
-                    className="w-full px-3 py-2 text-xs rounded-lg border border-gray-200 focus:outline-none focus:border-indigo-500"
+                    className="w-full px-3 py-2 text-xs rounded-lg border border-gray-200 focus:outline-none focus:border-emerald-500"
                   >
                     <option value="">Tanpa PIC</option>
                     {pics.map(pic => (
@@ -2787,7 +2788,7 @@ const handleCreateEvent = async (e: React.FormEvent) => {
                       type="checkbox" 
                       checked={editingGuest.isVip || false} 
                       onChange={e => setEditingGuest({ ...editingGuest, isVip: e.target.checked })} 
-                      className="w-4 h-4 text-indigo-600 rounded" 
+                      className="w-4 h-4 text-emerald-600 rounded" 
                     />
                     Tamu VIP
                   </label>
@@ -2809,7 +2810,7 @@ const handleCreateEvent = async (e: React.FormEvent) => {
                       setEditingGuest({ ...editingGuest, customInvitationFile: '' });
                     }
                   }}
-                  className="w-full text-xs text-gray-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-full file:border-0 file:text-[10px] file:font-bold file:uppercase file:tracking-widest file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 cursor-pointer"
+                  className="w-full text-xs text-gray-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-full file:border-0 file:text-[10px] file:font-bold file:uppercase file:tracking-widest file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100 cursor-pointer"
                 />
               </div>
 
@@ -2817,7 +2818,7 @@ const handleCreateEvent = async (e: React.FormEvent) => {
                 <button type="button" onClick={() => setEditingGuest(null)} className="px-4 py-2 text-xs font-bold text-gray-600 hover:bg-gray-100 rounded-lg">
                   Batal
                 </button>
-                <button type="submit" className="px-4 py-2 text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-700 rounded-lg shadow-sm">
+                <button type="submit" className="px-4 py-2 text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-700 rounded-lg shadow-sm">
                   Simpan Perubahan
                 </button>
               </div>

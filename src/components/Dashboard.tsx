@@ -32,14 +32,16 @@ export function Dashboard({ user, onLogout }: { user: User; onLogout: () => void
     <div className="min-h-screen bg-slate-50 text-slate-900 font-sans flex flex-col overflow-hidden">
       <header className="h-16 md:h-20 border-b border-slate-200/60 px-4 md:px-8 flex items-center justify-between gap-4 bg-white/70 backdrop-blur-xl z-50 sticky top-0 shadow-sm transition-all duration-300">
         <div className="flex items-center gap-3 md:gap-4 group cursor-default">
-          <div className="w-9 h-9 md:w-10 md:h-10 bg-gradient-to-tr from-indigo-600 to-purple-600 rounded-xl flex items-center justify-center shadow-md shadow-indigo-500/20 transform group-hover:scale-105 transition-all duration-300">
+          <div className="w-9 h-9 md:w-10 md:h-10 bg-gradient-to-tr from-emerald-600 to-teal-500 rounded-xl flex items-center justify-center shadow-md shadow-emerald-500/20 transform group-hover:scale-105 transition-all duration-300">
             <svg className="w-5 h-5 md:w-6 md:h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z" />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
             </svg>
           </div>
           <div>
-            <h1 className="text-lg md:text-xl font-serif font-semibold tracking-tight text-slate-800">Barcode <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600">Sistem Undangan Digital</span></h1>
-            <p className="text-[9px] md:text-[10px] font-bold uppercase tracking-[0.2em] text-slate-500 mt-0.5">Multi-Tenant Attendance Architecture</p>
+            <h1 className="text-lg md:text-xl font-serif font-bold tracking-tight text-slate-800">
+              Laznas <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-teal-600">Dewan Dakwah</span>
+            </h1>
+            <p className="text-[9px] md:text-[10px] font-bold uppercase tracking-[0.2em] text-slate-500 mt-0.5">Sistem Undangan Digital</p>
           </div>
         </div>
         <div className="flex items-center gap-4 md:gap-6">
