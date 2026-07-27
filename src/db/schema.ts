@@ -59,6 +59,7 @@ export const guests = pgTable('guests', {
   guestName: varchar('guest_name', { length: 255 }).notNull(),
   company: varchar('company', { length: 255 }),
   jobTitle: varchar('job_title', { length: 255 }),
+  guestType: varchar('guest_type', { length: 100 }), // Kementrian, Pejabat/Tokoh Publik, Dewan Dakwah, dll
   email: varchar('email', { length: 100 }),
   phone: varchar('phone', { length: 20 }),
   barcodeUid: varchar('barcode_uid', { length: 100 }).notNull().unique(), // UUID for barcode

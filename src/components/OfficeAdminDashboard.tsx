@@ -210,6 +210,7 @@ export function OfficeAdminDashboard({ user }: { user: User }) {
   const [newGuestPhone, setNewGuestPhone] = useState('');
   const [newGuestCompany, setNewGuestCompany] = useState('');
   const [newGuestJobTitle, setNewGuestJobTitle] = useState('');
+  const [newGuestType, setNewGuestType] = useState('');
   const [newGuestPicId, setNewGuestPicId] = useState('');
   const [newGuestIsVip, setNewGuestIsVip] = useState(false);
   const [newGuestCustomFile, setNewGuestCustomFile] = useState<string>('');
@@ -217,6 +218,11 @@ export function OfficeAdminDashboard({ user }: { user: User }) {
   const [newPicName, setNewPicName] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const updateFileInputRef = useRef<HTMLInputElement>(null);
+  const [bulkUpdateData, setBulkUpdateData] = useState<any[] | null>(null);
+  const [bulkUpdateAvailableColumns, setBulkUpdateAvailableColumns] = useState<string[]>([]);
+  const [bulkUpdateSelectedColumns, setBulkUpdateSelectedColumns] = useState<string[]>([]);
+  const [isBulkUpdateModalOpen, setIsBulkUpdateModalOpen] = useState(false);
   const [statusFilter, setStatusFilter] = useState<'all' | 'attending' | 'pending' | 'not_attending' | 'checked_in'>('all');
   const [selectedGuests, setSelectedGuests] = useState<string[]>([]);
   const [generatedBarcode, setGeneratedBarcode] = useState<{uid: string, name: string} | null>(null);
@@ -690,6 +696,7 @@ const handleCreateEvent = async (e: React.FormEvent) => {
           phone: newGuestPhone,
           company: newGuestCompany,
           jobTitle: newGuestJobTitle,
+          guestType: newGuestType || undefined,
           picId: newGuestPicId || undefined,
           isVip: newGuestIsVip,
           customInvitationFile: newGuestCustomFile || undefined
@@ -702,6 +709,7 @@ const handleCreateEvent = async (e: React.FormEvent) => {
         setNewGuestPhone('');
         setNewGuestCompany('');
         setNewGuestJobTitle('');
+        setNewGuestType('');
         setNewGuestPicId('');
         setNewGuestIsVip(false);
         setNewGuestCustomFile('');
@@ -930,11 +938,101 @@ const handleCreateEvent = async (e: React.FormEvent) => {
     if (fileInputRef.current) fileInputRef.current.value = '';
   };
 
+  const handleBulkUpdateUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !selectedEvent) return;
+
+    const reader = new FileReader();
+    reader.onload = async (evt) => {
+      try {
+        const bstr = evt.target?.result;
+        const XLSX = await import('xlsx');
+        const wb = XLSX.read(bstr, { type: 'binary' });
+        const wsname = wb.SheetNames[0];
+        const ws = wb.Sheets[wsname];
+        const data = XLSX.utils.sheet_to_json(ws);
+        
+        if (data.length === 0) {
+          showAlert('Pemberitahuan', 'Data Excel kosong.');
+          return;
+        }
+
+        const firstRow = data[0] as any;
+        if (!firstRow['Barcode UID']) {
+          showAlert('Pemberitahuan', 'Kolom "Barcode UID" tidak ditemukan. Kolom ini wajib ada untuk mencocokkan data.');
+          return;
+        }
+
+        const availableCols = Object.keys(firstRow).filter(k => k !== 'Barcode UID' && k !== 'No' && k !== 'Check-in Time' && k !== 'Status');
+        setBulkUpdateAvailableColumns(availableCols);
+        setBulkUpdateSelectedColumns(availableCols);
+        setBulkUpdateData(data);
+        setIsBulkUpdateModalOpen(true);
+      } catch (error) {
+        console.error('Error parsing file for update:', error);
+        showAlert('Pemberitahuan', 'Gagal memproses file Excel.');
+      }
+    };
+    reader.readAsBinaryString(file);
+    if (updateFileInputRef.current) updateFileInputRef.current.value = '';
+  };
+
+  const handleApplyBulkUpdate = async () => {
+    if (!bulkUpdateData || bulkUpdateSelectedColumns.length === 0) {
+      showAlert('Pemberitahuan', 'Pilih minimal 1 kolom untuk diupdate.');
+      return;
+    }
+    
+    // Map data
+    const updates = bulkUpdateData.map((row: any) => {
+      const updateData: any = { barcodeUid: row['Barcode UID'] };
+      
+      if (bulkUpdateSelectedColumns.includes('Nama Tamu') || bulkUpdateSelectedColumns.includes('Guest Name') || bulkUpdateSelectedColumns.includes('Name')) {
+        updateData.guestName = row['Nama Tamu'] || row['Guest Name'] || row['Name'];
+      }
+      if (bulkUpdateSelectedColumns.includes('Email')) updateData.email = row['Email'];
+      if (bulkUpdateSelectedColumns.includes('Telepon') || bulkUpdateSelectedColumns.includes('Phone')) updateData.phone = row['Telepon'] || row['Phone'];
+      if (bulkUpdateSelectedColumns.includes('Instansi') || bulkUpdateSelectedColumns.includes('Company')) updateData.company = row['Instansi'] || row['Company'];
+      if (bulkUpdateSelectedColumns.includes('Jabatan') || bulkUpdateSelectedColumns.includes('Job Title')) updateData.jobTitle = row['Jabatan'] || row['Job Title'];
+      if (bulkUpdateSelectedColumns.includes('Tipe Tamu')) updateData.guestType = row['Tipe Tamu'];
+      if (bulkUpdateSelectedColumns.includes('VIP')) {
+        const vipStr = (row['VIP'] || '').toString().toLowerCase();
+        updateData.isVip = vipStr === 'ya' || vipStr === 'yes';
+      }
+      return updateData;
+    });
+
+    try {
+      const res = await fetch('/api/guests/bulk-update/excel', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${localStorage.getItem('token')}`
+        },
+        body: JSON.stringify({ updates })
+      });
+
+      if (res.ok) {
+        const result = await res.json();
+        setIsBulkUpdateModalOpen(false);
+        setBulkUpdateData(null);
+        fetchGuests(selectedEvent!.id);
+        showAlert('Pemberitahuan', `${result.updated} data tamu berhasil diperbarui!`, 'success');
+      } else {
+        const err = await res.json();
+        showAlert('Pemberitahuan', `Gagal update massal: ${err.error}`);
+      }
+    } catch (error) {
+      console.error(error);
+      showAlert('Pemberitahuan', 'Terjadi kesalahan saat update massal.');
+    }
+  };
+
   const handleDownloadTemplate = async () => {
     const XLSX = await import('xlsx');
     const ws = XLSX.utils.json_to_sheet([
-      { 'Nama Tamu': 'John Doe', 'Email': 'john@example.com', 'Telepon': '08123456789', 'Instansi': 'PT Contoh', 'Jabatan': 'Direktur', 'VIP': 'Ya' },
-      { 'Nama Tamu': 'Jane Smith', 'Email': '', 'Telepon': '', 'Instansi': '', 'Jabatan': '', 'VIP': 'Tidak' },
+      { 'Nama Tamu': 'John Doe', 'Email': 'john@example.com', 'Telepon': '08123456789', 'Instansi': 'PT Contoh', 'Jabatan': 'Direktur', 'Tipe Tamu': 'Corporate', 'VIP': 'Ya' },
+      { 'Nama Tamu': 'Jane Smith', 'Email': '', 'Telepon': '', 'Instansi': '', 'Jabatan': '', 'Tipe Tamu': 'Dewan Dakwah', 'VIP': 'Tidak' },
     ]);
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, "Template Tamu");
@@ -951,6 +1049,7 @@ const handleCreateEvent = async (e: React.FormEvent) => {
         "Email": g.email || "",
         "Company": g.company || "",
         "Job Title": g.jobTitle || "",
+        "Tipe Tamu": g.guestType || "",
         "Phone": g.phone || "",
         "PIC": g.picId ? pics.find(p => p.id === g.picId)?.username || "" : "",
         "Barcode UID": g.barcodeUid,
@@ -1644,6 +1743,20 @@ const handleCreateEvent = async (e: React.FormEvent) => {
                             >
                               <Upload className="w-4 h-4" />
                               Upload XLSX
+                            </button>
+                            <input
+                              type="file"
+                              accept=".xlsx, .xls"
+                              className="hidden"
+                              ref={updateFileInputRef}
+                              onChange={handleBulkUpdateUpload}
+                            />
+                            <button
+                              onClick={() => updateFileInputRef.current?.click()}
+                              className="inline-flex items-center gap-2 px-3 py-1.5 bg-indigo-50 text-indigo-700 border border-indigo-200 text-xs font-medium rounded-lg hover:bg-indigo-100 transition-colors shadow-sm"
+                            >
+                              <Edit className="w-4 h-4" />
+                              Bulk Update (XLSX)
                             </button>
                             <button
                               onClick={handleDownloadTemplate}
@@ -2403,6 +2516,20 @@ const handleCreateEvent = async (e: React.FormEvent) => {
                   </div>
                 </div>
                 <div>
+                  <label className="block text-[10px] uppercase tracking-widest text-gray-500 mb-1.5">Tipe Tamu (Optional)</label>
+                  <select value={newGuestType} onChange={e => setNewGuestType(e.target.value)} className="w-full text-sm bg-gray-50 border border-gray-200 rounded-lg focus:ring-emerald-500 focus:border-emerald-500 text-gray-900 py-2.5 px-3">
+                    <option value="">-- Pilih Tipe Tamu --</option>
+                    <option value="Kementrian">Kementrian</option>
+                    <option value="Pejabat/Tokoh Publik">Pejabat/Tokoh Publik</option>
+                    <option value="Dewan Dakwah">Dewan Dakwah</option>
+                    <option value="Corporate">Corporate</option>
+                    <option value="Retail/Mitra">Retail/Mitra</option>
+                    <option value="Donatur Personal">Donatur Personal</option>
+                    <option value="Donatur CRM">Donatur CRM</option>
+                    <option value="Tamu Dewan Dakwah">Tamu Dewan Dakwah</option>
+                  </select>
+                </div>
+                <div>
                   <label className="block text-[10px] uppercase tracking-widest text-gray-500 mb-1.5">PIC / Pengundang (Optional)</label>
                   <select value={newGuestPicId} onChange={e => setNewGuestPicId(e.target.value)} className="w-full text-sm bg-gray-50 border border-gray-200 rounded-lg focus:ring-emerald-500 focus:border-emerald-500 text-gray-900 py-2.5 px-3">
                     <option value="">-- Pilih PIC --</option>
@@ -2500,6 +2627,58 @@ const handleCreateEvent = async (e: React.FormEvent) => {
           onClose={() => setIsTwibbonConfigOpen(false)}
           onSave={handleSaveTwibbonConfig}
         />
+      )}
+
+      {isBulkUpdateModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-900/50 backdrop-blur-sm" onClick={() => setIsBulkUpdateModalOpen(false)}>
+          <div className="bg-white rounded-2xl shadow-xl w-full max-w-lg overflow-hidden flex flex-col max-h-[90vh]" onClick={e => e.stopPropagation()}>
+            <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between bg-gray-50">
+              <h3 className="font-bold text-gray-900 text-base flex items-center gap-2">
+                <Edit className="w-5 h-5 text-indigo-600" />
+                Pilih Kolom untuk Diupdate
+              </h3>
+              <button onClick={() => setIsBulkUpdateModalOpen(false)} className="text-gray-400 hover:text-gray-600">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            <div className="p-6 overflow-y-auto flex-1">
+              <p className="text-sm text-gray-600 mb-4">
+                Ditemukan <strong>{bulkUpdateData?.length}</strong> baris data. Silakan pilih kolom mana saja dari file Excel yang ingin Anda terapkan (update) ke database. Kolom <strong>Barcode UID</strong> otomatis digunakan untuk mencocokkan data.
+              </p>
+              <div className="space-y-2">
+                {bulkUpdateAvailableColumns.map(col => (
+                  <label key={col} className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg border border-gray-200 cursor-pointer hover:bg-gray-100 transition-colors">
+                    <input 
+                      type="checkbox" 
+                      className="w-4 h-4 text-indigo-600 rounded border-gray-300 focus:ring-indigo-500"
+                      checked={bulkUpdateSelectedColumns.includes(col)}
+                      onChange={(e) => {
+                        if (e.target.checked) {
+                          setBulkUpdateSelectedColumns([...bulkUpdateSelectedColumns, col]);
+                        } else {
+                          setBulkUpdateSelectedColumns(bulkUpdateSelectedColumns.filter(c => c !== col));
+                        }
+                      }}
+                    />
+                    <span className="text-sm font-medium text-gray-800">{col}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+            <div className="p-4 border-t border-gray-100 bg-gray-50 flex justify-end gap-3">
+              <button onClick={() => setIsBulkUpdateModalOpen(false)} className="px-4 py-2 bg-white border border-gray-200 rounded-lg text-xs font-medium text-gray-700 hover:bg-gray-50 transition-colors">
+                Batal
+              </button>
+              <button 
+                onClick={handleApplyBulkUpdate} 
+                className="px-4 py-2 bg-indigo-600 border border-transparent rounded-lg text-xs font-bold text-white hover:bg-indigo-500 transition-colors"
+                disabled={bulkUpdateSelectedColumns.length === 0}
+              >
+                Update {bulkUpdateData?.length} Data
+              </button>
+            </div>
+          </div>
+        </div>
       )}
 
       {/* Letter Print Modal */}
@@ -2699,6 +2878,7 @@ const handleCreateEvent = async (e: React.FormEvent) => {
                       jobTitle: editingGuest.jobTitle,
                       phone: editingGuest.phone,
                       email: editingGuest.email,
+                      guestType: editingGuest.guestType,
                       picId: editingGuest.picId,
                       isVip: editingGuest.isVip,
                       customInvitationFile: editingGuest.customInvitationFile || undefined
@@ -2775,6 +2955,24 @@ const handleCreateEvent = async (e: React.FormEvent) => {
               </div>
 
               <div className="grid grid-cols-2 gap-3 pt-2">
+                <div>
+                  <label className="block text-[10px] uppercase tracking-widest text-gray-500 font-bold mb-1">Tipe Tamu</label>
+                  <select 
+                    value={editingGuest.guestType || ''} 
+                    onChange={e => setEditingGuest({ ...editingGuest, guestType: e.target.value || null })} 
+                    className="w-full px-3 py-2 text-xs rounded-lg border border-gray-200 focus:outline-none focus:border-emerald-500"
+                  >
+                    <option value="">-- Pilih Tipe Tamu --</option>
+                    <option value="Kementrian">Kementrian</option>
+                    <option value="Pejabat/Tokoh Publik">Pejabat/Tokoh Publik</option>
+                    <option value="Dewan Dakwah">Dewan Dakwah</option>
+                    <option value="Corporate">Corporate</option>
+                    <option value="Retail/Mitra">Retail/Mitra</option>
+                    <option value="Donatur Personal">Donatur Personal</option>
+                    <option value="Donatur CRM">Donatur CRM</option>
+                    <option value="Tamu Dewan Dakwah">Tamu Dewan Dakwah</option>
+                  </select>
+                </div>
                 <div>
                   <label className="block text-[10px] uppercase tracking-widest text-gray-500 font-bold mb-1">PIC / Pengundang</label>
                   <select 

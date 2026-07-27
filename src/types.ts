@@ -46,6 +46,7 @@ export interface Guest {
   guestName: string;
   company?: string;
   jobTitle?: string;
+  guestType?: string;
   email?: string;
   phone?: string;
   barcodeUid: string;

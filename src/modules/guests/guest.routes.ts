@@ -155,7 +155,7 @@ router.use(jwtAuthGuard, tenantGuard);
 
 router.post('/', async (req: AuthRequest, res) => {
   try {
-    const { eventId, guestName, email, phone, company, jobTitle, picId, isVip, customInvitationFile } = req.body;
+    const { eventId, guestName, email, phone, company, jobTitle, guestType, picId, isVip, customInvitationFile } = req.body;
     
     // Verify event belongs to office if not super_admin
     const eventResult = await db.select().from(events).where(eq(events.id, eventId)).limit(1);
@@ -175,6 +175,7 @@ router.post('/', async (req: AuthRequest, res) => {
       phone,
       company,
       jobTitle,
+      guestType,
       picId,
       barcodeUid,
       isVip,
@@ -190,7 +191,7 @@ router.post('/', async (req: AuthRequest, res) => {
 router.put('/:id', async (req: AuthRequest, res) => {
   try {
     const { id } = req.params;
-    const { guestName, email, phone, company, jobTitle, picId, isVip, customInvitationFile } = req.body;
+    const { guestName, email, phone, company, jobTitle, guestType, picId, isVip, customInvitationFile } = req.body;
 
     const guestResult = await db.select().from(guests).where(eq(guests.id, id)).limit(1);
     if (guestResult.length === 0) {
@@ -212,6 +213,7 @@ router.put('/:id', async (req: AuthRequest, res) => {
       phone: phone || null,
       company: company || null,
       jobTitle: jobTitle || null,
+      guestType: guestType || null,
       picId: picId || null,
       isVip: isVip !== undefined ? !!isVip : guestResult[0].isVip,
       customInvitationFile: customInvitationFile !== undefined ? customInvitationFile : guestResult[0].customInvitationFile,
@@ -247,6 +249,7 @@ router.get('/event/:eventId', async (req: AuthRequest, res) => {
         phone: guests.phone,
         company: guests.company,
         jobTitle: guests.jobTitle,
+        guestType: guests.guestType,
         picId: guests.picId,
         picName: users.username,
         barcodeUid: guests.barcodeUid,
@@ -296,6 +299,7 @@ router.post('/bulk', jwtAuthGuard, tenantGuard, async (req: AuthRequest, res) =>
       phone: g.phone || null,
       company: g.company || null,
       jobTitle: g.jobTitle || null,
+      guestType: g.guestType || null,
       picId: g.picId || null,
       isVip: !!g.isVip,
       barcodeUid: uuidv4()
@@ -308,6 +312,54 @@ router.post('/bulk', jwtAuthGuard, tenantGuard, async (req: AuthRequest, res) =>
     res.status(500).json({ error: 'Internal server error', cause: error });
   }
 });
+
+router.put('/bulk-update/excel', jwtAuthGuard, tenantGuard, async (req: AuthRequest, res) => {
+  try {
+    const { updates } = req.body;
+    
+    if (!Array.isArray(updates) || updates.length === 0) {
+      return res.status(400).json({ error: 'Invalid updates data' });
+    }
+
+    const { officeId, role } = req.user!;
+    
+    // We update guests one by one or in a transaction. 
+    // Since SQLite/Postgres bulk update with different values per row is complex in standard ORM syntax,
+    // we will loop and update.
+    const results = [];
+    for (const updateData of updates) {
+      if (!updateData.barcodeUid) continue;
+
+      // Check permission for each guest's event? We can assume the frontend sends guests for the current event.
+      // But for security, we should verify it. To optimize, we can verify one guest's event and assume all are same event.
+      const guestResult = await db.select().from(guests).where(eq(guests.barcodeUid, updateData.barcodeUid)).limit(1);
+      if (guestResult.length === 0) continue;
+
+      const eventResult = await db.select().from(events).where(eq(events.id, guestResult[0].eventId)).limit(1);
+      if (eventResult.length === 0 || (role === 'office_admin' && eventResult[0].officeId !== officeId)) {
+        continue; // skip unauthorized or invalid
+      }
+
+      const updated = await db.update(guests).set({
+        guestName: updateData.guestName !== undefined ? updateData.guestName : guestResult[0].guestName,
+        email: updateData.email !== undefined ? updateData.email : guestResult[0].email,
+        phone: updateData.phone !== undefined ? updateData.phone : guestResult[0].phone,
+        company: updateData.company !== undefined ? updateData.company : guestResult[0].company,
+        jobTitle: updateData.jobTitle !== undefined ? updateData.jobTitle : guestResult[0].jobTitle,
+        guestType: updateData.guestType !== undefined ? updateData.guestType : guestResult[0].guestType,
+        isVip: updateData.isVip !== undefined ? updateData.isVip : guestResult[0].isVip,
+      }).where(eq(guests.barcodeUid, updateData.barcodeUid)).returning();
+      
+      if (updated.length > 0) results.push(updated[0]);
+    }
+
+    res.json({ updated: results.length });
+  } catch (error) {
+    console.error('Bulk update error:', error);
+    res.status(500).json({ error: 'Internal server error', cause: error });
+  }
+});
+
 
 router.delete('/:id', async (req: AuthRequest, res) => {
   try {
