@@ -480,21 +480,35 @@ router.post('/send-wappin', jwtAuthGuard, tenantGuard, async (req: AuthRequest, 
       const eventDateStr = new Date(event.eventDate || '').toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
       const eventTimeStr = new Date(event.eventDate || '').toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
 
-      // Format Payload Wappin 2.0
+      const documentFilename = `Undangan_${guest.guestName.replace(/[^a-zA-Z0-9]/g, '_')}.pdf`;
+
+      // Format Payload Wappin 2.0 dengan Header Dokumen
       const payload = {
         to: recipientWaId,
         type: "template",
         template: {
-          name: "undangan_dai", // Ganti dengan nama template yang ada di Dashboard Wappin 2.0 Anda
+          name: "undangan_dai",
           language: {
             policy: "deterministic",
             code: "id"
           },
           components: [
             {
+              type: "header",
+              parameters: [
+                {
+                  type: "document",
+                  document: {
+                    link: fileUrl,
+                    filename: documentFilename
+                  }
+                }
+              ]
+            },
+            {
               type: "body",
               parameters: [
-                { type: "text", text: guest.guestName },
+                { type: "text", text: guest.guestName || "-" },
                 { type: "text", text: event.eventName || "Acara" },
                 { type: "text", text: eventDateStr || "-" },
                 { type: "text", text: eventTimeStr || "-" },
