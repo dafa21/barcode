@@ -864,7 +864,15 @@ const handleCreateEvent = async (e: React.FormEvent) => {
       }
 
       const data = await response.json();
-      alert(`Berhasil mengirim ${data.results.filter((r: any) => r.status === 'success').length} undangan dari ${selectedGuestIds.length} tujuan.`);
+      const successCount = data.results.filter((r: any) => r.status === 'success').length;
+      
+      if (successCount === 0 && data.results.length > 0) {
+        const wappinResp = data.results[0]?.response;
+        const errDetail = wappinResp?.message || JSON.stringify(wappinResp) || 'Unknown error';
+        throw new Error('Gagal API Wappin: ' + errDetail);
+      }
+      
+      alert(`Berhasil mengirim ${successCount} undangan dari ${selectedGuestIds.length} tujuan.`);
       setSelectedGuestIds([]);
     } catch (error: any) {
       console.error('Send Wappin error:', error);
@@ -1955,7 +1963,9 @@ const handleCreateEvent = async (e: React.FormEvent) => {
               if (data.results[0]?.status === 'success') {
                 alert('Berhasil mengirim undangan melalui Wappin.');
               } else {
-                throw new Error('Gagal, cek konfigurasi Wappin.');
+                const wappinResp = data.results[0]?.response;
+                const errDetail = wappinResp?.message || JSON.stringify(wappinResp) || 'Unknown error';
+                throw new Error('Gagal API Wappin: ' + errDetail);
               }
             } catch (error: any) {
               alert('Terjadi kesalahan: ' + error.message);
