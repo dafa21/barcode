@@ -494,7 +494,8 @@ router.post('/send-wappin', jwtAuthGuard, tenantGuard, async (req: AuthRequest, 
       if (!phoneStr.startsWith('62')) phoneStr = '62' + phoneStr;
       const recipientWaId = phoneStr.startsWith('+') ? phoneStr : `+${phoneStr}`;
 
-      const appUrl = process.env.APP_URL || 'http://localhost:3000';
+      const envAppUrl = process.env.APP_URL || 'https://undangan.laznasdewandakwah.or.id';
+      const appUrl = envAppUrl.includes('localhost') ? 'https://undangan.laznasdewandakwah.or.id' : envAppUrl;
       const rsvpUrl = `${appUrl}/rsvp/${guest.barcodeUid}`;
       
       const fileUrl = guest.customInvitationFile 
