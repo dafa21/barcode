@@ -871,24 +871,28 @@ const handleCreateEvent = async (e: React.FormEvent) => {
       const guestsToSend = guests.filter(g => targetGuestIds.includes(g.id) && g.phone);
       if (guestsToSend.length === 0) throw new Error('Tamu yang dipilih tidak memiliki nomor telepon valid.');
 
-      // 3. Dapatkan Token Wappin dari Browser
-      const tokenUrl = wappinUrl.replace('/message/do-send', '/token/get');
+      // 3. Dapatkan Token Wappin dari Browser (API Wappin 2.0)
+      const tokenUrl = 'https://api.chat.wappin.app/v1/users/login';
+      const basicAuth = btoa(`${wappinClientName}:${wappinToken}`);
       const tokenRes = await fetch(tokenUrl, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          client_id: wappinClientName,
-          secret_key: wappinToken
-        })
+        headers: { 
+          'Authorization': `Basic ${basicAuth}`,
+          'Content-Type': 'application/json' 
+        }
       });
 
       if (!tokenRes.ok) {
-        throw new Error(`Gagal mendapatkan token Wappin (HTTP ${tokenRes.status})`);
+        throw new Error(`Gagal login ke Wappin 2.0 (HTTP ${tokenRes.status}) - Cek username (Client Name) dan password (Token).`);
       }
       const tokenData = await tokenRes.json();
-      const activeBearerToken = tokenData.data?.token || tokenData.token || wappinToken;
+      const activeBearerToken = tokenData.users?.[0]?.token;
+      
+      if (!activeBearerToken) {
+        throw new Error('Token Wappin 2.0 tidak ditemukan dalam respons login.');
+      }
 
-      // 4. Kirim satu per satu
+      // 4. Kirim satu per satu (API Wappin 2.0)
       let successCount = 0;
       let lastError = null;
 
@@ -896,6 +900,7 @@ const handleCreateEvent = async (e: React.FormEvent) => {
         let phoneStr = guest.phone.replace(/[^0-9]/g, '');
         if (phoneStr.startsWith('0')) phoneStr = '62' + phoneStr.slice(1);
         if (!phoneStr.startsWith('62')) phoneStr = '62' + phoneStr;
+        const recipientWaId = phoneStr.startsWith('+') ? phoneStr : `+${phoneStr}`;
 
         const rsvpUrl = `${appUrl || window.location.origin}/rsvp/${guest.barcodeUid}`;
         const fileUrl = guest.customInvitationFile 
@@ -906,25 +911,33 @@ const handleCreateEvent = async (e: React.FormEvent) => {
         const eventTimeStr = new Date(selectedEvent?.eventDate || '').toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
 
         const payload = {
-          project_id: wappinProjectId || "",
-          sender_id: wappinSenderId || "",
-          domain: "wappin",
-          recipient_number: phoneStr,
-          message_template_id: "undangan_dai",
-          language: "id",
-          variables: [
-            guest.guestName,
-            selectedEvent?.eventName || "Acara",
-            eventDateStr,
-            eventTimeStr,
-            selectedEvent?.location || "-",
-            fileUrl,
-            rsvpUrl
-          ]
+          to: recipientWaId,
+          type: "template",
+          template: {
+            name: "undangan_dai",
+            language: {
+              policy: "deterministic",
+              code: "id"
+            },
+            components: [
+              {
+                type: "body",
+                parameters: [
+                  { type: "text", text: guest.guestName },
+                  { type: "text", text: selectedEvent?.eventName || "Acara" },
+                  { type: "text", text: eventDateStr },
+                  { type: "text", text: eventTimeStr },
+                  { type: "text", text: selectedEvent?.location || "-" },
+                  { type: "text", text: fileUrl },
+                  { type: "text", text: rsvpUrl }
+                ]
+              }
+            ]
+          }
         };
 
         try {
-          const sendRes = await fetch(wappinUrl, {
+          const sendRes = await fetch('https://api.chat.wappin.app/v1/messages', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -934,8 +947,9 @@ const handleCreateEvent = async (e: React.FormEvent) => {
           });
           
           if (!sendRes.ok) {
-            const errText = await sendRes.text();
-            throw new Error(`Gagal kirim Wappin ke ${guest.guestName}: ${errText.substring(0, 100)}`);
+            const errJson = await sendRes.json();
+            const errDetail = errJson.errors?.[0]?.details || errJson.errors?.[0]?.title || JSON.stringify(errJson);
+            throw new Error(`Gagal kirim ke ${guest.guestName}: ${errDetail}`);
           }
           successCount++;
         } catch (err: any) {
