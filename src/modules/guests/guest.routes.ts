@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { db } from '../../db/index.ts';
 import { guests, events, attendances, users } from '../../db/schema.ts';
-import { eq, sql } from 'drizzle-orm';
+import { eq, sql, inArray } from 'drizzle-orm';
 import { v4 as uuidv4 } from 'uuid';
 import { jwtAuthGuard, AuthRequest } from '../../core/middlewares/jwtAuthGuard.ts';
 import { tenantGuard } from '../../core/middlewares/tenantGuard.ts';
