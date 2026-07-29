@@ -411,7 +411,7 @@ router.post('/send-wappin', jwtAuthGuard, tenantGuard, async (req: AuthRequest, 
     // --- STEP 1: Dapatkan Bearer Token Wappin terlebih dahulu ---
     let activeBearerToken = wappinToken;
     try {
-      const tokenUrl = wappinUrl.replace('/message/do-send', '/token/get');
+      const tokenUrl = wappinUrl.replace(/["']/g, '').replace('/message/do-send', '/token/get');
       const tokenResponse = await fetch(tokenUrl, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -479,7 +479,7 @@ router.post('/send-wappin', jwtAuthGuard, tenantGuard, async (req: AuthRequest, 
       };
 
       try {
-        const response = await fetch(wappinUrl, {
+        const response = await fetch(wappinUrl.replace(/["']/g, ''), {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -498,7 +498,8 @@ router.post('/send-wappin', jwtAuthGuard, tenantGuard, async (req: AuthRequest, 
         
         results.push({ guestId: id, status: response.ok ? 'success' : 'failed', response: data });
       } catch (err: any) {
-        results.push({ guestId: id, status: 'error', error: err.message || String(err) });
+        const cause = err.cause ? String(err.cause.message || err.cause.code || err.cause) : '';
+        results.push({ guestId: id, status: 'error', error: err.message + (cause ? ` (${cause})` : '') });
       }
     }
 
