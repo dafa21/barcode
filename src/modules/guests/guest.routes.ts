@@ -394,7 +394,7 @@ router.delete('/:id', async (req: AuthRequest, res) => {
 
 router.get('/wappin-config', jwtAuthGuard, tenantGuard, (req, res) => {
   res.json({
-    wappinUrl: process.env.WAPPIN_API_URL ? process.env.WAPPIN_API_URL.replace(/["']/g, '') : 'https://chat-api.wappin.id/v1/message/do-send',
+    wappinUrl: process.env.WAPPIN_API_URL ? process.env.WAPPIN_API_URL.replace(/["']/g, '') : 'https://api.chat.wappin.app/v1/messages',
     wappinToken: process.env.WAPPIN_API_TOKEN,
     wappinClientName: process.env.WAPPIN_CLIENT_NAME,
     wappinProjectId: process.env.WAPPIN_PROJECT_ID,
@@ -406,91 +406,110 @@ router.get('/wappin-config', jwtAuthGuard, tenantGuard, (req, res) => {
 router.post('/send-wappin', jwtAuthGuard, tenantGuard, async (req: AuthRequest, res) => {
   try {
     const { guestIds } = req.body;
-    
-    if (!Array.isArray(guestIds) || guestIds.length === 0) {
-      return res.status(400).json({ error: 'Invalid guestIds data' });
+    if (!guestIds || !Array.isArray(guestIds)) {
+      return res.status(400).json({ error: 'guestIds must be an array' });
     }
 
-    const wappinUrl = process.env.WAPPIN_API_URL || 'https://chat-api.wappin.id/v1/message/do-send';
-    const wappinToken = process.env.WAPPIN_API_TOKEN;
-    const wappinClientName = process.env.WAPPIN_CLIENT_NAME;
+    const { officeId } = req.user!;
+
+    // 1. Dapatkan Bearer Token Wappin 2.0 dari Endpoint Login
+    const wappinClientName = process.env.WAPPIN_CLIENT_NAME || ""; // Ini Username Wappin 2.0
+    const wappinToken = process.env.WAPPIN_API_TOKEN || ""; // Ini Password Wappin 2.0
     
-    if (!wappinToken || !wappinClientName) {
-      return res.status(500).json({ error: 'Wappin API configuration (Token/Client Name) is missing in .env' });
+    if (!wappinClientName || !wappinToken) {
+      return res.status(500).json({ error: 'Konfigurasi Wappin (Username/Password) di .env belum diset' });
     }
 
-    // --- STEP 1: Dapatkan Bearer Token Wappin terlebih dahulu ---
-    let activeBearerToken = wappinToken;
+    const loginUrl = 'https://api.chat.wappin.app/v1/users/login';
+    const basicAuth = Buffer.from(`${wappinClientName}:${wappinToken}`).toString('base64');
+    
+    let activeBearerToken = "";
     try {
-      const tokenUrl = wappinUrl.replace(/["']/g, '').replace('/message/do-send', '/token/get');
-      const tokenResponse = await fetch(tokenUrl, {
+      const tokenRes = await fetch(loginUrl, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          client_id: wappinClientName,
-          secret_key: wappinToken
-        })
+        headers: { 'Authorization': `Basic ${basicAuth}` }
       });
-      const tokenData = await tokenResponse.json();
-      if (tokenData?.data?.token) {
-        activeBearerToken = tokenData.data.token;
+      if (!tokenRes.ok) {
+        const errJson = await tokenRes.json().catch(() => ({}));
+        throw new Error(`Login Wappin 2.0 Gagal: ${errJson.errors?.[0]?.details || tokenRes.status}`);
       }
-    } catch (e) {
-      console.warn("Could not fetch Wappin token, falling back to using API_TOKEN as Bearer", e);
+      const tokenData = await tokenRes.json();
+      activeBearerToken = tokenData.users?.[0]?.token;
+      if (!activeBearerToken) throw new Error("Token tidak ditemukan di response Wappin");
+    } catch (e: any) {
+      return res.status(500).json({ error: `Gagal otentikasi Wappin 2.0: ${e.message}` });
+    }
+
+    // 2. Ambil data tamu
+    const targetGuests = await db.select().from(guests)
+      .where(inArray(guests.id, guestIds));
+
+    if (targetGuests.length === 0) {
+      return res.status(404).json({ error: 'Guests not found' });
     }
 
     const results = [];
     
-    for (const id of guestIds) {
-      const guestResult = await db.select().from(guests).where(eq(guests.id, id)).limit(1);
-      if (guestResult.length === 0) continue;
-      
-      const guest = guestResult[0];
-      if (!guest.phone) continue;
+    for (const guest of targetGuests) {
+      if (!guest.phone) {
+        results.push({ guestId: guest.id, status: 'failed', error: 'No phone number' });
+        continue;
+      }
 
-      const eventResult = await db.select().from(events).where(eq(events.id, guest.eventId)).limit(1);
-      if (eventResult.length === 0) continue;
-      
+      // Ambil data event
+      const eventResult = await db.select().from(events).where(eq(events.id, guest.eventId));
       const event = eventResult[0];
 
-      // Format phone number
-      const phoneStr = guest.phone.replace(/[^0-9]/g, '');
-      const formattedPhone = phoneStr.startsWith('0') ? '62' + phoneStr.slice(1) : phoneStr;
+      if (!event || event.officeId !== officeId) {
+        results.push({ guestId: guest.id, status: 'failed', error: 'Event not found or unauthorized' });
+        continue;
+      }
 
-      const rsvpUrl = `${process.env.APP_URL || 'http://localhost:3000'}/rsvp/${guest.barcodeUid}`;
-      const fileUrl = guest.customInvitationFile 
-        ? `${process.env.APP_URL || 'http://localhost:3000'}/api/guests/public/invitation/${guest.barcodeUid}` 
-        : `${process.env.APP_URL || 'http://localhost:3000'}/api/events/public/invitation/${event.eventName?.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`;
+      let phoneStr = guest.phone.replace(/[^0-9]/g, '');
+      if (phoneStr.startsWith('0')) phoneStr = '62' + phoneStr.slice(1);
+      if (!phoneStr.startsWith('62')) phoneStr = '62' + phoneStr;
+      const recipientWaId = phoneStr.startsWith('+') ? phoneStr : `+${phoneStr}`;
+
+      const appUrl = process.env.APP_URL || 'http://localhost:3000';
+      const rsvpUrl = `${appUrl}/rsvp/${guest.barcodeUid}`;
       
+      const fileUrl = guest.customInvitationFile 
+        ? `${appUrl}/api/guests/public/invitation/${guest.barcodeUid}` 
+        : `${appUrl}/api/events/public/invitation/${event.eventName.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`;
+
       const eventDateStr = new Date(event.eventDate || '').toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
       const eventTimeStr = new Date(event.eventDate || '').toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
 
-      // Wappin API Payload
+      // Format Payload Wappin 2.0
       const payload = {
-        client_name: process.env.WAPPIN_CLIENT_NAME || "",
-        project_id: process.env.WAPPIN_PROJECT_ID || "",
-        sender_id: process.env.WAPPIN_SENDER_ID || "",
-        phone_number: formattedPhone,
-        template_name: "undangan_dai",
-        language: "id",
-        components: [
-          {
-            type: "body",
-            parameters: [
-              { type: "text", text: guest.guestName || "-" }, // {{1}} Guest Name
-              { type: "text", text: event.eventName || "-" }, // {{2}} Event Name
-              { type: "text", text: eventDateStr || "-" }, // {{3}} Date
-              { type: "text", text: eventTimeStr || "-" }, // {{4}} Time
-              { type: "text", text: event.location || "-" }, // {{5}} Location
-              { type: "text", text: fileUrl || "-" }, // {{6}} Invitation URL
-              { type: "text", text: rsvpUrl || "-" } // {{7}} RSVP URL
-            ]
-          }
-        ]
+        to: recipientWaId,
+        type: "template",
+        template: {
+          name: "undangan_dai", // Ganti dengan nama template yang ada di Dashboard Wappin 2.0 Anda
+          language: {
+            policy: "deterministic",
+            code: "id"
+          },
+          components: [
+            {
+              type: "body",
+              parameters: [
+                { type: "text", text: guest.guestName },
+                { type: "text", text: event.eventName || "Acara" },
+                { type: "text", text: eventDateStr || "-" },
+                { type: "text", text: eventTimeStr || "-" },
+                { type: "text", text: event.location || "-" },
+                { type: "text", text: fileUrl },
+                { type: "text", text: rsvpUrl }
+              ]
+            }
+          ]
+        }
       };
 
       try {
-        const response = await fetch(wappinUrl.replace(/["']/g, ''), {
+        const sendUrl = 'https://api.chat.wappin.app/v1/messages';
+        const response = await fetch(sendUrl, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -499,25 +518,22 @@ router.post('/send-wappin', jwtAuthGuard, tenantGuard, async (req: AuthRequest, 
           body: JSON.stringify(payload)
         });
 
-        const textResponse = await response.text();
-        let data;
-        try {
-          data = JSON.parse(textResponse);
-        } catch (e) {
-          data = { message: "Non-JSON response", raw: textResponse.substring(0, 200) };
+        if (!response.ok) {
+          const wappinError = await response.json().catch(() => ({}));
+          throw new Error(wappinError.errors?.[0]?.details || wappinError.errors?.[0]?.title || `HTTP ${response.status}`);
         }
-        
-        results.push({ guestId: id, status: response.ok ? 'success' : 'failed', response: data });
+
+        const data = await response.json();
+        results.push({ guestId: guest.id, status: 'success', data });
       } catch (err: any) {
-        const cause = err.cause ? String(err.cause.message || err.cause.code || err.cause) : '';
-        results.push({ guestId: id, status: 'error', error: err.message + (cause ? ` (${cause})` : '') });
+        results.push({ guestId: guest.id, status: 'failed', error: err.message || String(err) });
       }
     }
 
     res.json({ success: true, results });
-  } catch (error) {
+  } catch (error: any) {
     console.error('Wappin send error:', error);
-    res.status(500).json({ error: 'Internal server error', cause: error });
+    res.status(500).json({ error: 'Internal server error', details: error.message });
   }
 });
 
