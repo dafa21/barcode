@@ -841,43 +841,120 @@ const handleCreateEvent = async (e: React.FormEvent) => {
     setSelectedGuestIds([]);
   };
 
-  const handleBulkSendWappin = async () => {
-    if (!selectedEvent || selectedGuestIds.length === 0) return;
-    
-    if (!window.confirm(`Anda yakin ingin mengirim undangan ke ${selectedGuestIds.length} tamu melalui Wappin?`)) {
-      return;
-    }
+  const sendWappinFrontend = async (targetGuestIds: string[]) => {
+    if (!selectedEvent || targetGuestIds.length === 0) return;
 
     try {
-      const response = await fetch('/api/guests/send-wappin', {
-        method: 'POST',
+      // 1. Ambil config dari backend
+      const configRes = await fetch('/api/guests/wappin-config', {
         headers: {
-          'Content-Type': 'application/json',
           'Authorization': `Bearer ${localStorage.getItem('token')}`
-        },
-        body: JSON.stringify({ guestIds: selectedGuestIds })
+        }
+      });
+      if (!configRes.ok) throw new Error('Gagal mengambil konfigurasi Wappin');
+      const config = await configRes.json();
+      
+      const { wappinUrl, wappinToken, wappinClientName, wappinProjectId, wappinSenderId, appUrl } = config;
+      if (!wappinUrl || !wappinToken || !wappinClientName) {
+        throw new Error('Konfigurasi Wappin di backend belum lengkap (.env)');
+      }
+
+      // 2. Filter guests
+      const guestsToSend = guests.filter(g => targetGuestIds.includes(g.id) && g.phone);
+      if (guestsToSend.length === 0) throw new Error('Tamu yang dipilih tidak memiliki nomor telepon valid.');
+
+      // 3. Dapatkan Token Wappin dari Browser
+      const tokenUrl = wappinUrl.replace('/message/do-send', '/token/get');
+      const tokenRes = await fetch(tokenUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          client_id: wappinClientName,
+          secret_key: wappinToken
+        })
       });
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Gagal mengirim pesan Wappin');
+      if (!tokenRes.ok) {
+        throw new Error(`Gagal mendapatkan token Wappin (HTTP ${tokenRes.status})`);
+      }
+      const tokenData = await tokenRes.json();
+      const activeBearerToken = tokenData.data?.token || tokenData.token || wappinToken;
+
+      // 4. Kirim satu per satu
+      let successCount = 0;
+      let lastError = null;
+
+      for (const guest of guestsToSend) {
+        let phoneStr = guest.phone.replace(/[^0-9]/g, '');
+        if (phoneStr.startsWith('0')) phoneStr = '62' + phoneStr.slice(1);
+        if (!phoneStr.startsWith('62')) phoneStr = '62' + phoneStr;
+
+        const rsvpUrl = `${appUrl || window.location.origin}/rsvp/${guest.barcodeUid}`;
+        const fileUrl = guest.customInvitationFile 
+          ? `${appUrl || window.location.origin}/api/guests/public/invitation/${guest.barcodeUid}` 
+          : `${appUrl || window.location.origin}/api/events/public/invitation/${selectedEvent?.eventName?.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`;
+
+        const eventDateStr = new Date(selectedEvent?.eventDate || '').toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+        const eventTimeStr = new Date(selectedEvent?.eventDate || '').toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+
+        const payload = {
+          project_id: wappinProjectId || "",
+          sender_id: wappinSenderId || "",
+          domain: "wappin",
+          recipient_number: phoneStr,
+          message_template_id: "undangan_dai",
+          language: "id",
+          variables: [
+            guest.guestName,
+            selectedEvent?.eventName || "Acara",
+            eventDateStr,
+            eventTimeStr,
+            selectedEvent?.location || "-",
+            fileUrl,
+            rsvpUrl
+          ]
+        };
+
+        try {
+          const sendRes = await fetch(wappinUrl, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${activeBearerToken}`
+            },
+            body: JSON.stringify(payload)
+          });
+          
+          if (!sendRes.ok) {
+            const errText = await sendRes.text();
+            throw new Error(`Gagal kirim Wappin ke ${guest.guestName}: ${errText.substring(0, 100)}`);
+          }
+          successCount++;
+        } catch (err: any) {
+          lastError = err;
+        }
       }
 
-      const data = await response.json();
-      const successCount = data.results.filter((r: any) => r.status === 'success').length;
-      
-      if (successCount === 0 && data.results.length > 0) {
-        const wappinResp = data.results[0]?.response;
-        const errDetail = wappinResp?.message || JSON.stringify(wappinResp) || data.results[0]?.error || 'Unknown error';
-        throw new Error('Gagal API Wappin: ' + errDetail);
+      if (successCount === 0 && lastError) {
+        throw lastError;
       }
       
-      alert(`Berhasil mengirim ${successCount} undangan dari ${selectedGuestIds.length} tujuan.`);
+      alert(`Berhasil mengirim ${successCount} undangan dari ${targetGuestIds.length} tujuan.`);
       setSelectedGuestIds([]);
     } catch (error: any) {
       console.error('Send Wappin error:', error);
-      alert('Terjadi kesalahan saat mengirim pesan via Wappin: ' + error.message);
+      alert('Terjadi kesalahan saat mengirim pesan via Wappin (Browser): ' + error.message + '\n\n(Jika ini error CORS, berarti Wappin memblokir akses dari Browser dan IP VPS Anda harus di-whitelist).');
     }
+  };
+
+  const handleBulkSendWappin = async () => {
+    if (!selectedEvent || selectedGuestIds.length === 0) return;
+    
+    if (!window.confirm(`Anda yakin ingin mengirim undangan ke ${selectedGuestIds.length} tamu melalui Wappin (Jalur Browser)?`)) {
+      return;
+    }
+
+    await sendWappinFrontend(selectedGuestIds);
   };
 
 
@@ -1948,28 +2025,8 @@ const handleCreateEvent = async (e: React.FormEvent) => {
             <MessageCircle className="w-3.5 h-3.5" />
          </button>
          <button onClick={async () => {
-            if (!window.confirm(`Anda yakin ingin mengirim undangan ke ${guest.guestName} melalui Wappin?`)) return;
-            try {
-              const response = await fetch('/api/guests/send-wappin', {
-                method: 'POST',
-                headers: {
-                  'Content-Type': 'application/json',
-                  'Authorization': `Bearer ${localStorage.getItem('token')}`
-                },
-                body: JSON.stringify({ guestIds: [guest.id] })
-              });
-              if (!response.ok) throw new Error((await response.json()).error || 'Gagal mengirim pesan Wappin');
-              const data = await response.json();
-              if (data.results[0]?.status === 'success') {
-                alert('Berhasil mengirim undangan melalui Wappin.');
-              } else {
-                const wappinResp = data.results[0]?.response;
-                const errDetail = wappinResp?.message || JSON.stringify(wappinResp) || data.results[0]?.error || 'Unknown error';
-                throw new Error('Gagal API Wappin: ' + errDetail);
-              }
-            } catch (error: any) {
-              alert('Terjadi kesalahan: ' + error.message);
-            }
+            if (!window.confirm(`Anda yakin ingin mengirim undangan ke ${guest.guestName} melalui Wappin (Jalur Browser)?`)) return;
+            await sendWappinFrontend([guest.id]);
          }} disabled={!guest.phone} className="inline-flex items-center justify-center p-1.5 bg-gray-50 text-gray-600 rounded-lg border border-gray-200 hover:bg-blue-50 hover:text-blue-600 transition-colors disabled:opacity-50" title="Kirim via Wappin API">
             <MessageCircle className="w-3.5 h-3.5" />
          </button>

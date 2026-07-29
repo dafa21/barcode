@@ -392,6 +392,17 @@ router.delete('/:id', async (req: AuthRequest, res) => {
   }
 });
 
+router.get('/wappin-config', jwtAuthGuard, tenantGuard, (req, res) => {
+  res.json({
+    wappinUrl: process.env.WAPPIN_API_URL ? process.env.WAPPIN_API_URL.replace(/["']/g, '') : 'https://chat-api.wappin.id/v1/message/do-send',
+    wappinToken: process.env.WAPPIN_API_TOKEN,
+    wappinClientName: process.env.WAPPIN_CLIENT_NAME,
+    wappinProjectId: process.env.WAPPIN_PROJECT_ID,
+    wappinSenderId: process.env.WAPPIN_SENDER_ID,
+    appUrl: process.env.APP_URL || 'http://localhost:3000'
+  });
+});
+
 router.post('/send-wappin', jwtAuthGuard, tenantGuard, async (req: AuthRequest, res) => {
   try {
     const { guestIds } = req.body;
