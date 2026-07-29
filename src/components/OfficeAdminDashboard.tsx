@@ -868,7 +868,7 @@ const handleCreateEvent = async (e: React.FormEvent) => {
       
       if (successCount === 0 && data.results.length > 0) {
         const wappinResp = data.results[0]?.response;
-        const errDetail = wappinResp?.message || JSON.stringify(wappinResp) || 'Unknown error';
+        const errDetail = wappinResp?.message || JSON.stringify(wappinResp) || data.results[0]?.error || 'Unknown error';
         throw new Error('Gagal API Wappin: ' + errDetail);
       }
       
@@ -1964,7 +1964,7 @@ const handleCreateEvent = async (e: React.FormEvent) => {
                 alert('Berhasil mengirim undangan melalui Wappin.');
               } else {
                 const wappinResp = data.results[0]?.response;
-                const errDetail = wappinResp?.message || JSON.stringify(wappinResp) || 'Unknown error';
+                const errDetail = wappinResp?.message || JSON.stringify(wappinResp) || data.results[0]?.error || 'Unknown error';
                 throw new Error('Gagal API Wappin: ' + errDetail);
               }
             } catch (error: any) {

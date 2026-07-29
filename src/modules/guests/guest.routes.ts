@@ -488,10 +488,17 @@ router.post('/send-wappin', jwtAuthGuard, tenantGuard, async (req: AuthRequest, 
           body: JSON.stringify(payload)
         });
 
-        const data = await response.json();
+        const textResponse = await response.text();
+        let data;
+        try {
+          data = JSON.parse(textResponse);
+        } catch (e) {
+          data = { message: "Non-JSON response", raw: textResponse.substring(0, 200) };
+        }
+        
         results.push({ guestId: id, status: response.ok ? 'success' : 'failed', response: data });
-      } catch (err) {
-        results.push({ guestId: id, status: 'error', error: err });
+      } catch (err: any) {
+        results.push({ guestId: id, status: 'error', error: err.message || String(err) });
       }
     }
 
