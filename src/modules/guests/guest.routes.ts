@@ -400,11 +400,32 @@ router.post('/send-wappin', jwtAuthGuard, tenantGuard, async (req: AuthRequest, 
       return res.status(400).json({ error: 'Invalid guestIds data' });
     }
 
-    const wappinUrl = process.env.WAPPIN_API_URL;
+    const wappinUrl = process.env.WAPPIN_API_URL || 'https://chat-api.wappin.id/v1/message/do-send';
     const wappinToken = process.env.WAPPIN_API_TOKEN;
+    const wappinClientName = process.env.WAPPIN_CLIENT_NAME;
     
-    if (!wappinUrl || !wappinToken) {
-      return res.status(500).json({ error: 'Wappin API configuration is missing in .env' });
+    if (!wappinToken || !wappinClientName) {
+      return res.status(500).json({ error: 'Wappin API configuration (Token/Client Name) is missing in .env' });
+    }
+
+    // --- STEP 1: Dapatkan Bearer Token Wappin terlebih dahulu ---
+    let activeBearerToken = wappinToken;
+    try {
+      const tokenUrl = wappinUrl.replace('/message/do-send', '/token/get');
+      const tokenResponse = await fetch(tokenUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          client_id: wappinClientName,
+          secret_key: wappinToken
+        })
+      });
+      const tokenData = await tokenResponse.json();
+      if (tokenData?.data?.token) {
+        activeBearerToken = tokenData.data.token;
+      }
+    } catch (e) {
+      console.warn("Could not fetch Wappin token, falling back to using API_TOKEN as Bearer", e);
     }
 
     const results = [];
@@ -462,7 +483,7 @@ router.post('/send-wappin', jwtAuthGuard, tenantGuard, async (req: AuthRequest, 
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${wappinToken}`
+            'Authorization': `Bearer ${activeBearerToken}`
           },
           body: JSON.stringify(payload)
         });
