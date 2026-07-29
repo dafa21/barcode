@@ -255,6 +255,9 @@ router.get('/event/:eventId', async (req: AuthRequest, res) => {
         barcodeUid: guests.barcodeUid,
         rsvpStatus: guests.rsvpStatus,
         paxCount: guests.paxCount,
+        isVip: guests.isVip,
+        wappinSent: guests.wappinSent,
+        manualWaSent: guests.manualWaSent,
         customInvitationFile: sql<string>`CASE WHEN ${guests.customInvitationFile} IS NOT NULL THEN 'exists' ELSE NULL END`.as('customInvitationFile'),
         status: attendances.status,
         scannedAt: attendances.scannedAt
@@ -403,6 +406,27 @@ router.get('/wappin-config', jwtAuthGuard, tenantGuard, (req, res) => {
   });
 });
 
+router.post('/mark-manual-wa', jwtAuthGuard, tenantGuard, async (req: AuthRequest, res) => {
+  try {
+    const { guestIds } = req.body;
+    if (!guestIds || !Array.isArray(guestIds)) {
+      return res.status(400).json({ error: 'guestIds must be an array' });
+    }
+
+    const { officeId } = req.user!;
+
+    const targetGuests = await db.select().from(guests).where(inArray(guests.id, guestIds));
+    if (targetGuests.length === 0) return res.status(404).json({ error: 'Guests not found' });
+
+    await db.update(guests).set({ manualWaSent: true }).where(inArray(guests.id, guestIds));
+
+    res.json({ success: true, message: 'Status updated' });
+  } catch (error) {
+    console.error('Mark manual WA error:', error);
+    res.status(500).json({ error: 'Internal server error', cause: error });
+  }
+});
+
 router.post('/send-wappin', jwtAuthGuard, tenantGuard, async (req: AuthRequest, res) => {
   try {
     const { guestIds } = req.body;
@@ -477,8 +501,8 @@ router.post('/send-wappin', jwtAuthGuard, tenantGuard, async (req: AuthRequest, 
         ? `${appUrl}/api/guests/public/invitation/${guest.barcodeUid}` 
         : `${appUrl}/api/events/public/invitation/${event.eventName.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`;
 
-      const eventDateStr = new Date(event.eventDate || '').toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
-      const eventTimeStr = new Date(event.eventDate || '').toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+      const eventDateStr = new Date(event.eventDate || '').toLocaleDateString('id-ID', { timeZone: 'Asia/Jakarta', weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+      const eventTimeStr = new Date(event.eventDate || '').toLocaleTimeString('id-ID', { timeZone: 'Asia/Jakarta', hour: '2-digit', minute: '2-digit' }).replace('.', ':');
 
       const documentFilename = `Undangan_${guest.guestName.replace(/[^a-zA-Z0-9]/g, '_')}.pdf`;
 
@@ -538,6 +562,10 @@ router.post('/send-wappin', jwtAuthGuard, tenantGuard, async (req: AuthRequest, 
         }
 
         const data = await response.json();
+        
+        // Update DB
+        await db.update(guests).set({ wappinSent: true }).where(eq(guests.id, guest.id));
+        
         results.push({ guestId: guest.id, status: 'success', data });
       } catch (err: any) {
         results.push({ guestId: guest.id, status: 'failed', error: err.message || String(err) });

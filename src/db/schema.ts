@@ -67,6 +67,8 @@ export const guests = pgTable('guests', {
   isVip: boolean('is_vip').default(false),
   paxCount: integer('pax_count').default(1),
   customInvitationFile: text('custom_invitation_file'),
+  wappinSent: boolean('wappin_sent').default(false),
+  manualWaSent: boolean('manual_wa_sent').default(false),
 });
 
 export const attendances = pgTable('attendances', {

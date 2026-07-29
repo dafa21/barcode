@@ -2,7 +2,7 @@ import React from "react";
 import { CustomModal } from './CustomModal.tsx';
 import { useState, useEffect, useRef } from 'react';
 import { User, Event, Guest } from '../types.ts';
-import { Calendar, Plus, Edit, Edit3, Trash2, Users, MapPin, Search, QrCode, BarChart2, LayoutList, Activity, Download, MessageCircle, X, UserPlus, Printer, Crown, Upload, FileText, Menu, ChevronLeft, ChevronRight, PanelLeftClose, PanelLeftOpen } from 'lucide-react';
+import { Calendar, Plus, Edit, Edit3, Trash2, Users, MapPin, Search, QrCode, BarChart2, LayoutList, Activity, Download, MessageCircle, Send, Bot, X, UserPlus, Printer, Crown, Upload, FileText, Menu, ChevronLeft, ChevronRight, PanelLeftClose, PanelLeftOpen } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { AnalyticsDashboard } from './AnalyticsDashboard.tsx';
 import { TwibbonConfigurator } from "./TwibbonConfigurator.tsx";
@@ -852,11 +852,8 @@ const handleCreateEvent = async (e: React.FormEvent) => {
   const handleBulkSendWappin = async () => {
     if (!selectedEvent || selectedGuestIds.length === 0) return;
     
-    if (!window.confirm(`Anda yakin ingin mengirim undangan ke ${selectedGuestIds.length} tamu melalui Wappin?`)) {
-      return;
-    }
-
-    try {
+    showConfirm("Kirim via Wappin", `Anda yakin ingin mengirim undangan ke ${selectedGuestIds.length} tamu melalui Wappin?`, async () => {
+      try {
       const response = await fetch('/api/guests/send-wappin', {
         method: 'POST',
         headers: {
@@ -877,13 +874,17 @@ const handleCreateEvent = async (e: React.FormEvent) => {
       if (successCount === 0 && data.results.length > 0) {
         throw new Error(data.results[0]?.error || 'Unknown error');
       }
-      
-      alert(`Berhasil mengirim ${successCount} undangan dari ${selectedGuestIds.length} tujuan.`);
-      setSelectedGuestIds([]);
-    } catch (error: any) {
-      console.error('Send Wappin error:', error);
-      alert('Terjadi kesalahan saat mengirim pesan via Wappin: ' + error.message);
-    }
+        
+        if (selectedEvent) {
+          fetchGuests(selectedEvent.id);
+        }
+        showAlert("Berhasil", `Berhasil mengirim ${successCount} undangan dari ${selectedGuestIds.length} tujuan.`, 'success');
+        setSelectedGuestIds([]);
+      } catch (error: any) {
+        console.error('Send Wappin error:', error);
+        showAlert("Gagal", 'Terjadi kesalahan saat mengirim pesan via Wappin: ' + error.message, 'alert');
+      }
+    });
   };
 
 
@@ -1272,7 +1273,7 @@ const handleCreateEvent = async (e: React.FormEvent) => {
                         <label className="block text-[10px] uppercase tracking-widest text-gray-500 mb-1.5 font-bold">Event Logo (Optional)</label>
                         {newEventLogo && (
                           <div className="mb-2 relative w-12 h-12 rounded-lg overflow-hidden border border-gray-200">
-                            <img src={newEventLogo} alt="Logo" className="w-full h-full object-contain bg-white" />
+                            <img src={newEventLogo} alt="Logo" className="w-full h-full object-contain" />
                             <button
                               type="button"
                               onClick={() => setNewEventLogo(undefined)}
@@ -1706,26 +1707,49 @@ const handleCreateEvent = async (e: React.FormEvent) => {
                   </div>
                 </div>
                   <div className="p-6 flex flex-col gap-6 overflow-y-auto flex-1">
-                    <div className="grid grid-cols-2 gap-3">
-                      <div className="bg-white border border-gray-200 rounded-xl p-4 shadow-sm flex items-center justify-between">
-                        <div>
-                          <p className="text-[10px] font-bold uppercase tracking-widest text-gray-500 mb-1">Total Registered</p>
-                          <p className="text-2xl font-serif text-gray-900">{guests.length}</p>
-                        </div>
-                        <div className="w-10 h-10 rounded-full bg-emerald-50 flex items-center justify-center">
-                          <Users className="w-5 h-5 text-emerald-600" />
-                        </div>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                  <div className="p-4 bg-emerald-50 rounded-xl">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-sm font-medium text-emerald-600 mb-1">Total Checked-in</p>
+                        <p className="text-3xl font-bold text-emerald-700">
+                          {guests.filter(g => g.status === 'attended').length}
+                        </p>
                       </div>
-                      <div className="bg-white border border-gray-200 rounded-xl p-4 shadow-sm flex items-center justify-between">
-                        <div>
-                          <p className="text-[10px] font-bold uppercase tracking-widest text-gray-500 mb-1">Total Checked-in</p>
-                          <p className="text-2xl font-serif text-gray-900">{guests.filter(g => g.status === 'attended').length}</p>
-                        </div>
-                        <div className="w-10 h-10 rounded-full bg-emerald-50 flex items-center justify-center">
-                          <Activity className="w-5 h-5 text-emerald-600" />
-                        </div>
+                      <div className="p-3 bg-emerald-100 rounded-lg">
+                        <Activity className="w-6 h-6 text-emerald-600" />
                       </div>
                     </div>
+                  </div>
+                  
+                  <div className="p-4 bg-blue-50 rounded-xl">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-sm font-medium text-blue-600 mb-1">Wappin Sent</p>
+                        <p className="text-3xl font-bold text-blue-700">
+                          {guests.filter(g => g.wappinSent).length}
+                        </p>
+                      </div>
+                      <div className="p-3 bg-blue-100 rounded-lg">
+                        <Bot className="w-6 h-6 text-blue-600" />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="p-4 bg-purple-50 rounded-xl">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-sm font-medium text-purple-600 mb-1">Manual WA Sent</p>
+                        <p className="text-3xl font-bold text-purple-700">
+                          {guests.filter(g => g.manualWaSent).length}
+                        </p>
+                      </div>
+                      <div className="p-3 bg-purple-100 rounded-lg">
+                        <Send className="w-6 h-6 text-purple-600" />
+                      </div>
+                    </div>
+                  </div>
+                </div>
 
                     <div className="flex flex-col min-w-0 flex-1">
                       <div className="flex items-center justify-between mb-4">
@@ -1927,55 +1951,75 @@ const handleCreateEvent = async (e: React.FormEvent) => {
          <button onClick={() => handleDeleteGuest(guest.id)} className="inline-flex items-center justify-center p-1.5 bg-red-50 text-red-600 rounded-lg border border-red-200 hover:bg-red-100 transition-colors" title="Delete Guest">
             <Trash2 className="w-3.5 h-3.5" />
          </button>
-         <button onClick={() => {
+         <button onClick={async () => {
             const rsvpUrl = `${getBaseUrl()}/rsvp/${guest.barcodeUid}`;
             const fileUrl = guest.customInvitationFile ? `${getBaseUrl()}/api/guests/public/invitation/${guest.barcodeUid}` : `${getBaseUrl()}/api/events/public/invitation/${selectedEvent?.eventName?.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`;
             const eventDateStr = new Date(selectedEvent?.eventDate || '').toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
             const eventTimeStr = new Date(selectedEvent?.eventDate || '').toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
             
-            const message = getWhatsAppMessage(
-              guest.guestName,
-              selectedEvent?.eventName,
-              rsvpUrl,
-              fileUrl,
-              eventDateStr,
-              eventTimeStr,
-              selectedEvent?.location,
-              guest.rsvpStatus,
-              selectedEvent?.socialWebsite,
-              selectedEvent?.socialYoutube,
-              selectedEvent?.socialInstagram
-            );
-            
-            const phoneStr = guest.phone.replace(/[^0-9]/g, '');
-            const formattedPhone = phoneStr.startsWith('0') ? '62' + phoneStr.slice(1) : phoneStr;
-            window.open(`https://api.whatsapp.com/send?phone=${formattedPhone}&text=${encodeURIComponent(message)}`, '_blank');
-         }} disabled={!guest.phone} className="inline-flex items-center justify-center p-1.5 bg-gray-50 text-gray-600 rounded-lg border border-gray-200 hover:bg-emerald-50 hover:text-emerald-600 transition-colors disabled:opacity-50" title={guest.rsvpStatus === 'attending' ? 'Kirim Tiket Barcode WA (Manual)' : 'Kirim Link Konfirmasi RSVP WA (Manual)'}>
-            <MessageCircle className="w-3.5 h-3.5" />
+            showConfirm("Kirim via WA Manual", `Anda yakin ingin mengirim undangan ke ${guest.guestName} melalui WA Manual?`, async () => {
+              try {
+                const message = getWhatsAppMessage(
+                  guest.guestName,
+                  selectedEvent?.eventName,
+                  rsvpUrl,
+                  fileUrl,
+                  eventDateStr,
+                  eventTimeStr,
+                  selectedEvent?.location,
+                  guest.rsvpStatus,
+                  selectedEvent?.socialWebsite,
+                  selectedEvent?.socialYoutube,
+                  selectedEvent?.socialInstagram
+                );
+                
+                const phoneStr = guest.phone.replace(/[^0-9]/g, '');
+                const formattedPhone = phoneStr.startsWith('0') ? '62' + phoneStr.slice(1) : phoneStr;
+                window.open(`https://api.whatsapp.com/send?phone=${formattedPhone}&text=${encodeURIComponent(message)}`, '_blank');
+                
+                // Track manual WA
+                await fetch('/api/guests/mark-manual-wa', {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                  },
+                  body: JSON.stringify({ guestIds: [guest.id] })
+                });
+                
+                if (selectedEvent) fetchGuests(selectedEvent.id);
+              } catch (e) {
+                console.error(e);
+              }
+            });
+         }} disabled={!guest.phone} className={`inline-flex items-center justify-center p-1.5 rounded-lg border transition-colors disabled:opacity-50 ${guest.manualWaSent ? 'bg-purple-50 text-purple-600 border-purple-200' : 'bg-gray-50 text-gray-600 border-gray-200 hover:bg-purple-50 hover:text-purple-600'}`} title="Kirim via WA Manual">
+            <Send className="w-3.5 h-3.5" />
          </button>
          <button onClick={async () => {
-            if (!window.confirm(`Anda yakin ingin mengirim undangan ke ${guest.guestName} melalui Wappin?`)) return;
-            try {
-              const response = await fetch('/api/guests/send-wappin', {
-                method: 'POST',
-                headers: {
-                  'Content-Type': 'application/json',
-                  'Authorization': `Bearer ${localStorage.getItem('token')}`
-                },
-                body: JSON.stringify({ guestIds: [guest.id] })
-              });
-              if (!response.ok) throw new Error((await response.json()).error || 'Gagal mengirim pesan Wappin');
-              const data = await response.json();
-              if (data.results[0]?.status === 'success') {
-                alert('Berhasil mengirim undangan melalui Wappin.');
-              } else {
-                throw new Error(data.results[0]?.error || 'Unknown error');
+            showConfirm("Kirim via Wappin API", `Anda yakin ingin mengirim undangan ke ${guest.guestName} melalui Wappin API?`, async () => {
+              try {
+                const response = await fetch('/api/guests/send-wappin', {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                  },
+                  body: JSON.stringify({ guestIds: [guest.id] })
+                });
+                if (!response.ok) throw new Error((await response.json()).error || 'Gagal mengirim pesan Wappin');
+                const data = await response.json();
+                if (data.results[0]?.status === 'success') {
+                  showAlert("Berhasil", 'Berhasil mengirim undangan melalui Wappin.', 'success');
+                  if (selectedEvent) fetchGuests(selectedEvent.id);
+                } else {
+                  throw new Error(data.results[0]?.error || 'Unknown error');
+                }
+              } catch (error: any) {
+                showAlert("Gagal", 'Terjadi kesalahan: ' + error.message, 'alert');
               }
-            } catch (error: any) {
-              alert('Terjadi kesalahan: ' + error.message);
-            }
-         }} disabled={!guest.phone} className="inline-flex items-center justify-center p-1.5 bg-gray-50 text-gray-600 rounded-lg border border-gray-200 hover:bg-blue-50 hover:text-blue-600 transition-colors disabled:opacity-50" title="Kirim via Wappin API">
-            <MessageCircle className="w-3.5 h-3.5" />
+            });
+         }} disabled={!guest.phone} className={`inline-flex items-center justify-center p-1.5 rounded-lg border transition-colors disabled:opacity-50 ${guest.wappinSent ? 'bg-blue-50 text-blue-600 border-blue-200' : 'bg-gray-50 text-gray-600 border-gray-200 hover:bg-blue-50 hover:text-blue-600'}`} title="Kirim via Wappin API">
+            <Bot className="w-3.5 h-3.5" />
          </button>
       </div>
     </div>
