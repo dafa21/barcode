@@ -841,6 +841,37 @@ const handleCreateEvent = async (e: React.FormEvent) => {
     setSelectedGuestIds([]);
   };
 
+  const handleBulkSendWappin = async () => {
+    if (!selectedEvent || selectedGuestIds.length === 0) return;
+    
+    if (!window.confirm(`Anda yakin ingin mengirim undangan ke ${selectedGuestIds.length} tamu melalui Wappin?`)) {
+      return;
+    }
+
+    try {
+      const response = await fetch('/api/guests/send-wappin', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        },
+        body: JSON.stringify({ guestIds: selectedGuestIds })
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Gagal mengirim pesan Wappin');
+      }
+
+      const data = await response.json();
+      alert(`Berhasil mengirim ${data.results.filter((r: any) => r.status === 'success').length} undangan dari ${selectedGuestIds.length} tujuan.`);
+      setSelectedGuestIds([]);
+    } catch (error: any) {
+      console.error('Send Wappin error:', error);
+      alert('Terjadi kesalahan saat mengirim pesan via Wappin: ' + error.message);
+    }
+  };
+
 
   // Reset page when event changes
   useEffect(() => {
@@ -1768,13 +1799,22 @@ const handleCreateEvent = async (e: React.FormEvent) => {
                             </button>
                           </div>
                           {selectedGuestIds.length > 0 && (
-                            <button
-                              onClick={handleBulkSendInvitations}
-                              className="inline-flex items-center gap-2 px-3 py-1.5 bg-emerald-50 text-emerald-600 border border-emerald-200 text-xs font-medium rounded-lg hover:bg-emerald-100 transition-colors shadow-sm"
-                            >
-                              <MessageCircle className="w-4 h-4" />
-                              Send {selectedGuestIds.length} Invitations
-                            </button>
+                            <div className="flex gap-2">
+                              <button
+                                onClick={handleBulkSendWappin}
+                                className="inline-flex items-center gap-2 px-3 py-1.5 bg-blue-50 text-blue-600 border border-blue-200 text-xs font-medium rounded-lg hover:bg-blue-100 transition-colors shadow-sm"
+                              >
+                                <MessageCircle className="w-4 h-4" />
+                                Kirim via Wappin ({selectedGuestIds.length})
+                              </button>
+                              <button
+                                onClick={handleBulkSendInvitations}
+                                className="inline-flex items-center gap-2 px-3 py-1.5 bg-emerald-50 text-emerald-600 border border-emerald-200 text-xs font-medium rounded-lg hover:bg-emerald-100 transition-colors shadow-sm"
+                              >
+                                <MessageCircle className="w-4 h-4" />
+                                Kirim Manual ({selectedGuestIds.length})
+                              </button>
+                            </div>
                           )}
                           <select
                             value={statusFilter}
@@ -1896,10 +1936,33 @@ const handleCreateEvent = async (e: React.FormEvent) => {
             const phoneStr = guest.phone.replace(/[^0-9]/g, '');
             const formattedPhone = phoneStr.startsWith('0') ? '62' + phoneStr.slice(1) : phoneStr;
             window.open(`https://api.whatsapp.com/send?phone=${formattedPhone}&text=${encodeURIComponent(message)}`, '_blank');
-         }} disabled={!guest.phone} className="inline-flex items-center justify-center p-1.5 bg-gray-50 text-gray-600 rounded-lg border border-gray-200 hover:bg-white hover:text-green-600 transition-colors disabled:opacity-50" title={guest.rsvpStatus === 'attending' ? 'Kirim Tiket Barcode WA' : 'Kirim Link Konfirmasi RSVP WA'}>
+         }} disabled={!guest.phone} className="inline-flex items-center justify-center p-1.5 bg-gray-50 text-gray-600 rounded-lg border border-gray-200 hover:bg-emerald-50 hover:text-emerald-600 transition-colors disabled:opacity-50" title={guest.rsvpStatus === 'attending' ? 'Kirim Tiket Barcode WA (Manual)' : 'Kirim Link Konfirmasi RSVP WA (Manual)'}>
             <MessageCircle className="w-3.5 h-3.5" />
          </button>
-         
+         <button onClick={async () => {
+            if (!window.confirm(`Anda yakin ingin mengirim undangan ke ${guest.guestName} melalui Wappin?`)) return;
+            try {
+              const response = await fetch('/api/guests/send-wappin', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                  'Authorization': `Bearer ${localStorage.getItem('token')}`
+                },
+                body: JSON.stringify({ guestIds: [guest.id] })
+              });
+              if (!response.ok) throw new Error((await response.json()).error || 'Gagal mengirim pesan Wappin');
+              const data = await response.json();
+              if (data.results[0]?.status === 'success') {
+                alert('Berhasil mengirim undangan melalui Wappin.');
+              } else {
+                throw new Error('Gagal, cek konfigurasi Wappin.');
+              }
+            } catch (error: any) {
+              alert('Terjadi kesalahan: ' + error.message);
+            }
+         }} disabled={!guest.phone} className="inline-flex items-center justify-center p-1.5 bg-gray-50 text-gray-600 rounded-lg border border-gray-200 hover:bg-blue-50 hover:text-blue-600 transition-colors disabled:opacity-50" title="Kirim via Wappin API">
+            <MessageCircle className="w-3.5 h-3.5" />
+         </button>
       </div>
     </div>
   ))}

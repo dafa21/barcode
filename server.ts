@@ -9,8 +9,8 @@ import eventRoutes from "./src/modules/events/event.routes.ts";
 import guestRoutes from "./src/modules/guests/guest.routes.ts";
 import scannerRoutes from "./src/modules/scanner/scanner.routes.ts";
 import reportRoutes from "./src/modules/reports/report.routes.ts";
-
 import picRoutes from "./src/modules/pics/pic.routes.ts";
+import notificationRoutes from "./src/modules/notification/notification.routes.ts";
 
 async function startServer() {
   const app = express();
@@ -35,6 +35,7 @@ async function startServer() {
   app.use('/api/scanner', scannerRoutes);
   app.use('/api/reports', reportRoutes);
   app.use('/api/pics', picRoutes);
+  app.use('/api/notification', notificationRoutes);
 
   // Vite middleware for development
   if (process.env.NODE_ENV !== "production") {

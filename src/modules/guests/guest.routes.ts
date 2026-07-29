@@ -392,4 +392,93 @@ router.delete('/:id', async (req: AuthRequest, res) => {
   }
 });
 
+router.post('/send-wappin', jwtAuthGuard, tenantGuard, async (req: AuthRequest, res) => {
+  try {
+    const { guestIds } = req.body;
+    
+    if (!Array.isArray(guestIds) || guestIds.length === 0) {
+      return res.status(400).json({ error: 'Invalid guestIds data' });
+    }
+
+    const wappinUrl = process.env.WAPPIN_API_URL;
+    const wappinToken = process.env.WAPPIN_API_TOKEN;
+    
+    if (!wappinUrl || !wappinToken) {
+      return res.status(500).json({ error: 'Wappin API configuration is missing in .env' });
+    }
+
+    const results = [];
+    
+    for (const id of guestIds) {
+      const guestResult = await db.select().from(guests).where(eq(guests.id, id)).limit(1);
+      if (guestResult.length === 0) continue;
+      
+      const guest = guestResult[0];
+      if (!guest.phone) continue;
+
+      const eventResult = await db.select().from(events).where(eq(events.id, guest.eventId)).limit(1);
+      if (eventResult.length === 0) continue;
+      
+      const event = eventResult[0];
+
+      // Format phone number
+      const phoneStr = guest.phone.replace(/[^0-9]/g, '');
+      const formattedPhone = phoneStr.startsWith('0') ? '62' + phoneStr.slice(1) : phoneStr;
+
+      const rsvpUrl = `${process.env.APP_URL || 'http://localhost:3000'}/rsvp/${guest.barcodeUid}`;
+      const fileUrl = guest.customInvitationFile 
+        ? `${process.env.APP_URL || 'http://localhost:3000'}/api/guests/public/invitation/${guest.barcodeUid}` 
+        : `${process.env.APP_URL || 'http://localhost:3000'}/api/events/public/invitation/${event.eventName?.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`;
+      
+      const eventDateStr = new Date(event.eventDate || '').toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+      const eventTimeStr = new Date(event.eventDate || '').toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+
+      // Wappin API Payload
+      const payload = {
+        client_name: process.env.WAPPIN_CLIENT_NAME || "",
+        project_id: process.env.WAPPIN_PROJECT_ID || "",
+        sender_id: process.env.WAPPIN_SENDER_ID || "",
+        phone_number: formattedPhone,
+        template_name: "undangan_dai",
+        language: "id",
+        components: [
+          {
+            type: "body",
+            parameters: [
+              { type: "text", text: guest.guestName || "-" }, // {{1}} Guest Name
+              { type: "text", text: event.eventName || "-" }, // {{2}} Event Name
+              { type: "text", text: eventDateStr || "-" }, // {{3}} Date
+              { type: "text", text: eventTimeStr || "-" }, // {{4}} Time
+              { type: "text", text: event.location || "-" }, // {{5}} Location
+              { type: "text", text: fileUrl || "-" }, // {{6}} Invitation URL
+              { type: "text", text: rsvpUrl || "-" } // {{7}} RSVP URL
+            ]
+          }
+        ]
+      };
+
+      try {
+        const response = await fetch(wappinUrl, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${wappinToken}`
+          },
+          body: JSON.stringify(payload)
+        });
+
+        const data = await response.json();
+        results.push({ guestId: id, status: response.ok ? 'success' : 'failed', response: data });
+      } catch (err) {
+        results.push({ guestId: id, status: 'error', error: err });
+      }
+    }
+
+    res.json({ success: true, results });
+  } catch (error) {
+    console.error('Wappin send error:', error);
+    res.status(500).json({ error: 'Internal server error', cause: error });
+  }
+});
+
 export default router;
