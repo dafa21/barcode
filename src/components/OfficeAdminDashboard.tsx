@@ -19,6 +19,14 @@ const getBaseUrl = () => {
   return origin;
 };
 
+const getLocalDatetimeString = (dateString: string | undefined | null) => {
+  if (!dateString) return '';
+  const d = new Date(dateString);
+  if (isNaN(d.getTime())) return '';
+  const pad = (n: number) => n < 10 ? '0' + n : n;
+  return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()) + 'T' + pad(d.getHours()) + ':' + pad(d.getMinutes());
+};
+
 const getWhatsAppMessage = (
   guestName: string, 
   eventName: string | undefined, 
@@ -1726,7 +1734,7 @@ const handleCreateEvent = async (e: React.FormEvent) => {
                       onClick={() => {
                         setEditingEventId(selectedEvent.id);
                         setNewEventName(selectedEvent.eventName);
-                        setNewEventDate(new Date(selectedEvent.eventDate).toISOString().slice(0,16));
+                        setNewEventDate(getLocalDatetimeString(selectedEvent.eventDate));
                         setNewEventLocation(selectedEvent.location || "");
                         setNewEventMapsLink(selectedEvent.mapsLink || "");
                         setNewEventLogo(selectedEvent.logo);
@@ -1735,7 +1743,7 @@ const handleCreateEvent = async (e: React.FormEvent) => {
                         setNewEventLetterSize((selectedEvent.letterSize as 'A4' | 'LETTER') || 'A4');
                         setNewEventLetterContent(selectedEvent.letterContent || "");
                         setNewEventOpeningQuote(selectedEvent.openingQuote || "");
-                        setNewEventEndDate(selectedEvent.eventEndDate ? new Date(selectedEvent.eventEndDate).toISOString().slice(0,16) : "");
+                        setNewEventEndDate(getLocalDatetimeString(selectedEvent.eventEndDate));
                         setNewEventRundown(selectedEvent.rundown || "");
                         setNewEventHeroImage(selectedEvent.heroImage || null);
                         setNewEventBacksound(selectedEvent.backsound || null);
