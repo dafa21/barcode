@@ -633,10 +633,15 @@ router.post('/send-wappin', jwtAuthGuard, tenantGuard, async (req: AuthRequest, 
           body: JSON.stringify(payload)
         });
 
-        if (!response.ok) {
-          const wappinError = await response.json().catch(() => ({}));
-          throw new Error(wappinError.errors?.[0]?.details || wappinError.errors?.[0]?.title || `HTTP ${response.status}`);
-        }
+          if (!response.ok) {
+            const wappinError = await response.json().catch(() => ({}));
+            const errMsg = wappinError.errors?.[0]?.details || wappinError.errors?.[0]?.title || `HTTP ${response.status} ${JSON.stringify(wappinError)}`;
+            fs.appendFileSync('debug-wappin.log', `[${new Date().toISOString()}] WAPPIN ERROR: ${errMsg}\nPAYLOAD: ${JSON.stringify(payload, null, 2)}\n\n`);
+            throw new Error(errMsg);
+          }
+          
+          fs.appendFileSync('debug-wappin.log', `[${new Date().toISOString()}] WAPPIN SUCCESS for ${recipientWaId}\n\n`);
+
         
         const data = await response.json();
         console.log(`[WAPPIN SUCCESS] Ke ${recipientWaId}:`, JSON.stringify(data));
@@ -657,6 +662,11 @@ router.post('/send-wappin', jwtAuthGuard, tenantGuard, async (req: AuthRequest, 
       // Jeda 1.5 detik antar pengiriman supaya API Wappin tidak diam-diam membuang pesan (Rate Limit / Anti-Spam beruntun)
       await new Promise(resolve => setTimeout(resolve, 1500));
     }
+
+      const hasError = results.some(r => r.status === 'failed');
+      if (hasError) {
+        return res.status(400).json({ error: 'Beberapa atau semua pesan gagal dikirim. Silakan cek log.', results });
+      }
 
     res.json({ success: true, results });
   } catch (error: any) {

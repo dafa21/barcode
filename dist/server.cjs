@@ -1122,8 +1122,16 @@ router4.post("/send-wappin", jwtAuthGuard, tenantGuard, async (req, res) => {
         });
         if (!response.ok) {
           const wappinError = await response.json().catch(() => ({}));
-          throw new Error(wappinError.errors?.[0]?.details || wappinError.errors?.[0]?.title || `HTTP ${response.status}`);
+          const errMsg = wappinError.errors?.[0]?.details || wappinError.errors?.[0]?.title || `HTTP ${response.status} ${JSON.stringify(wappinError)}`;
+          fs.appendFileSync("debug-wappin.log", `[${(/* @__PURE__ */ new Date()).toISOString()}] WAPPIN ERROR: ${errMsg}
+PAYLOAD: ${JSON.stringify(payload, null, 2)}
+
+`);
+          throw new Error(errMsg);
         }
+        fs.appendFileSync("debug-wappin.log", `[${(/* @__PURE__ */ new Date()).toISOString()}] WAPPIN SUCCESS for ${recipientWaId}
+
+`);
         const data = await response.json();
         console.log(`[WAPPIN SUCCESS] Ke ${recipientWaId}:`, JSON.stringify(data));
         try {
@@ -1137,6 +1145,10 @@ router4.post("/send-wappin", jwtAuthGuard, tenantGuard, async (req, res) => {
         results.push({ guestId: guest.id, status: "failed", error: err.message || String(err) });
       }
       await new Promise((resolve) => setTimeout(resolve, 1500));
+    }
+    const hasError = results.some((r) => r.status === "failed");
+    if (hasError) {
+      return res.status(400).json({ error: "Beberapa atau semua pesan gagal dikirim. Silakan cek log.", results });
     }
     res.json({ success: true, results });
   } catch (error) {
