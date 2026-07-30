@@ -506,9 +506,9 @@ router.post('/send-wappin', jwtAuthGuard, tenantGuard, async (req: AuthRequest, 
       const appUrl = envAppUrl.includes('localhost') ? 'https://undangan.laznasdewandakwah.or.id' : envAppUrl;
       const rsvpUrl = `${appUrl}/rsvp/${guest.barcodeUid}`;
       
-      const fileUrl = guest.customInvitationFile 
-        ? `${appUrl}/api/guests/public/invitation/${guest.barcodeUid}/undangan.pdf` 
-        : `${appUrl}/api/events/public/invitation/${event.eventName.toLowerCase().replace(/[^a-z0-9]+/g, '-')}/undangan.pdf`;
+      // Ganti fileUrl sementara dengan URL PDF Publik (Dummy) untuk testing
+      // Jika pakai URL public ini WA masuk, berarti VPS/Cloudflare memblokir Meta Crawler dari mendownload file lokal
+      const fileUrl = 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf';
 
       const eventDateStr = new Date(event.eventDate || '').toLocaleDateString('id-ID', { timeZone: 'Asia/Jakarta', weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
       const eventTimeStr = new Date(event.eventDate || '').toLocaleTimeString('id-ID', { timeZone: 'Asia/Jakarta', hour: '2-digit', minute: '2-digit' }).replace('.', ':');
@@ -576,10 +576,12 @@ router.post('/send-wappin', jwtAuthGuard, tenantGuard, async (req: AuthRequest, 
           throw new Error(wappinError.errors?.[0]?.details || wappinError.errors?.[0]?.title || `HTTP ${response.status}`);
         }
 
-        const data = await response.json();
-        
-        // Update DB
-        await db.update(guests).set({ wappinSent: true }).where(eq(guests.id, guest.id));
+        // Update DB (Dibungkus try-catch agar tidak error merah di PM2 jika lupa db:push)
+        try {
+          await db.update(guests).set({ wappinSent: true }).where(eq(guests.id, guest.id));
+        } catch (dbErr: any) {
+          console.warn('Wappin message sent, but failed to update DB (run db:push):', dbErr.message);
+        }
         
         results.push({ guestId: guest.id, status: 'success', data });
       } catch (err: any) {
