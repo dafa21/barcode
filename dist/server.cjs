@@ -1040,23 +1040,21 @@ router4.post("/send-wappin", jwtAuthGuard, tenantGuard, async (req, res) => {
       const rsvpUrl = `${appUrl}/rsvp/${guest.barcodeUid}`;
       let fileUrl = "";
       try {
-        const fs2 = require("fs");
-        const path3 = require("path");
         const isProd = process.env.NODE_ENV === "production";
-        const staticDir = isProd ? path3.join(process.cwd(), "dist") : path3.join(process.cwd(), "public");
-        const tempPdfDir = path3.join(staticDir, "wappin_pdf");
-        if (!fs2.existsSync(tempPdfDir)) {
-          fs2.mkdirSync(tempPdfDir, { recursive: true });
+        const staticDir = isProd ? path.join(process.cwd(), "dist") : path.join(process.cwd(), "public");
+        const tempPdfDir = path.join(staticDir, "wappin_pdf");
+        if (!fs.existsSync(tempPdfDir)) {
+          fs.mkdirSync(tempPdfDir, { recursive: true });
         }
         const pdfFilename = `${guest.barcodeUid}_${Date.now()}.pdf`;
-        const physicalPdfPath = path3.join(tempPdfDir, pdfFilename);
+        const physicalPdfPath = path.join(tempPdfDir, pdfFilename);
         const targetBase64 = guest.customInvitationFile || event.invitationFile || "";
         if (!targetBase64) {
           throw new Error("Tamu ini dan Event ini tidak memiliki file PDF undangan. Harap unggah PDF terlebih dahulu.");
         }
         const matches = targetBase64.match(/^data:(.+);base64,([\s\S]+)$/);
         if (matches && matches.length === 3) {
-          fs2.writeFileSync(physicalPdfPath, Buffer.from(matches[2], "base64"));
+          fs.writeFileSync(physicalPdfPath, Buffer.from(matches[2], "base64"));
           fileUrl = `${appUrl}/api/guests/download-physical-pdf/${pdfFilename}`;
         } else if (targetBase64.startsWith("http://") || targetBase64.startsWith("https://")) {
           fileUrl = targetBase64;
@@ -1159,7 +1157,7 @@ PAYLOAD: ${JSON.stringify(payload, null, 2)}
     return res.json({ success: true, results });
   } catch (error) {
     console.error("Wappin send error:", error);
-    res.status(500).json({ error: "Internal server error: " + String(error.stack || error.message || error) });
+    res.status(500).json({ error: "Internal server error: " + (error.stack || error.message || String(error)) });
   }
 });
 var guest_routes_default = router4;
