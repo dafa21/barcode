@@ -575,7 +575,9 @@ router.post('/send-wappin', jwtAuthGuard, tenantGuard, async (req: AuthRequest, 
           const wappinError = await response.json().catch(() => ({}));
           throw new Error(wappinError.errors?.[0]?.details || wappinError.errors?.[0]?.title || `HTTP ${response.status}`);
         }
-
+        
+        const data = await response.json();
+        
         // Update DB (Dibungkus try-catch agar tidak error merah di PM2 jika lupa db:push)
         try {
           await db.update(guests).set({ wappinSent: true }).where(eq(guests.id, guest.id));
