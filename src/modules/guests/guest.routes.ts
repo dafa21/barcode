@@ -510,14 +510,47 @@ router.post('/send-wappin', jwtAuthGuard, tenantGuard, async (req: AuthRequest, 
       const appUrl = envAppUrl.includes('localhost') ? 'https://undangan.laznasdewandakwah.or.id' : envAppUrl;
       const rsvpUrl = `${appUrl}/rsvp/${guest.barcodeUid}`;
       
-      const fileUrl = guest.customInvitationFile 
-        ? `${appUrl}/api/guests/public/invitation/${guest.barcodeUid}/undangan.pdf` 
-        : `${appUrl}/api/events/public/invitation/${event.eventName.toLowerCase().replace(/[^a-z0-9]+/g, '-')}/undangan.pdf`;
+      // === AKALAN: FILE FISIK ===
+      let fileUrl = '';
+      try {
+        const fs = require('fs');
+        const path = require('path');
+        const isProd = process.env.NODE_ENV === 'production';
+        const staticDir = isProd ? path.join(process.cwd(), 'dist') : path.join(process.cwd(), 'public');
+        const tempPdfDir = path.join(staticDir, 'wappin_pdf');
+        
+        if (!fs.existsSync(tempPdfDir)) {
+          fs.mkdirSync(tempPdfDir, { recursive: true });
+        }
+        
+        const pdfFilename = `${guest.barcodeUid}_${Date.now()}.pdf`;
+        const physicalPdfPath = path.join(tempPdfDir, pdfFilename);
+        
+        // Extract base64
+        const targetBase64 = guest.customInvitationFile || event.invitationFile;
+        const matches = targetBase64.match(/^data:(.+);base64,(.+)$/);
+        if (matches && matches.length === 3) {
+          fs.writeFileSync(physicalPdfPath, Buffer.from(matches[2], 'base64'));
+          fileUrl = `${appUrl}/wappin_pdf/${pdfFilename}`;
+        } else {
+          // Fallback if not valid base64
+          fileUrl = guest.customInvitationFile 
+            ? `${appUrl}/api/guests/public/invitation/${guest.barcodeUid}/undangan.pdf` 
+            : `${appUrl}/api/events/public/invitation/${event.eventName.toLowerCase().replace(/[^a-z0-9]+/g, '-')}/undangan.pdf`;
+        }
+      } catch (err) {
+        console.error('Error creating physical PDF:', err);
+        // Fallback
+        fileUrl = guest.customInvitationFile 
+          ? `${appUrl}/api/guests/public/invitation/${guest.barcodeUid}/undangan.pdf` 
+          : `${appUrl}/api/events/public/invitation/${event.eventName.toLowerCase().replace(/[^a-z0-9]+/g, '-')}/undangan.pdf`;
+      }
+      // === END AKALAN ===
 
       const eventDateStr = new Date(event.eventDate || '').toLocaleDateString('id-ID', { timeZone: 'Asia/Jakarta', weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
       const eventTimeStr = new Date(event.eventDate || '').toLocaleTimeString('id-ID', { timeZone: 'Asia/Jakarta', hour: '2-digit', minute: '2-digit' }).replace('.', ':');
 
-      const documentFilename = `Undangan_${guest.guestName.replace(/[^a-zA-Z0-9]/g, '_')}.pdf`;
+      const documentFilename = `${guest.guestName}_Undangan`.replace(/[^a-zA-Z0-9]/g, '_');
 
       // Format Payload Wappin 2.0 dengan Header Dokumen
       const payload = {
@@ -537,8 +570,7 @@ router.post('/send-wappin', jwtAuthGuard, tenantGuard, async (req: AuthRequest, 
                 {
                   type: "document",
                   document: {
-                    // AKALAN: Kirim raw base64 langsung ke Wappin! (Bukan link URL server kita)
-                    link: guest.customInvitationFile || event.invitationFile,
+                    link: fileUrl,
                     filename: documentFilename
                   }
                 }
