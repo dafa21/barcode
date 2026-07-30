@@ -1159,7 +1159,7 @@ PAYLOAD: ${JSON.stringify(payload, null, 2)}
     return res.json({ success: true, results });
   } catch (error) {
     console.error("Wappin send error:", error);
-    res.status(500).json({ error: "Internal server error", details: error.message });
+    res.status(500).json({ error: "Internal server error: " + String(error.stack || error.message || error) });
   }
 });
 var guest_routes_default = router4;

@@ -531,8 +531,6 @@ router.post('/send-wappin', jwtAuthGuard, tenantGuard, async (req: AuthRequest, 
       // === AKALAN: FILE FISIK ===
       let fileUrl = '';
       try {
-        const fs = require('fs');
-        const path = require('path');
         const isProd = process.env.NODE_ENV === 'production';
         const staticDir = isProd ? path.join(process.cwd(), 'dist') : path.join(process.cwd(), 'public');
         const tempPdfDir = path.join(staticDir, 'wappin_pdf');
