@@ -536,11 +536,11 @@ router.post('/send-wappin', jwtAuthGuard, tenantGuard, async (req: AuthRequest, 
             {
               type: "body",
               parameters: [
-                { type: "text", text: guest.guestName || "-" },
-                { type: "text", text: event.eventName || "Acara" },
+                { type: "text", text: (guest.guestName || "-").replace(/[\r\n]+/g, ' ') },
+                { type: "text", text: (event.eventName || "Acara").replace(/[\r\n]+/g, ' ') },
                 { type: "text", text: eventDateStr || "-" },
                 { type: "text", text: eventTimeStr || "-" },
-                { type: "text", text: event.location || "-" },
+                { type: "text", text: (event.location || "-").replace(/[\r\n]+/g, ' ') },
                 { type: "text", text: fileUrl },
                 { type: "text", text: rsvpUrl }
               ]
