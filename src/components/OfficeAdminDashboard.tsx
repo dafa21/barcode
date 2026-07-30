@@ -204,6 +204,9 @@ export function OfficeAdminDashboard({ user }: { user: User }) {
   const [newEventThemePrimary, setNewEventThemePrimary] = useState('#b45309');
   const [newEventThemeSecondary, setNewEventThemeSecondary] = useState('#fef3c7');
   const [printingGuest, setPrintingGuest] = useState<any | null>(null);
+  const [isGeneratingWappinPdfs, setIsGeneratingWappinPdfs] = useState(false);
+  const [generatingWappinProgress, setGeneratingWappinProgress] = useState<{current: number, total: number}>({current: 0, total: 0});
+  const [hiddenGeneratingGuest, setHiddenGeneratingGuest] = useState<any | null>(null);
   const [editingGuest, setEditingGuest] = useState<any | null>(null);
   const [newEventLocation, setNewEventLocation] = useState('');
   const [newEventMapsLink, setNewEventMapsLink] = useState('');
@@ -842,50 +845,112 @@ const handleCreateEvent = async (e: React.FormEvent) => {
           selectedEvent?.socialYoutube,
           selectedEvent?.socialInstagram
         );
-
         window.open(`https://api.whatsapp.com/send?phone=${formattedPhone}&text=${encodeURIComponent(message)}`, '_blank');
       });
       
     setSelectedGuestIds([]);
   };
 
+  const generatePdfBase64 = async (guest: Guest): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      setHiddenGeneratingGuest(guest);
+      // Give React time to render the hidden component
+      setTimeout(async () => {
+        try {
+          const html2canvas = (await import('html2canvas')).default;
+          const jsPDF = (await import('jspdf')).default;
+          const element = document.getElementById('hidden-letter-print-area');
+          if (!element) throw new Error('Hidden element not found');
+          
+          const canvas = await html2canvas(element, { scale: 2, useCORS: true });
+          const imgData = canvas.toDataURL('image/png');
+          const isLetter = selectedEvent?.letterSize === 'LETTER';
+          const pdf = new jsPDF({
+            orientation: 'portrait',
+            unit: 'mm',
+            format: isLetter ? 'letter' : 'a4'
+          });
+          
+          const pdfWidth = pdf.internal.pageSize.getWidth();
+          const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+          
+          pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+          resolve(pdf.output('datauristring')); // Base64 data URL
+        } catch (err) {
+          reject(err);
+        }
+      }, 500); // 500ms wait
+    });
+  };
+
   const handleBulkSendWappin = async () => {
     if (!selectedEvent || selectedGuestIds.length === 0) return;
     
-    showConfirm("Kirim via Wappin", `Anda yakin ingin mengirim undangan ke ${selectedGuestIds.length} tamu melalui Wappin?`, async () => {
+    const selectedGuestObjects = guests.filter(g => selectedGuestIds.includes(g.id));
+    
+    showConfirm("Kirim via Wappin API", `Anda yakin ingin mengirim undangan ke ${selectedGuestIds.length} tamu melalui Wappin? Proses ini akan membuat PDF masing-masing terlebih dahulu.`, async () => {
       try {
-      const response = await fetch('/api/guests/send-wappin', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
-        },
-        body: JSON.stringify({ guestIds: selectedGuestIds })
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Gagal mengirim pesan Wappin');
-      }
-
-      const data = await response.json();
-      const successCount = data.results.filter((r: any) => r.status === 'success').length;
-      
-      if (successCount === 0 && data.results.length > 0) {
-        throw new Error(data.results[0]?.error || 'Unknown error');
-      }
+        setIsGeneratingWappinPdfs(true);
+        setGeneratingWappinProgress({ current: 0, total: selectedGuestObjects.length });
         
-        if (selectedEvent) {
-          fetchGuests(selectedEvent.id);
+        let successCount = 0;
+        let failCount = 0;
+        
+        for (let i = 0; i < selectedGuestObjects.length; i++) {
+          const guest = selectedGuestObjects[i];
+          setGeneratingWappinProgress({ current: i + 1, total: selectedGuestObjects.length });
+          
+          try {
+            // Generate PDF
+            const base64Pdf = await generatePdfBase64(guest);
+            
+            // Upload PDF to backend using PUT /api/guests/:id
+            const updateRes = await fetch(`/api/guests/${guest.id}`, {
+              method: 'PUT',
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${localStorage.getItem('token')}`
+              },
+              body: JSON.stringify({ customInvitationFile: base64Pdf })
+            });
+            if (!updateRes.ok) throw new Error('Gagal menyimpan PDF');
+            
+            // Send Wappin
+            const sendRes = await fetch('/api/guests/send-wappin', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${localStorage.getItem('token')}`
+              },
+              body: JSON.stringify({ guestIds: [guest.id] })
+            });
+            
+            const sendData = await sendRes.json();
+            if (sendRes.ok && sendData.results[0]?.status === 'success') {
+              successCount++;
+            } else {
+              failCount++;
+            }
+          } catch (err) {
+            console.error(`Failed sending to ${guest.guestName}:`, err);
+            failCount++;
+          }
         }
-        showAlert("Berhasil", `Berhasil mengirim ${successCount} undangan dari ${selectedGuestIds.length} tujuan.`, 'success');
+        
+        setHiddenGeneratingGuest(null);
+        setIsGeneratingWappinPdfs(false);
+        
+        showAlert("Selesai", `Selesai mengirim undangan via Wappin. Berhasil: ${successCount}, Gagal: ${failCount}`, 'success');
+        if (selectedEvent) fetchGuests(selectedEvent.id);
         setSelectedGuestIds([]);
       } catch (error: any) {
-        console.error('Send Wappin error:', error);
-        showAlert("Gagal", 'Terjadi kesalahan saat mengirim pesan via Wappin: ' + error.message, 'alert');
+        setIsGeneratingWappinPdfs(false);
+        setHiddenGeneratingGuest(null);
+        showAlert("Gagal", 'Terjadi kesalahan: ' + error.message, 'alert');
       }
     });
   };
+
 
 
   // Reset page when event changes
@@ -1996,8 +2061,26 @@ const handleCreateEvent = async (e: React.FormEvent) => {
             <Send className="w-3.5 h-3.5" />
          </button>
          <button onClick={async () => {
-            showConfirm("Kirim via Wappin API", `Anda yakin ingin mengirim undangan ke ${guest.guestName} melalui Wappin API?`, async () => {
+            showConfirm("Kirim via Wappin API", `Anda yakin ingin mengirim undangan ke ${guest.guestName} melalui Wappin API? Proses ini akan membuat PDF terlebih dahulu.`, async () => {
               try {
+                setIsGeneratingWappinPdfs(true);
+                setGeneratingWappinProgress({ current: 1, total: 1 });
+                
+                // Generate PDF
+                const base64Pdf = await generatePdfBase64(guest);
+                
+                // Upload PDF to backend
+                const updateRes = await fetch(`/api/guests/${guest.id}`, {
+                  method: 'PUT',
+                  headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                  },
+                  body: JSON.stringify({ customInvitationFile: base64Pdf })
+                });
+                if (!updateRes.ok) throw new Error('Gagal menyimpan PDF');
+
+                // Send Wappin
                 const response = await fetch('/api/guests/send-wappin', {
                   method: 'POST',
                   headers: {
@@ -2006,8 +2089,13 @@ const handleCreateEvent = async (e: React.FormEvent) => {
                   },
                   body: JSON.stringify({ guestIds: [guest.id] })
                 });
+                
                 if (!response.ok) throw new Error((await response.json()).error || 'Gagal mengirim pesan Wappin');
                 const data = await response.json();
+                
+                setIsGeneratingWappinPdfs(false);
+                setHiddenGeneratingGuest(null);
+                
                 if (data.results[0]?.status === 'success') {
                   showAlert("Berhasil", 'Berhasil mengirim undangan melalui Wappin.', 'success');
                   if (selectedEvent) fetchGuests(selectedEvent.id);
@@ -2015,6 +2103,8 @@ const handleCreateEvent = async (e: React.FormEvent) => {
                   throw new Error(data.results[0]?.error || 'Unknown error');
                 }
               } catch (error: any) {
+                setIsGeneratingWappinPdfs(false);
+                setHiddenGeneratingGuest(null);
                 showAlert("Gagal", 'Terjadi kesalahan: ' + error.message, 'alert');
               }
             });
@@ -3152,8 +3242,56 @@ const handleCreateEvent = async (e: React.FormEvent) => {
         </div>
       )}
       <CustomModal config={modalConfig} onClose={() => setModalConfig(prev => ({ ...prev, isOpen: false }))} />
-    </>
 
+      {/* Hidden PDF Generator Area */}
+      {hiddenGeneratingGuest && selectedEvent && (
+        <div style={{ position: 'absolute', top: '-9999px', left: '-9999px', opacity: 0, pointerEvents: 'none' }}>
+          <div 
+            id="hidden-letter-print-area" 
+            className="bg-white relative overflow-hidden"
+            style={{ 
+              width: '794px',
+              minHeight: '1123px',
+            }}
+          >
+            <DigitalInvitation 
+              eventName={selectedEvent.eventName || 'Nama Acara'}
+              eventDate={selectedEvent.eventDate || new Date().toISOString()}
+              location={selectedEvent.location || 'Lokasi Acara'}
+              mapsLink={selectedEvent.mapsLink}
+              guestName={hiddenGeneratingGuest.guestName}
+              heroImage={selectedEvent.heroImage || null}
+              logo={selectedEvent.logo || null}
+              background={selectedEvent.letterBackground || null}
+              content={selectedEvent.letterContent || ''}
+              openingQuote={selectedEvent.openingQuote || null}
+              eventEndDate={selectedEvent.eventEndDate || null}
+              rundown={selectedEvent.rundown || null}
+              backsound={selectedEvent.backsound || null}
+              themePrimary={selectedEvent.themePrimary || null}
+              themeSecondary={selectedEvent.themeSecondary || null}
+              socialWebsite={selectedEvent.socialWebsite || null}
+              socialYoutube={selectedEvent.socialYoutube || null}
+              socialInstagram={selectedEvent.socialInstagram || null}
+              isPreview={true}
+              isPrint={true}
+            />
+          </div>
+        </div>
+      )}
+      
+      {/* Wappin Progress Modal */}
+      {isGeneratingWappinPdfs && (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-[9999]">
+          <div className="bg-white rounded-2xl w-full max-w-sm shadow-2xl overflow-hidden p-8 text-center space-y-4 flex flex-col items-center">
+            <div className="animate-spin w-12 h-12 border-4 border-emerald-500 border-t-transparent rounded-full mb-4"></div>
+            <h3 className="text-xl font-bold text-gray-900">Mengirim Undangan...</h3>
+            <p className="text-gray-500">Memproses {generatingWappinProgress.current} dari {generatingWappinProgress.total} tamu.</p>
+            <p className="text-xs text-gray-400">Mohon jangan menutup halaman ini.</p>
+          </div>
+        </div>
+      )}
+    </>
       
   );
 }
