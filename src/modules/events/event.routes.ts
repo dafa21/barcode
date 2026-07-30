@@ -94,9 +94,12 @@ const handleEventInvitation = async (req: any, res: any) => {
       const mimeType = matches[1];
       const base64Data = matches[2];
       const buffer = Buffer.from(base64Data, 'base64');
-      res.setHeader('Content-Type', mimeType);
-      res.setHeader('Content-Disposition', `inline; filename="${event.eventName}_Undangan.pdf"`);
-      return res.send(buffer);
+      res.setHeader('Content-Type', mimeType || 'application/pdf');
+      res.setHeader('Content-Length', buffer.length);
+      res.setHeader('Accept-Ranges', 'bytes');
+      res.setHeader('Cache-Control', 'public, max-age=86400'); // Biar Cloudflare bantu meloloskan
+      res.setHeader('Content-Disposition', `attachment; filename="${event.eventName.replace(/[^a-zA-Z0-9]/g, '_')}_Undangan.pdf"`);
+      return res.end(buffer);
     } else {
       return res.send(event.invitationFile);
     }
