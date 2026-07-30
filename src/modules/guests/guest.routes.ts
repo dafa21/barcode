@@ -120,10 +120,16 @@ router.post('/rsvp/:barcodeUid', async (req, res) => {
   }
 });
 
-router.get('/public/invitation/:barcodeUid', async (req, res) => {
+// Endpoint untuk download file undangan custom guest (PDF) - Optional /undangan.pdf
+router.get('/public/invitation/:barcodeUid([^/]+)(?:/undangan.pdf)?', async (req, res) => {
   try {
-    const { barcodeUid } = req.params;
+    let { barcodeUid } = req.params;
     
+    // Fallback if regex match includes the suffix (though the regex above should handle it)
+    if (barcodeUid.endsWith('/undangan.pdf')) {
+      barcodeUid = barcodeUid.replace('/undangan.pdf', '');
+    }
+
     const guestResult = await db.select({
       customInvitationFile: guests.customInvitationFile,
       guestName: guests.guestName
@@ -501,8 +507,8 @@ router.post('/send-wappin', jwtAuthGuard, tenantGuard, async (req: AuthRequest, 
       const rsvpUrl = `${appUrl}/rsvp/${guest.barcodeUid}`;
       
       const fileUrl = guest.customInvitationFile 
-        ? `${appUrl}/api/guests/public/invitation/${guest.barcodeUid}?ext=.pdf` 
-        : `${appUrl}/api/events/public/invitation/${event.eventName.toLowerCase().replace(/[^a-z0-9]+/g, '-')}?ext=.pdf`;
+        ? `${appUrl}/api/guests/public/invitation/${guest.barcodeUid}/undangan.pdf` 
+        : `${appUrl}/api/events/public/invitation/${event.eventName.toLowerCase().replace(/[^a-z0-9]+/g, '-')}/undangan.pdf`;
 
       const eventDateStr = new Date(event.eventDate || '').toLocaleDateString('id-ID', { timeZone: 'Asia/Jakarta', weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
       const eventTimeStr = new Date(event.eventDate || '').toLocaleTimeString('id-ID', { timeZone: 'Asia/Jakarta', hour: '2-digit', minute: '2-digit' }).replace('.', ':');

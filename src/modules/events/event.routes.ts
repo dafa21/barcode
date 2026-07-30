@@ -57,9 +57,10 @@ router.get('/public/gallery/:id/:index', async (req, res) => {
   }
 });
 
-router.get('/public/invitation/:slug', async (req, res) => {
+router.get('/public/invitation/:slug([^/]+)(?:/undangan.pdf)?', async (req, res) => {
   try {
-    const { slug } = req.params;
+    let { slug } = req.params;
+    if (slug.endsWith('/undangan.pdf')) slug = slug.replace('/undangan.pdf', '');
     
     // First, fetch only the IDs and eventNames to find the matching slug without loading huge files
     const allEventsLight = await db.select({
