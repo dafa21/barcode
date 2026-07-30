@@ -862,40 +862,40 @@ const handleCreateEvent = async (e: React.FormEvent) => {
           const element = document.getElementById('hidden-letter-print-area');
           if (!element) throw new Error('Hidden element not found');
           
+          // Step 1: Cache ALL computed styles for every element (browser converts oklch → rgb)
+          const targetEl = element;
+          const allEls = Array.from(targetEl.querySelectorAll('*'));
+          allEls.unshift(targetEl); // include the root element too
+          const cachedAllStyles: Array<Map<string, string>> = [];
+          for (const el of allEls) {
+            const cs = window.getComputedStyle(el);
+            const styleMap = new Map<string, string>();
+            for (let i = 0; i < cs.length; i++) {
+              const prop = cs[i];
+              styleMap.set(prop, cs.getPropertyValue(prop));
+            }
+            cachedAllStyles.push(styleMap);
+          }
+
           const canvas = await html2canvas(element, { 
             scale: 2, 
             useCORS: true,
             onclone: (clonedDoc: Document) => {
-              // Fix oklch colors — html2canvas doesn't support oklch() color function from Tailwind v4
-              // Step 1: Cache computed styles (browser already converts oklch → rgb)
-              const allEls = Array.from(clonedDoc.querySelectorAll('*'));
-              const cachedStyles: Array<{color: string; bg: string; bc: string}> = [];
-              allEls.forEach((el) => {
-                const cs = clonedDoc.defaultView?.getComputedStyle(el as Element);
-                cachedStyles.push({
-                  color: cs?.color || '',
-                  bg: cs?.backgroundColor || '',
-                  bc: cs?.borderColor || '',
-                });
-              });
-              // Step 2: Remove all CSS rules containing oklch
-              Array.from(clonedDoc.styleSheets).forEach((sheet) => {
-                try {
-                  const rules = Array.from(sheet.cssRules);
-                  for (let i = rules.length - 1; i >= 0; i--) {
-                    if (rules[i].cssText.includes('oklch')) {
-                      sheet.deleteRule(i);
-                    }
-                  }
-                } catch (_e) { /* cross-origin stylesheet, skip */ }
-              });
-              // Step 3: Re-apply cached computed colors as inline styles
-              allEls.forEach((el, idx) => {
+              // NUCLEAR FIX: Remove ALL stylesheets so html2canvas never sees oklch
+              clonedDoc.querySelectorAll('style, link[rel="stylesheet"]').forEach(el => el.remove());
+              
+              // Re-apply cached computed styles as inline styles on every element
+              const clonedTarget = clonedDoc.getElementById('hidden-letter-print-area');
+              if (!clonedTarget) return;
+              const clonedEls = Array.from(clonedTarget.querySelectorAll('*'));
+              clonedEls.unshift(clonedTarget);
+              clonedEls.forEach((el, idx) => {
                 const htmlEl = el as HTMLElement;
-                const s = cachedStyles[idx];
-                if (s.color) htmlEl.style.color = s.color;
-                if (s.bg) htmlEl.style.backgroundColor = s.bg;
-                if (s.bc) htmlEl.style.borderColor = s.bc;
+                const styles = cachedAllStyles[idx];
+                if (!styles) return;
+                styles.forEach((value, prop) => {
+                  try { htmlEl.style.setProperty(prop, value); } catch (_e) { /* skip */ }
+                });
               });
             }
           });
@@ -2985,36 +2985,40 @@ const handleCreateEvent = async (e: React.FormEvent) => {
                     const element = document.getElementById('letter-print-area');
                     if (!element) return;
                     
+                    // Step 1: Cache ALL computed styles (browser converts oklch → rgb)
+                    const printTarget = element;
+                    const printAllEls = Array.from(printTarget.querySelectorAll('*'));
+                    printAllEls.unshift(printTarget);
+                    const printCachedStyles: Array<Map<string, string>> = [];
+                    for (const el of printAllEls) {
+                      const cs = window.getComputedStyle(el);
+                      const styleMap = new Map<string, string>();
+                      for (let i = 0; i < cs.length; i++) {
+                        const prop = cs[i];
+                        styleMap.set(prop, cs.getPropertyValue(prop));
+                      }
+                      printCachedStyles.push(styleMap);
+                    }
+
                     const canvas = await html2canvas(element, { 
                       scale: 2, 
                       useCORS: true,
                       onclone: (clonedDoc: Document) => {
-                        const allEls = Array.from(clonedDoc.querySelectorAll('*'));
-                        const cachedStyles: Array<{color: string; bg: string; bc: string}> = [];
-                        allEls.forEach((el) => {
-                          const cs = clonedDoc.defaultView?.getComputedStyle(el as Element);
-                          cachedStyles.push({
-                            color: cs?.color || '',
-                            bg: cs?.backgroundColor || '',
-                            bc: cs?.borderColor || '',
-                          });
-                        });
-                        Array.from(clonedDoc.styleSheets).forEach((sheet) => {
-                          try {
-                            const rules = Array.from(sheet.cssRules);
-                            for (let i = rules.length - 1; i >= 0; i--) {
-                              if (rules[i].cssText.includes('oklch')) {
-                                sheet.deleteRule(i);
-                              }
-                            }
-                          } catch (_e) { /* cross-origin */ }
-                        });
-                        allEls.forEach((el, idx) => {
+                        // Remove ALL stylesheets so html2canvas never sees oklch
+                        clonedDoc.querySelectorAll('style, link[rel="stylesheet"]').forEach(el => el.remove());
+                        
+                        // Re-apply cached computed styles inline
+                        const clonedTarget = clonedDoc.getElementById('letter-print-area');
+                        if (!clonedTarget) return;
+                        const clonedEls = Array.from(clonedTarget.querySelectorAll('*'));
+                        clonedEls.unshift(clonedTarget);
+                        clonedEls.forEach((el, idx) => {
                           const htmlEl = el as HTMLElement;
-                          const s = cachedStyles[idx];
-                          if (s.color) htmlEl.style.color = s.color;
-                          if (s.bg) htmlEl.style.backgroundColor = s.bg;
-                          if (s.bc) htmlEl.style.borderColor = s.bc;
+                          const styles = printCachedStyles[idx];
+                          if (!styles) return;
+                          styles.forEach((value, prop) => {
+                            try { htmlEl.style.setProperty(prop, value); } catch (_e) { /* skip */ }
+                          });
                         });
                       }
                     });
