@@ -615,6 +615,7 @@ router.post('/send-wappin', jwtAuthGuard, tenantGuard, async (req: AuthRequest, 
         }
         
         const data = await response.json();
+        console.log(`[WAPPIN SUCCESS] Ke ${recipientWaId}:`, JSON.stringify(data));
         
         // Update DB (Dibungkus try-catch agar tidak error merah di PM2 jika lupa db:push)
         try {
@@ -625,6 +626,7 @@ router.post('/send-wappin', jwtAuthGuard, tenantGuard, async (req: AuthRequest, 
         
         results.push({ guestId: guest.id, status: 'success', data });
       } catch (err: any) {
+        console.error(`[WAPPIN FAILED] Ke ${recipientWaId}:`, err.message || String(err));
         results.push({ guestId: guest.id, status: 'failed', error: err.message || String(err) });
       }
       
