@@ -527,7 +527,7 @@ router.post('/send-wappin', jwtAuthGuard, tenantGuard, async (req: AuthRequest, 
         const physicalPdfPath = path.join(tempPdfDir, pdfFilename);
         
         // Extract base64
-        const targetBase64 = guest.customInvitationFile || event.invitationFile;
+        const targetBase64 = guest.customInvitationFile || event.invitationFile || '';
         const matches = targetBase64.match(/^data:(.+);base64,(.+)$/);
         if (matches && matches.length === 3) {
           fs.writeFileSync(physicalPdfPath, Buffer.from(matches[2], 'base64'));
@@ -627,6 +627,9 @@ router.post('/send-wappin', jwtAuthGuard, tenantGuard, async (req: AuthRequest, 
       } catch (err: any) {
         results.push({ guestId: guest.id, status: 'failed', error: err.message || String(err) });
       }
+      
+      // Jeda 1.5 detik antar pengiriman supaya API Wappin tidak diam-diam membuang pesan (Rate Limit / Anti-Spam beruntun)
+      await new Promise(resolve => setTimeout(resolve, 1500));
     }
 
     res.json({ success: true, results });
