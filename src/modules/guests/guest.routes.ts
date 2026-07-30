@@ -511,6 +511,7 @@ router.post('/send-wappin', jwtAuthGuard, tenantGuard, async (req: AuthRequest, 
 
       // Format Payload Wappin 2.0 dengan Header Dokumen
       const payload = {
+        messaging_product: "whatsapp",
         to: recipientWaId,
         type: "template",
         template: {
@@ -550,12 +551,18 @@ router.post('/send-wappin', jwtAuthGuard, tenantGuard, async (req: AuthRequest, 
 
       try {
         const sendUrl = 'https://api.chat.wappin.app/v1/messages';
+        
+        const headers: any = {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${activeBearerToken}`
+        };
+        if (process.env.WAPPIN_PROJECT_ID) {
+          headers['Wappin-Project-Id'] = process.env.WAPPIN_PROJECT_ID;
+        }
+
         const response = await fetch(sendUrl, {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${activeBearerToken}`
-          },
+          headers,
           body: JSON.stringify(payload)
         });
 

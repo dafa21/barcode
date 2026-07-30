@@ -27,7 +27,7 @@ var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__ge
 
 // server.ts
 var import_config = require("dotenv/config");
-var import_express8 = __toESM(require("express"), 1);
+var import_express9 = __toESM(require("express"), 1);
 var import_path = __toESM(require("path"), 1);
 var import_vite = require("vite");
 
@@ -114,6 +114,8 @@ var guests = (0, import_pg_core.pgTable)("guests", {
   guestName: (0, import_pg_core.varchar)("guest_name", { length: 255 }).notNull(),
   company: (0, import_pg_core.varchar)("company", { length: 255 }),
   jobTitle: (0, import_pg_core.varchar)("job_title", { length: 255 }),
+  guestType: (0, import_pg_core.varchar)("guest_type", { length: 100 }),
+  // Kementrian, Pejabat/Tokoh Publik, Dewan Dakwah, dll
   email: (0, import_pg_core.varchar)("email", { length: 100 }),
   phone: (0, import_pg_core.varchar)("phone", { length: 20 }),
   barcodeUid: (0, import_pg_core.varchar)("barcode_uid", { length: 100 }).notNull().unique(),
@@ -121,7 +123,9 @@ var guests = (0, import_pg_core.pgTable)("guests", {
   rsvpStatus: rsvpEnum("rsvp_status").default("pending"),
   isVip: (0, import_pg_core.boolean)("is_vip").default(false),
   paxCount: (0, import_pg_core.integer)("pax_count").default(1),
-  customInvitationFile: (0, import_pg_core.text)("custom_invitation_file")
+  customInvitationFile: (0, import_pg_core.text)("custom_invitation_file"),
+  wappinSent: (0, import_pg_core.boolean)("wappin_sent").default(false),
+  manualWaSent: (0, import_pg_core.boolean)("manual_wa_sent").default(false)
 });
 var attendances = (0, import_pg_core.pgTable)("attendances", {
   id: (0, import_pg_core.uuid)("id").primaryKey().defaultRandom(),
@@ -353,6 +357,47 @@ var tenantGuard = (req, res, next) => {
 
 // src/modules/events/event.routes.ts
 var router3 = (0, import_express3.Router)();
+router3.get("/public/image/:id/:field", async (req, res) => {
+  try {
+    const { id, field } = req.params;
+    const allowedFields = ["logo", "twibbonBackground", "heroImage", "letterBackground"];
+    if (!allowedFields.includes(field)) return res.status(400).send("Invalid field");
+    const result = await db.select({
+      [field]: events[field]
+    }).from(events).where((0, import_drizzle_orm4.eq)(events.id, id)).limit(1);
+    if (result.length === 0 || !result[0][field]) return res.status(404).send("Not found");
+    const base64Str = result[0][field];
+    const matches = base64Str.match(/^data:(.+);base64,(.+)$/);
+    if (matches && matches.length === 3) {
+      res.setHeader("Content-Type", matches[1]);
+      res.setHeader("Cache-Control", "public, max-age=31536000");
+      return res.send(Buffer.from(matches[2], "base64"));
+    }
+    return res.send(base64Str);
+  } catch (error) {
+    res.status(500).send("Error");
+  }
+});
+router3.get("/public/gallery/:id/:index", async (req, res) => {
+  try {
+    const { id, index } = req.params;
+    const result = await db.select({ gallery: events.gallery }).from(events).where((0, import_drizzle_orm4.eq)(events.id, id)).limit(1);
+    if (result.length === 0 || !result[0].gallery) return res.status(404).send("Not found");
+    const galleryArr = JSON.parse(result[0].gallery);
+    const idx = parseInt(index);
+    if (isNaN(idx) || idx < 0 || idx >= galleryArr.length) return res.status(404).send("Not found");
+    const base64Str = galleryArr[idx];
+    const matches = base64Str.match(/^data:(.+);base64,(.+)$/);
+    if (matches && matches.length === 3) {
+      res.setHeader("Content-Type", matches[1]);
+      res.setHeader("Cache-Control", "public, max-age=31536000");
+      return res.send(Buffer.from(matches[2], "base64"));
+    }
+    return res.send(base64Str);
+  } catch (error) {
+    res.status(500).send("Error");
+  }
+});
 router3.get("/public/invitation/:slug", async (req, res) => {
   try {
     const { slug } = req.params;
@@ -589,7 +634,7 @@ router4.get("/rsvp/:barcodeUid", async (req, res) => {
       jobTitle: guests.jobTitle,
       rsvpStatus: guests.rsvpStatus,
       paxCount: guests.paxCount,
-      customInvitationFile: guests.customInvitationFile,
+      customInvitationFile: import_drizzle_orm5.sql`CASE WHEN ${guests.customInvitationFile} IS NOT NULL THEN 'exists' ELSE NULL END`.as("customInvitationFile"),
       event: {
         id: events.id,
         eventName: events.eventName,
@@ -613,7 +658,26 @@ router4.get("/rsvp/:barcodeUid", async (req, res) => {
     if (guestResult.length === 0) {
       return res.status(404).json({ error: "Guest not found" });
     }
-    res.json(guestResult[0]);
+    const guest = guestResult[0];
+    if (guest.event) {
+      const e = guest.event;
+      const getUrl = (field) => `/api/events/public/image/${e.id}/${field}`;
+      if (e.logo && e.logo.startsWith("data:image")) e.logo = getUrl("logo");
+      if (e.heroImage && e.heroImage.startsWith("data:image")) e.heroImage = getUrl("heroImage");
+      if (e.twibbonBackground && e.twibbonBackground.startsWith("data:image")) e.twibbonBackground = getUrl("twibbonBackground");
+      if (e.letterBackground && e.letterBackground.startsWith("data:image")) e.letterBackground = getUrl("letterBackground");
+      if (e.gallery) {
+        try {
+          const galleryArr = JSON.parse(e.gallery);
+          const newGallery = galleryArr.map(
+            (img, index) => img.startsWith("data:image") ? `/api/events/public/gallery/${e.id}/${index}` : img
+          );
+          e.gallery = JSON.stringify(newGallery);
+        } catch (err) {
+        }
+      }
+    }
+    res.json(guest);
   } catch (error) {
     res.status(500).json({ error: "Internal server error", cause: error });
   }
@@ -681,7 +745,7 @@ router4.get("/public/invitation/:barcodeUid", async (req, res) => {
 router4.use(jwtAuthGuard, tenantGuard);
 router4.post("/", async (req, res) => {
   try {
-    const { eventId, guestName, email, phone, company, jobTitle, picId, isVip, customInvitationFile } = req.body;
+    const { eventId, guestName, email, phone, company, jobTitle, guestType, picId, isVip, customInvitationFile } = req.body;
     const eventResult = await db.select().from(events).where((0, import_drizzle_orm5.eq)(events.id, eventId)).limit(1);
     if (eventResult.length === 0) {
       return res.status(404).json({ error: "Event not found" });
@@ -697,6 +761,7 @@ router4.post("/", async (req, res) => {
       phone,
       company,
       jobTitle,
+      guestType,
       picId,
       barcodeUid,
       isVip,
@@ -710,7 +775,7 @@ router4.post("/", async (req, res) => {
 router4.put("/:id", async (req, res) => {
   try {
     const { id } = req.params;
-    const { guestName, email, phone, company, jobTitle, picId, isVip, customInvitationFile } = req.body;
+    const { guestName, email, phone, company, jobTitle, guestType, picId, isVip, customInvitationFile } = req.body;
     const guestResult = await db.select().from(guests).where((0, import_drizzle_orm5.eq)(guests.id, id)).limit(1);
     if (guestResult.length === 0) {
       return res.status(404).json({ error: "Guest not found" });
@@ -728,6 +793,7 @@ router4.put("/:id", async (req, res) => {
       phone: phone || null,
       company: company || null,
       jobTitle: jobTitle || null,
+      guestType: guestType || null,
       picId: picId || null,
       isVip: isVip !== void 0 ? !!isVip : guestResult[0].isVip,
       customInvitationFile: customInvitationFile !== void 0 ? customInvitationFile : guestResult[0].customInvitationFile
@@ -756,11 +822,16 @@ router4.get("/event/:eventId", async (req, res) => {
       phone: guests.phone,
       company: guests.company,
       jobTitle: guests.jobTitle,
+      guestType: guests.guestType,
       picId: guests.picId,
       picName: users.username,
       barcodeUid: guests.barcodeUid,
       rsvpStatus: guests.rsvpStatus,
       paxCount: guests.paxCount,
+      isVip: guests.isVip,
+      wappinSent: guests.wappinSent,
+      manualWaSent: guests.manualWaSent,
+      customInvitationFile: import_drizzle_orm5.sql`CASE WHEN ${guests.customInvitationFile} IS NOT NULL THEN 'exists' ELSE NULL END`.as("customInvitationFile"),
       status: attendances.status,
       scannedAt: attendances.scannedAt
     }).from(guests).leftJoin(attendances, (0, import_drizzle_orm5.eq)(guests.id, attendances.guestId)).leftJoin(users, (0, import_drizzle_orm5.eq)(guests.picId, users.id)).where((0, import_drizzle_orm5.eq)(guests.eventId, eventId));
@@ -791,6 +862,7 @@ router4.post("/bulk", jwtAuthGuard, tenantGuard, async (req, res) => {
       phone: g.phone || null,
       company: g.company || null,
       jobTitle: g.jobTitle || null,
+      guestType: g.guestType || null,
       picId: g.picId || null,
       isVip: !!g.isVip,
       barcodeUid: (0, import_uuid.v4)()
@@ -800,6 +872,213 @@ router4.post("/bulk", jwtAuthGuard, tenantGuard, async (req, res) => {
   } catch (error) {
     console.error("Bulk insert error:", error);
     res.status(500).json({ error: "Internal server error", cause: error });
+  }
+});
+router4.put("/bulk-update/excel", jwtAuthGuard, tenantGuard, async (req, res) => {
+  try {
+    const { updates } = req.body;
+    if (!Array.isArray(updates) || updates.length === 0) {
+      return res.status(400).json({ error: "Invalid updates data" });
+    }
+    const { officeId, role } = req.user;
+    const results = [];
+    for (const updateData of updates) {
+      if (!updateData.barcodeUid) continue;
+      const guestResult = await db.select().from(guests).where((0, import_drizzle_orm5.eq)(guests.barcodeUid, updateData.barcodeUid)).limit(1);
+      if (guestResult.length === 0) continue;
+      const eventResult = await db.select().from(events).where((0, import_drizzle_orm5.eq)(events.id, guestResult[0].eventId)).limit(1);
+      if (eventResult.length === 0 || role === "office_admin" && eventResult[0].officeId !== officeId) {
+        continue;
+      }
+      const updated = await db.update(guests).set({
+        guestName: updateData.guestName !== void 0 ? updateData.guestName : guestResult[0].guestName,
+        email: updateData.email !== void 0 ? updateData.email : guestResult[0].email,
+        phone: updateData.phone !== void 0 ? updateData.phone : guestResult[0].phone,
+        company: updateData.company !== void 0 ? updateData.company : guestResult[0].company,
+        jobTitle: updateData.jobTitle !== void 0 ? updateData.jobTitle : guestResult[0].jobTitle,
+        guestType: updateData.guestType !== void 0 ? updateData.guestType : guestResult[0].guestType,
+        isVip: updateData.isVip !== void 0 ? updateData.isVip : guestResult[0].isVip
+      }).where((0, import_drizzle_orm5.eq)(guests.barcodeUid, updateData.barcodeUid)).returning();
+      if (updated.length > 0) results.push(updated[0]);
+    }
+    res.json({ updated: results.length });
+  } catch (error) {
+    console.error("Bulk update error:", error);
+    res.status(500).json({ error: "Internal server error", cause: error });
+  }
+});
+router4.delete("/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const guestResult = await db.select().from(guests).where((0, import_drizzle_orm5.eq)(guests.id, id)).limit(1);
+    if (guestResult.length === 0) {
+      return res.status(404).json({ error: "Guest not found" });
+    }
+    const eventResult = await db.select().from(events).where((0, import_drizzle_orm5.eq)(events.id, guestResult[0].eventId)).limit(1);
+    if (eventResult.length === 0) {
+      return res.status(404).json({ error: "Event not found" });
+    }
+    if ((req.user.role === "office_admin" || req.user.role === "pic") && eventResult[0].officeId !== req.user.officeId) {
+      return res.status(403).json({ error: "Forbidden: Event does not belong to your office" });
+    }
+    await db.delete(attendances).where((0, import_drizzle_orm5.eq)(attendances.guestId, id));
+    await db.delete(guests).where((0, import_drizzle_orm5.eq)(guests.id, id));
+    res.json({ success: true });
+  } catch (error) {
+    console.error("Delete guest error:", error);
+    res.status(500).json({ error: "Internal server error", cause: error });
+  }
+});
+router4.get("/wappin-config", jwtAuthGuard, tenantGuard, (req, res) => {
+  res.json({
+    wappinUrl: process.env.WAPPIN_API_URL ? process.env.WAPPIN_API_URL.replace(/["']/g, "") : "https://api.chat.wappin.app/v1/messages",
+    wappinToken: process.env.WAPPIN_API_TOKEN,
+    wappinClientName: process.env.WAPPIN_CLIENT_NAME,
+    wappinProjectId: process.env.WAPPIN_PROJECT_ID,
+    wappinSenderId: process.env.WAPPIN_SENDER_ID,
+    appUrl: process.env.APP_URL || "http://localhost:3000"
+  });
+});
+router4.post("/mark-manual-wa", jwtAuthGuard, tenantGuard, async (req, res) => {
+  try {
+    const { guestIds } = req.body;
+    if (!guestIds || !Array.isArray(guestIds)) {
+      return res.status(400).json({ error: "guestIds must be an array" });
+    }
+    const { officeId } = req.user;
+    const targetGuests = await db.select().from(guests).where((0, import_drizzle_orm5.inArray)(guests.id, guestIds));
+    if (targetGuests.length === 0) return res.status(404).json({ error: "Guests not found" });
+    await db.update(guests).set({ manualWaSent: true }).where((0, import_drizzle_orm5.inArray)(guests.id, guestIds));
+    res.json({ success: true, message: "Status updated" });
+  } catch (error) {
+    console.error("Mark manual WA error:", error);
+    res.status(500).json({ error: "Internal server error", cause: error });
+  }
+});
+router4.post("/send-wappin", jwtAuthGuard, tenantGuard, async (req, res) => {
+  try {
+    const { guestIds } = req.body;
+    if (!guestIds || !Array.isArray(guestIds)) {
+      return res.status(400).json({ error: "guestIds must be an array" });
+    }
+    const { officeId } = req.user;
+    const wappinClientName = process.env.WAPPIN_CLIENT_NAME || "";
+    const wappinToken = process.env.WAPPIN_API_TOKEN || "";
+    if (!wappinClientName || !wappinToken) {
+      return res.status(500).json({ error: "Konfigurasi Wappin (Username/Password) di .env belum diset" });
+    }
+    const loginUrl = "https://api.chat.wappin.app/v1/users/login";
+    const basicAuth = Buffer.from(`${wappinClientName}:${wappinToken}`).toString("base64");
+    let activeBearerToken = "";
+    try {
+      const tokenRes = await fetch(loginUrl, {
+        method: "POST",
+        headers: { "Authorization": `Basic ${basicAuth}` }
+      });
+      if (!tokenRes.ok) {
+        const errJson = await tokenRes.json().catch(() => ({}));
+        throw new Error(`Login Wappin 2.0 Gagal: ${errJson.errors?.[0]?.details || tokenRes.status}`);
+      }
+      const tokenData = await tokenRes.json();
+      activeBearerToken = tokenData.users?.[0]?.token;
+      if (!activeBearerToken) throw new Error("Token tidak ditemukan di response Wappin");
+    } catch (e) {
+      return res.status(500).json({ error: `Gagal otentikasi Wappin 2.0: ${e.message}` });
+    }
+    const targetGuests = await db.select().from(guests).where((0, import_drizzle_orm5.inArray)(guests.id, guestIds));
+    if (targetGuests.length === 0) {
+      return res.status(404).json({ error: "Guests not found" });
+    }
+    const results = [];
+    for (const guest of targetGuests) {
+      if (!guest.phone) {
+        results.push({ guestId: guest.id, status: "failed", error: "No phone number" });
+        continue;
+      }
+      const eventResult = await db.select().from(events).where((0, import_drizzle_orm5.eq)(events.id, guest.eventId));
+      const event = eventResult[0];
+      if (!event || event.officeId !== officeId) {
+        results.push({ guestId: guest.id, status: "failed", error: "Event not found or unauthorized" });
+        continue;
+      }
+      let phoneStr = guest.phone.replace(/[^0-9]/g, "");
+      if (phoneStr.startsWith("0")) phoneStr = "62" + phoneStr.slice(1);
+      if (!phoneStr.startsWith("62")) phoneStr = "62" + phoneStr;
+      const recipientWaId = phoneStr;
+      const envAppUrl = process.env.APP_URL || "https://undangan.laznasdewandakwah.or.id";
+      const appUrl = envAppUrl.includes("localhost") ? "https://undangan.laznasdewandakwah.or.id" : envAppUrl;
+      const rsvpUrl = `${appUrl}/rsvp/${guest.barcodeUid}`;
+      const fileUrl = guest.customInvitationFile ? `${appUrl}/api/guests/public/invitation/${guest.barcodeUid}` : `${appUrl}/api/events/public/invitation/${event.eventName.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`;
+      const eventDateStr = new Date(event.eventDate || "").toLocaleDateString("id-ID", { timeZone: "Asia/Jakarta", weekday: "long", year: "numeric", month: "long", day: "numeric" });
+      const eventTimeStr = new Date(event.eventDate || "").toLocaleTimeString("id-ID", { timeZone: "Asia/Jakarta", hour: "2-digit", minute: "2-digit" }).replace(".", ":");
+      const documentFilename = `Undangan_${guest.guestName.replace(/[^a-zA-Z0-9]/g, "_")}.pdf`;
+      const payload = {
+        messaging_product: "whatsapp",
+        to: recipientWaId,
+        type: "template",
+        template: {
+          name: "undangan_dai",
+          language: {
+            policy: "deterministic",
+            code: "id"
+          },
+          components: [
+            {
+              type: "header",
+              parameters: [
+                {
+                  type: "document",
+                  document: {
+                    link: fileUrl,
+                    filename: documentFilename
+                  }
+                }
+              ]
+            },
+            {
+              type: "body",
+              parameters: [
+                { type: "text", text: guest.guestName || "-" },
+                { type: "text", text: event.eventName || "Acara" },
+                { type: "text", text: eventDateStr || "-" },
+                { type: "text", text: eventTimeStr || "-" },
+                { type: "text", text: event.location || "-" },
+                { type: "text", text: fileUrl },
+                { type: "text", text: rsvpUrl }
+              ]
+            }
+          ]
+        }
+      };
+      try {
+        const sendUrl = "https://api.chat.wappin.app/v1/messages";
+        const headers = {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${activeBearerToken}`
+        };
+        if (process.env.WAPPIN_PROJECT_ID) {
+          headers["Wappin-Project-Id"] = process.env.WAPPIN_PROJECT_ID;
+        }
+        const response = await fetch(sendUrl, {
+          method: "POST",
+          headers,
+          body: JSON.stringify(payload)
+        });
+        if (!response.ok) {
+          const wappinError = await response.json().catch(() => ({}));
+          throw new Error(wappinError.errors?.[0]?.details || wappinError.errors?.[0]?.title || `HTTP ${response.status}`);
+        }
+        const data = await response.json();
+        await db.update(guests).set({ wappinSent: true }).where((0, import_drizzle_orm5.eq)(guests.id, guest.id));
+        results.push({ guestId: guest.id, status: "success", data });
+      } catch (err) {
+        results.push({ guestId: guest.id, status: "failed", error: err.message || String(err) });
+      }
+    }
+    res.json({ success: true, results });
+  } catch (error) {
+    console.error("Wappin send error:", error);
+    res.status(500).json({ error: "Internal server error", details: error.message });
   }
 });
 var guest_routes_default = router4;
@@ -1011,12 +1290,31 @@ router7.get("/", async (req, res) => {
 });
 var pic_routes_default = router7;
 
+// src/modules/notification/notification.routes.ts
+var import_express8 = require("express");
+var router8 = (0, import_express8.Router)();
+router8.post("/wappin", async (req, res) => {
+  try {
+    const payload = req.body;
+    console.log("--- Wappin Webhook Callback ---");
+    console.log("Received payload:", JSON.stringify(payload, null, 2));
+    res.status(200).json({ status: "success", message: "Callback received successfully" });
+  } catch (error) {
+    console.error("Wappin webhook error:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+router8.get("/wappin", (req, res) => {
+  res.status(200).send("Wappin callback endpoint is active.");
+});
+var notification_routes_default = router8;
+
 // server.ts
 async function startServer() {
-  const app = (0, import_express8.default)();
+  const app = (0, import_express9.default)();
   const PORT = process.env.PORT || 3e3;
-  app.use(import_express8.default.json({ limit: "200mb" }));
-  app.use(import_express8.default.urlencoded({ limit: "200mb", extended: true }));
+  app.use(import_express9.default.json({ limit: "200mb" }));
+  app.use(import_express9.default.urlencoded({ limit: "200mb", extended: true }));
   app.get("/undangan/:slug", (req, res) => {
     res.redirect(`/api/events/public/invitation/${req.params.slug}`);
   });
@@ -1030,6 +1328,7 @@ async function startServer() {
   app.use("/api/scanner", scanner_routes_default);
   app.use("/api/reports", report_routes_default);
   app.use("/api/pics", pic_routes_default);
+  app.use("/api/notification", notification_routes_default);
   if (process.env.NODE_ENV !== "production") {
     const vite = await (0, import_vite.createServer)({
       server: { middlewareMode: true },
@@ -1038,7 +1337,7 @@ async function startServer() {
     app.use(vite.middlewares);
   } else {
     const distPath = import_path.default.join(process.cwd(), "dist");
-    app.use(import_express8.default.static(distPath));
+    app.use(import_express9.default.static(distPath));
     app.get("*", (req, res) => {
       res.sendFile(import_path.default.join(distPath, "index.html"));
     });
