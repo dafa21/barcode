@@ -673,10 +673,10 @@ router.post('/send-wappin', jwtAuthGuard, tenantGuard, async (req: AuthRequest, 
       }
 
       return res.json({ success: true, results });
-  } catch (error: any) {
-    console.error('Wappin send error:', error);
-    res.status(500).json({ error: 'Internal server error', details: error.message });
-  }
+    } catch (error: any) {
+      console.error('Wappin send error:', error);
+      res.status(500).json({ error: 'Internal server error', details: error.stack || error.message || String(error) });
+    }
 });
 
 export default router;
