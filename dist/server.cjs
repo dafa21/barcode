@@ -1123,13 +1123,13 @@ router4.post("/send-wappin", jwtAuthGuard, tenantGuard, async (req, res) => {
         if (!response.ok) {
           const wappinError = await response.json().catch(() => ({}));
           const errMsg = wappinError.errors?.[0]?.details || wappinError.errors?.[0]?.title || `HTTP ${response.status} ${JSON.stringify(wappinError)}`;
-          fs.appendFileSync("C:/Users/ASUS/Desktop/SIMBA/barcode/debug-wappin.log", `[${(/* @__PURE__ */ new Date()).toISOString()}] WAPPIN ERROR: ${errMsg}
+          fs.appendFileSync(path.join(process.cwd(), "debug-wappin.log"), `[${(/* @__PURE__ */ new Date()).toISOString()}] WAPPIN ERROR: ${errMsg}
 PAYLOAD: ${JSON.stringify(payload, null, 2)}
 
 `);
           throw new Error(errMsg);
         }
-        fs.appendFileSync("C:/Users/ASUS/Desktop/SIMBA/barcode/debug-wappin.log", `[${(/* @__PURE__ */ new Date()).toISOString()}] WAPPIN SUCCESS for ${recipientWaId}
+        fs.appendFileSync(path.join(process.cwd(), "debug-wappin.log"), `[${(/* @__PURE__ */ new Date()).toISOString()}] WAPPIN SUCCESS for ${recipientWaId}
 
 `);
         const data = await response.json();
@@ -1149,7 +1149,7 @@ PAYLOAD: ${JSON.stringify(payload, null, 2)}
     const hasError = results.some((r) => r.status === "failed");
     if (hasError) {
       const errDetails = results.filter((r) => r.status === "failed").map((r) => r.error).join(" | ");
-      fs.appendFileSync("C:/Users/ASUS/Desktop/SIMBA/barcode/debug-wappin.log", `[${(/* @__PURE__ */ new Date()).toISOString()}] BULK FAILURES: ${errDetails}
+      fs.appendFileSync(path.join(process.cwd(), "debug-wappin.log"), `[${(/* @__PURE__ */ new Date()).toISOString()}] BULK FAILURES: ${errDetails}
 
 `);
       return res.status(400).json({ error: `Gagal: ${errDetails}`, results });
