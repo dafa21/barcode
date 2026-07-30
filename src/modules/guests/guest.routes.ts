@@ -120,15 +120,11 @@ router.post('/rsvp/:barcodeUid', async (req, res) => {
   }
 });
 
-// Endpoint untuk download file undangan custom guest (PDF) - Optional /undangan.pdf
-router.get('/public/invitation/:barcodeUid([^/]+)(?:/undangan.pdf)?', async (req, res) => {
+// Fungsi handler untuk download PDF
+const handleGuestInvitation = async (req: any, res: any) => {
   try {
     let { barcodeUid } = req.params;
-    
-    // Fallback if regex match includes the suffix (though the regex above should handle it)
-    if (barcodeUid.endsWith('/undangan.pdf')) {
-      barcodeUid = barcodeUid.replace('/undangan.pdf', '');
-    }
+    if (barcodeUid.endsWith('/undangan.pdf')) barcodeUid = barcodeUid.replace('/undangan.pdf', '');
 
     const guestResult = await db.select({
       customInvitationFile: guests.customInvitationFile,
@@ -155,7 +151,12 @@ router.get('/public/invitation/:barcodeUid([^/]+)(?:/undangan.pdf)?', async (req
   } catch (error) {
     res.status(500).json({ error: 'Internal server error' });
   }
-});
+};
+
+// Daftarkan kedua endpoint agar Meta Crawler bisa membaca akhiran .pdf
+router.get('/public/invitation/:barcodeUid/undangan.pdf', handleGuestInvitation);
+router.get('/public/invitation/:barcodeUid([^/]+(?:/undangan\\.pdf)?)', handleGuestInvitation);
+router.get('/public/invitation/:barcodeUid', handleGuestInvitation);
 
 router.use(jwtAuthGuard, tenantGuard);
 
@@ -506,9 +507,9 @@ router.post('/send-wappin', jwtAuthGuard, tenantGuard, async (req: AuthRequest, 
       const appUrl = envAppUrl.includes('localhost') ? 'https://undangan.laznasdewandakwah.or.id' : envAppUrl;
       const rsvpUrl = `${appUrl}/rsvp/${guest.barcodeUid}`;
       
-      // Ganti fileUrl sementara dengan URL PDF Publik (Dummy) untuk testing
-      // Jika pakai URL public ini WA masuk, berarti VPS/Cloudflare memblokir Meta Crawler dari mendownload file lokal
-      const fileUrl = 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf';
+      const fileUrl = guest.customInvitationFile 
+        ? `${appUrl}/api/guests/public/invitation/${guest.barcodeUid}/undangan.pdf` 
+        : `${appUrl}/api/events/public/invitation/${event.eventName.toLowerCase().replace(/[^a-z0-9]+/g, '-')}/undangan.pdf`;
 
       const eventDateStr = new Date(event.eventDate || '').toLocaleDateString('id-ID', { timeZone: 'Asia/Jakarta', weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
       const eventTimeStr = new Date(event.eventDate || '').toLocaleTimeString('id-ID', { timeZone: 'Asia/Jakarta', hour: '2-digit', minute: '2-digit' }).replace('.', ':');

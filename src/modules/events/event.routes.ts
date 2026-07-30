@@ -57,7 +57,8 @@ router.get('/public/gallery/:id/:index', async (req, res) => {
   }
 });
 
-router.get('/public/invitation/:slug([^/]+)(?:/undangan.pdf)?', async (req, res) => {
+// Fungsi handler untuk download PDF event
+const handleEventInvitation = async (req: any, res: any) => {
   try {
     let { slug } = req.params;
     if (slug.endsWith('/undangan.pdf')) slug = slug.replace('/undangan.pdf', '');
@@ -100,9 +101,14 @@ router.get('/public/invitation/:slug([^/]+)(?:/undangan.pdf)?', async (req, res)
       return res.send(event.invitationFile);
     }
   } catch (error) {
+    console.error('Error fetching event invitation file:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
-});
+};
+
+router.get('/public/invitation/:slug/undangan.pdf', handleEventInvitation);
+router.get('/public/invitation/:slug([^/]+(?:/undangan\\.pdf)?)', handleEventInvitation);
+router.get('/public/invitation/:slug', handleEventInvitation);
 
 router.use(jwtAuthGuard, tenantGuard);
 
