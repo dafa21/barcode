@@ -854,7 +854,6 @@ const handleCreateEvent = async (e: React.FormEvent) => {
   const generatePdfBase64 = async (guest: Guest): Promise<string> => {
     return new Promise((resolve, reject) => {
       setHiddenGeneratingGuest(guest);
-      // Give React time to render the hidden component
       setTimeout(async () => {
         try {
           const html2canvas = (await import('html2canvas')).default;
@@ -862,60 +861,52 @@ const handleCreateEvent = async (e: React.FormEvent) => {
           const element = document.getElementById('hidden-letter-print-area');
           if (!element) throw new Error('Hidden element not found');
           
-          // Step 1: Cache ALL computed styles for every element (browser converts oklch → rgb)
-          const targetEl = element;
-          const allEls = Array.from(targetEl.querySelectorAll('*'));
-          allEls.unshift(targetEl); // include the root element too
-          const cachedAllStyles: Array<Map<string, string>> = [];
+          // ===== FIX OKLCH: Remove stylesheets BEFORE html2canvas clones =====
+          // Step 1: Cache computed styles and apply inline (browser converts oklch to rgb)
+          const allEls = Array.from(element.querySelectorAll('*'));
+          allEls.unshift(element);
+          const originalInlineStyles = allEls.map(el => (el as HTMLElement).getAttribute('style') || '');
           for (const el of allEls) {
-            const cs = window.getComputedStyle(el);
-            const styleMap = new Map<string, string>();
+            const htmlEl = el as HTMLElement;
+            const cs = window.getComputedStyle(htmlEl);
             for (let i = 0; i < cs.length; i++) {
               const prop = cs[i];
-              styleMap.set(prop, cs.getPropertyValue(prop));
+              try { htmlEl.style.setProperty(prop, cs.getPropertyValue(prop)); } catch (_e) {}
             }
-            cachedAllStyles.push(styleMap);
           }
-
-          const canvas = await html2canvas(element, { 
-            scale: 2, 
-            useCORS: true,
-            onclone: (clonedDoc: Document) => {
-              // NUCLEAR FIX: Remove ALL stylesheets so html2canvas never sees oklch
-              clonedDoc.querySelectorAll('style, link[rel="stylesheet"]').forEach(el => el.remove());
-              
-              // Re-apply cached computed styles as inline styles on every element
-              const clonedTarget = clonedDoc.getElementById('hidden-letter-print-area');
-              if (!clonedTarget) return;
-              const clonedEls = Array.from(clonedTarget.querySelectorAll('*'));
-              clonedEls.unshift(clonedTarget);
-              clonedEls.forEach((el, idx) => {
-                const htmlEl = el as HTMLElement;
-                const styles = cachedAllStyles[idx];
-                if (!styles) return;
-                styles.forEach((value, prop) => {
-                  try { htmlEl.style.setProperty(prop, value); } catch (_e) { /* skip */ }
-                });
-              });
-            }
-          });
+          // Step 2: Remove ALL style/link elements from DOM
+          const styleEls = Array.from(document.querySelectorAll('style, link[rel="stylesheet"]'));
+          const savedStyleInfo = styleEls.map(el => ({ element: el, parent: el.parentNode, nextSibling: el.nextSibling }));
+          styleEls.forEach(el => el.remove());
+          
+          // Step 3: html2canvas — no stylesheets = no oklch error
+          let canvas: HTMLCanvasElement;
+          try {
+            canvas = await html2canvas(element, { scale: 2, useCORS: true });
+          } finally {
+            // Step 4: Restore stylesheets
+            savedStyleInfo.forEach(({ element: el, parent, nextSibling }) => {
+              if (parent) { nextSibling ? parent.insertBefore(el, nextSibling) : parent.appendChild(el); }
+            });
+            allEls.forEach((el, idx) => {
+              const htmlEl = el as HTMLElement;
+              if (originalInlineStyles[idx]) { htmlEl.setAttribute('style', originalInlineStyles[idx]); }
+              else { htmlEl.removeAttribute('style'); }
+            });
+          }
+          // ===== END FIX =====
+          
           const imgData = canvas.toDataURL('image/png');
           const isLetter = selectedEvent?.letterSize === 'LETTER';
-          const pdf = new jsPDF({
-            orientation: 'portrait',
-            unit: 'mm',
-            format: isLetter ? 'letter' : 'a4'
-          });
-          
+          const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: isLetter ? 'letter' : 'a4' });
           const pdfWidth = pdf.internal.pageSize.getWidth();
           const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
-          
           pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
-          resolve(pdf.output('datauristring')); // Base64 data URL
+          resolve(pdf.output('datauristring'));
         } catch (err) {
           reject(err);
         }
-      }, 500); // 500ms wait
+      }, 500);
     });
   };
 
@@ -2985,54 +2976,41 @@ const handleCreateEvent = async (e: React.FormEvent) => {
                     const element = document.getElementById('letter-print-area');
                     if (!element) return;
                     
-                    // Step 1: Cache ALL computed styles (browser converts oklch → rgb)
-                    const printTarget = element;
-                    const printAllEls = Array.from(printTarget.querySelectorAll('*'));
-                    printAllEls.unshift(printTarget);
-                    const printCachedStyles: Array<Map<string, string>> = [];
+                    // ===== FIX OKLCH =====
+                    const printAllEls = Array.from(element.querySelectorAll('*'));
+                    printAllEls.unshift(element);
+                    const printOrigStyles = printAllEls.map(el => (el as HTMLElement).getAttribute('style') || '');
                     for (const el of printAllEls) {
-                      const cs = window.getComputedStyle(el);
-                      const styleMap = new Map<string, string>();
+                      const htmlEl = el as HTMLElement;
+                      const cs = window.getComputedStyle(htmlEl);
                       for (let i = 0; i < cs.length; i++) {
                         const prop = cs[i];
-                        styleMap.set(prop, cs.getPropertyValue(prop));
+                        try { htmlEl.style.setProperty(prop, cs.getPropertyValue(prop)); } catch (_e) {}
                       }
-                      printCachedStyles.push(styleMap);
                     }
-
-                    const canvas = await html2canvas(element, { 
-                      scale: 2, 
-                      useCORS: true,
-                      onclone: (clonedDoc: Document) => {
-                        // Remove ALL stylesheets so html2canvas never sees oklch
-                        clonedDoc.querySelectorAll('style, link[rel="stylesheet"]').forEach(el => el.remove());
-                        
-                        // Re-apply cached computed styles inline
-                        const clonedTarget = clonedDoc.getElementById('letter-print-area');
-                        if (!clonedTarget) return;
-                        const clonedEls = Array.from(clonedTarget.querySelectorAll('*'));
-                        clonedEls.unshift(clonedTarget);
-                        clonedEls.forEach((el, idx) => {
-                          const htmlEl = el as HTMLElement;
-                          const styles = printCachedStyles[idx];
-                          if (!styles) return;
-                          styles.forEach((value, prop) => {
-                            try { htmlEl.style.setProperty(prop, value); } catch (_e) { /* skip */ }
-                          });
-                        });
-                      }
-                    });
+                    const printStyleEls = Array.from(document.querySelectorAll('style, link[rel="stylesheet"]'));
+                    const printSaved = printStyleEls.map(el => ({ element: el, parent: el.parentNode, nextSibling: el.nextSibling }));
+                    printStyleEls.forEach(el => el.remove());
+                    
+                    let canvas: HTMLCanvasElement;
+                    try {
+                      canvas = await html2canvas(element, { scale: 2, useCORS: true });
+                    } finally {
+                      printSaved.forEach(({ element: el, parent, nextSibling }) => {
+                        if (parent) { nextSibling ? parent.insertBefore(el, nextSibling) : parent.appendChild(el); }
+                      });
+                      printAllEls.forEach((el, idx) => {
+                        const htmlEl = el as HTMLElement;
+                        if (printOrigStyles[idx]) { htmlEl.setAttribute('style', printOrigStyles[idx]); }
+                        else { htmlEl.removeAttribute('style'); }
+                      });
+                    }
+                    // ===== END FIX =====
                     const imgData = canvas.toDataURL('image/png');
                     const isLetter = selectedEvent.letterSize === 'LETTER';
-                    const pdf = new jsPDF({
-                      orientation: 'portrait',
-                      unit: 'mm',
-                      format: isLetter ? 'letter' : 'a4'
-                    });
-                    
+                    const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: isLetter ? 'letter' : 'a4' });
                     const pdfWidth = pdf.internal.pageSize.getWidth();
                     const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
-                    
                     pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
                     pdf.save(`Surat_Undangan_${printingGuest.guestName.replace(/\s+/g, '_')}.pdf`);
                   } catch (err) {
