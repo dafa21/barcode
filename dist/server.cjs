@@ -1123,13 +1123,13 @@ router4.post("/send-wappin", jwtAuthGuard, tenantGuard, async (req, res) => {
         if (!response.ok) {
           const wappinError = await response.json().catch(() => ({}));
           const errMsg = wappinError.errors?.[0]?.details || wappinError.errors?.[0]?.title || `HTTP ${response.status} ${JSON.stringify(wappinError)}`;
-          fs.appendFileSync("debug-wappin.log", `[${(/* @__PURE__ */ new Date()).toISOString()}] WAPPIN ERROR: ${errMsg}
+          require("fs").appendFileSync("C:/Users/ASUS/Desktop/SIMBA/barcode/debug-wappin.log", `[${(/* @__PURE__ */ new Date()).toISOString()}] WAPPIN ERROR: ${errMsg}
 PAYLOAD: ${JSON.stringify(payload, null, 2)}
 
 `);
           throw new Error(errMsg);
         }
-        fs.appendFileSync("debug-wappin.log", `[${(/* @__PURE__ */ new Date()).toISOString()}] WAPPIN SUCCESS for ${recipientWaId}
+        require("fs").appendFileSync("C:/Users/ASUS/Desktop/SIMBA/barcode/debug-wappin.log", `[${(/* @__PURE__ */ new Date()).toISOString()}] WAPPIN SUCCESS for ${recipientWaId}
 
 `);
         const data = await response.json();
@@ -1148,9 +1148,13 @@ PAYLOAD: ${JSON.stringify(payload, null, 2)}
     }
     const hasError = results.some((r) => r.status === "failed");
     if (hasError) {
-      return res.status(400).json({ error: "Beberapa atau semua pesan gagal dikirim. Silakan cek log.", results });
+      const errDetails = results.filter((r) => r.status === "failed").map((r) => r.error).join(" | ");
+      require("fs").appendFileSync("C:/Users/ASUS/Desktop/SIMBA/barcode/debug-wappin.log", `[${(/* @__PURE__ */ new Date()).toISOString()}] BULK FAILURES: ${errDetails}
+
+`);
+      return res.status(400).json({ error: `Gagal: ${errDetails}`, results });
     }
-    res.json({ success: true, results });
+    return res.json({ success: true, results });
   } catch (error) {
     console.error("Wappin send error:", error);
     res.status(500).json({ error: "Internal server error", details: error.message });
