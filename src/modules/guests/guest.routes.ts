@@ -1,4 +1,6 @@
 import { Router } from 'express';
+import * as fs from 'fs';
+import * as path from 'path';
 import { db } from '../../db/index.ts';
 import { guests, events, attendances, users } from '../../db/schema.ts';
 import { eq, sql, inArray } from 'drizzle-orm';
@@ -636,11 +638,11 @@ router.post('/send-wappin', jwtAuthGuard, tenantGuard, async (req: AuthRequest, 
           if (!response.ok) {
             const wappinError = await response.json().catch(() => ({}));
             const errMsg = wappinError.errors?.[0]?.details || wappinError.errors?.[0]?.title || `HTTP ${response.status} ${JSON.stringify(wappinError)}`;
-            require('fs').appendFileSync('C:/Users/ASUS/Desktop/SIMBA/barcode/debug-wappin.log', `[${new Date().toISOString()}] WAPPIN ERROR: ${errMsg}\nPAYLOAD: ${JSON.stringify(payload, null, 2)}\n\n`);
+            fs.appendFileSync('C:/Users/ASUS/Desktop/SIMBA/barcode/debug-wappin.log', `[${new Date().toISOString()}] WAPPIN ERROR: ${errMsg}\nPAYLOAD: ${JSON.stringify(payload, null, 2)}\n\n`);
             throw new Error(errMsg);
           }
           
-          require('fs').appendFileSync('C:/Users/ASUS/Desktop/SIMBA/barcode/debug-wappin.log', `[${new Date().toISOString()}] WAPPIN SUCCESS for ${recipientWaId}\n\n`);
+          fs.appendFileSync('C:/Users/ASUS/Desktop/SIMBA/barcode/debug-wappin.log', `[${new Date().toISOString()}] WAPPIN SUCCESS for ${recipientWaId}\n\n`);
 
         
         const data = await response.json();
@@ -666,7 +668,7 @@ router.post('/send-wappin', jwtAuthGuard, tenantGuard, async (req: AuthRequest, 
       const hasError = results.some(r => r.status === 'failed');
       if (hasError) {
         const errDetails = results.filter(r => r.status === 'failed').map(r => r.error).join(' | ');
-        require('fs').appendFileSync('C:/Users/ASUS/Desktop/SIMBA/barcode/debug-wappin.log', `[${new Date().toISOString()}] BULK FAILURES: ${errDetails}\n\n`);
+        fs.appendFileSync('C:/Users/ASUS/Desktop/SIMBA/barcode/debug-wappin.log', `[${new Date().toISOString()}] BULK FAILURES: ${errDetails}\n\n`);
         return res.status(400).json({ error: `Gagal: ${errDetails}`, results });
       }
 

@@ -629,6 +629,8 @@ var event_routes_default = router3;
 
 // src/modules/guests/guest.routes.ts
 var import_express4 = require("express");
+var fs = __toESM(require("fs"), 1);
+var path = __toESM(require("path"), 1);
 var import_drizzle_orm5 = require("drizzle-orm");
 var import_uuid = require("uuid");
 var router4 = (0, import_express4.Router)();
@@ -1123,13 +1125,13 @@ router4.post("/send-wappin", jwtAuthGuard, tenantGuard, async (req, res) => {
         if (!response.ok) {
           const wappinError = await response.json().catch(() => ({}));
           const errMsg = wappinError.errors?.[0]?.details || wappinError.errors?.[0]?.title || `HTTP ${response.status} ${JSON.stringify(wappinError)}`;
-          require("fs").appendFileSync("C:/Users/ASUS/Desktop/SIMBA/barcode/debug-wappin.log", `[${(/* @__PURE__ */ new Date()).toISOString()}] WAPPIN ERROR: ${errMsg}
+          fs.appendFileSync("C:/Users/ASUS/Desktop/SIMBA/barcode/debug-wappin.log", `[${(/* @__PURE__ */ new Date()).toISOString()}] WAPPIN ERROR: ${errMsg}
 PAYLOAD: ${JSON.stringify(payload, null, 2)}
 
 `);
           throw new Error(errMsg);
         }
-        require("fs").appendFileSync("C:/Users/ASUS/Desktop/SIMBA/barcode/debug-wappin.log", `[${(/* @__PURE__ */ new Date()).toISOString()}] WAPPIN SUCCESS for ${recipientWaId}
+        fs.appendFileSync("C:/Users/ASUS/Desktop/SIMBA/barcode/debug-wappin.log", `[${(/* @__PURE__ */ new Date()).toISOString()}] WAPPIN SUCCESS for ${recipientWaId}
 
 `);
         const data = await response.json();
@@ -1149,7 +1151,7 @@ PAYLOAD: ${JSON.stringify(payload, null, 2)}
     const hasError = results.some((r) => r.status === "failed");
     if (hasError) {
       const errDetails = results.filter((r) => r.status === "failed").map((r) => r.error).join(" | ");
-      require("fs").appendFileSync("C:/Users/ASUS/Desktop/SIMBA/barcode/debug-wappin.log", `[${(/* @__PURE__ */ new Date()).toISOString()}] BULK FAILURES: ${errDetails}
+      fs.appendFileSync("C:/Users/ASUS/Desktop/SIMBA/barcode/debug-wappin.log", `[${(/* @__PURE__ */ new Date()).toISOString()}] BULK FAILURES: ${errDetails}
 
 `);
       return res.status(400).json({ error: `Gagal: ${errDetails}`, results });
