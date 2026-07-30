@@ -437,6 +437,22 @@ router.post('/mark-manual-wa', jwtAuthGuard, tenantGuard, async (req: AuthReques
   }
 });
 
+  // Dedicated physical file downloader to bypass Vite/Express static middleware issues
+  router.get('/download-physical-pdf/:filename', (req, res) => {
+    const isDev = process.env.NODE_ENV !== 'production';
+    const staticDir = isDev ? path.join(process.cwd(), 'public') : path.join(process.cwd(), 'dist');
+    const pdfDir = path.join(staticDir, 'wappin_pdf');
+    const filePath = path.join(pdfDir, req.params.filename);
+    
+    if (fs.existsSync(filePath)) {
+      res.setHeader('Content-Type', 'application/pdf');
+      res.setHeader('Content-Disposition', `inline; filename="${req.params.filename}"`);
+      res.sendFile(filePath);
+    } else {
+      res.status(404).send('PDF not found di physical drive');
+    }
+  });
+
 router.post('/send-wappin', jwtAuthGuard, tenantGuard, async (req: AuthRequest, res) => {
   try {
     const { guestIds } = req.body;
@@ -541,7 +557,7 @@ router.post('/send-wappin', jwtAuthGuard, tenantGuard, async (req: AuthRequest, 
 
         if (matches && matches.length === 3) {
           fs.writeFileSync(physicalPdfPath, Buffer.from(matches[2], 'base64'));
-          // fileUrl = `${appUrl}/wappin_pdf/${pdfFilename}`; // KITA MATIKAN SEMENTARA
+          // fileUrl = `/api/guests/download-physical-pdf/`; // KITA MATIKAN SEMENTARA
         } else if (targetBase64.startsWith('http://') || targetBase64.startsWith('https://')) {
           // fileUrl = targetBase64; // KITA MATIKAN SEMENTARA
         } else {

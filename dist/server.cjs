@@ -398,9 +398,10 @@ router3.get("/public/gallery/:id/:index", async (req, res) => {
     res.status(500).send("Error");
   }
 });
-router3.get("/public/invitation/:slug", async (req, res) => {
+var handleEventInvitation = async (req, res) => {
   try {
-    const { slug } = req.params;
+    let { slug } = req.params;
+    if (slug.endsWith("/undangan.pdf")) slug = slug.replace("/undangan.pdf", "");
     const allEventsLight = await db.select({
       id: events.id,
       eventName: events.eventName
@@ -424,16 +425,23 @@ router3.get("/public/invitation/:slug", async (req, res) => {
       const mimeType = matches[1];
       const base64Data = matches[2];
       const buffer = Buffer.from(base64Data, "base64");
-      res.setHeader("Content-Type", mimeType);
-      res.setHeader("Content-Disposition", `inline; filename="${event.eventName}_Undangan.pdf"`);
-      return res.send(buffer);
+      res.setHeader("Content-Type", mimeType || "application/pdf");
+      res.setHeader("Content-Length", buffer.length);
+      res.setHeader("Accept-Ranges", "bytes");
+      res.setHeader("Cache-Control", "public, max-age=86400");
+      res.setHeader("Content-Disposition", `attachment; filename="${event.eventName.replace(/[^a-zA-Z0-9]/g, "_")}_Undangan.pdf"`);
+      return res.end(buffer);
     } else {
       return res.send(event.invitationFile);
     }
   } catch (error) {
+    console.error("Error fetching event invitation file:", error);
     res.status(500).json({ error: "Internal server error" });
   }
-});
+};
+router3.get("/public/invitation/:slug/undangan.pdf", handleEventInvitation);
+router3.get("/public/invitation/:slug([^/]+(?:/undangan\\.pdf)?)", handleEventInvitation);
+router3.get("/public/invitation/:slug", handleEventInvitation);
 router3.use(jwtAuthGuard, tenantGuard);
 router3.post("/", async (req, res) => {
   try {
@@ -716,9 +724,10 @@ router4.post("/rsvp/:barcodeUid", async (req, res) => {
     res.status(500).json({ error: "Internal server error", cause: error });
   }
 });
-router4.get("/public/invitation/:barcodeUid", async (req, res) => {
+var handleGuestInvitation = async (req, res) => {
   try {
-    const { barcodeUid } = req.params;
+    let { barcodeUid } = req.params;
+    if (barcodeUid.endsWith("/undangan.pdf")) barcodeUid = barcodeUid.replace("/undangan.pdf", "");
     const guestResult = await db.select({
       customInvitationFile: guests.customInvitationFile,
       guestName: guests.guestName
@@ -732,16 +741,22 @@ router4.get("/public/invitation/:barcodeUid", async (req, res) => {
       const mimeType = matches[1];
       const base64Data = matches[2];
       const buffer = Buffer.from(base64Data, "base64");
-      res.setHeader("Content-Type", mimeType);
-      res.setHeader("Content-Disposition", `inline; filename="${guest.guestName}_Undangan.pdf"`);
-      return res.send(buffer);
+      res.setHeader("Content-Type", mimeType || "application/pdf");
+      res.setHeader("Content-Length", buffer.length);
+      res.setHeader("Accept-Ranges", "bytes");
+      res.setHeader("Cache-Control", "public, max-age=86400");
+      res.setHeader("Content-Disposition", `attachment; filename="${guest.guestName.replace(/[^a-zA-Z0-9]/g, "_")}_Undangan.pdf"`);
+      return res.end(buffer);
     } else {
       return res.send(guest.customInvitationFile);
     }
   } catch (error) {
     res.status(500).json({ error: "Internal server error" });
   }
-});
+};
+router4.get("/public/invitation/:barcodeUid/undangan.pdf", handleGuestInvitation);
+router4.get("/public/invitation/:barcodeUid([^/]+(?:/undangan\\.pdf)?)", handleGuestInvitation);
+router4.get("/public/invitation/:barcodeUid", handleGuestInvitation);
 router4.use(jwtAuthGuard, tenantGuard);
 router4.post("/", async (req, res) => {
   try {
@@ -955,6 +970,19 @@ router4.post("/mark-manual-wa", jwtAuthGuard, tenantGuard, async (req, res) => {
     res.status(500).json({ error: "Internal server error", cause: error });
   }
 });
+router4.get("/download-physical-pdf/:filename", (req, res) => {
+  const isDev = process.env.NODE_ENV !== "production";
+  const staticDir = isDev ? path.join(process.cwd(), "public") : path.join(process.cwd(), "dist");
+  const pdfDir = path.join(staticDir, "wappin_pdf");
+  const filePath = path.join(pdfDir, req.params.filename);
+  if (fs.existsSync(filePath)) {
+    res.setHeader("Content-Type", "application/pdf");
+    res.setHeader("Content-Disposition", `inline; filename="${req.params.filename}"`);
+    res.sendFile(filePath);
+  } else {
+    res.status(404).send("PDF not found di physical drive");
+  }
+});
 router4.post("/send-wappin", jwtAuthGuard, tenantGuard, async (req, res) => {
   try {
     const { guestIds } = req.body;
@@ -1008,10 +1036,35 @@ router4.post("/send-wappin", jwtAuthGuard, tenantGuard, async (req, res) => {
       const envAppUrl = process.env.APP_URL || "https://undangan.laznasdewandakwah.or.id";
       const appUrl = envAppUrl.includes("localhost") ? "https://undangan.laznasdewandakwah.or.id" : envAppUrl;
       const rsvpUrl = `${appUrl}/rsvp/${guest.barcodeUid}`;
-      const fileUrl = guest.customInvitationFile ? `${appUrl}/api/guests/public/invitation/${guest.barcodeUid}` : `${appUrl}/api/events/public/invitation/${event.eventName.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`;
+      let fileUrl = "";
+      try {
+        const fs2 = require("fs");
+        const path3 = require("path");
+        const isProd = process.env.NODE_ENV === "production";
+        const staticDir = isProd ? path3.join(process.cwd(), "dist") : path3.join(process.cwd(), "public");
+        const tempPdfDir = path3.join(staticDir, "wappin_pdf");
+        if (!fs2.existsSync(tempPdfDir)) {
+          fs2.mkdirSync(tempPdfDir, { recursive: true });
+        }
+        const pdfFilename = `${guest.barcodeUid}_${Date.now()}.pdf`;
+        const physicalPdfPath = path3.join(tempPdfDir, pdfFilename);
+        const targetBase64 = guest.customInvitationFile || event.invitationFile || "";
+        if (!targetBase64) {
+          throw new Error("Tamu ini dan Event ini tidak memiliki file PDF undangan. Harap unggah PDF terlebih dahulu.");
+        }
+        const matches = targetBase64.match(/^data:(.+);base64,(.+)$/);
+        fileUrl = "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf";
+        if (matches && matches.length === 3) {
+          fs2.writeFileSync(physicalPdfPath, Buffer.from(matches[2], "base64"));
+        } else if (targetBase64.startsWith("http://") || targetBase64.startsWith("https://")) {
+        } else {
+        }
+      } catch (err) {
+        console.error("Error creating physical PDF:", err);
+      }
       const eventDateStr = new Date(event.eventDate || "").toLocaleDateString("id-ID", { timeZone: "Asia/Jakarta", weekday: "long", year: "numeric", month: "long", day: "numeric" });
       const eventTimeStr = new Date(event.eventDate || "").toLocaleTimeString("id-ID", { timeZone: "Asia/Jakarta", hour: "2-digit", minute: "2-digit" }).replace(".", ":");
-      const documentFilename = `Undangan_${guest.guestName.replace(/[^a-zA-Z0-9]/g, "_")}.pdf`;
+      const documentFilename = `${guest.guestName}_Undangan`.replace(/[^a-zA-Z0-9]/g, "_");
       const payload = {
         messaging_product: "whatsapp",
         to: recipientWaId,
@@ -1038,11 +1091,11 @@ router4.post("/send-wappin", jwtAuthGuard, tenantGuard, async (req, res) => {
             {
               type: "body",
               parameters: [
-                { type: "text", text: guest.guestName || "-" },
-                { type: "text", text: event.eventName || "Acara" },
+                { type: "text", text: (guest.guestName || "-").replace(/[\r\n]+/g, " ") },
+                { type: "text", text: (event.eventName || "Acara").replace(/[\r\n]+/g, " ") },
                 { type: "text", text: eventDateStr || "-" },
                 { type: "text", text: eventTimeStr || "-" },
-                { type: "text", text: event.location || "-" },
+                { type: "text", text: (event.location || "-").replace(/[\r\n]+/g, " ") },
                 { type: "text", text: fileUrl },
                 { type: "text", text: rsvpUrl }
               ]
@@ -1069,11 +1122,18 @@ router4.post("/send-wappin", jwtAuthGuard, tenantGuard, async (req, res) => {
           throw new Error(wappinError.errors?.[0]?.details || wappinError.errors?.[0]?.title || `HTTP ${response.status}`);
         }
         const data = await response.json();
-        await db.update(guests).set({ wappinSent: true }).where((0, import_drizzle_orm5.eq)(guests.id, guest.id));
+        console.log(`[WAPPIN SUCCESS] Ke ${recipientWaId}:`, JSON.stringify(data));
+        try {
+          await db.update(guests).set({ wappinSent: true }).where((0, import_drizzle_orm5.eq)(guests.id, guest.id));
+        } catch (dbErr) {
+          console.warn("Wappin message sent, but failed to update DB (run db:push):", dbErr.message);
+        }
         results.push({ guestId: guest.id, status: "success", data });
       } catch (err) {
+        console.error(`[WAPPIN FAILED] Ke ${recipientWaId}:`, err.message || String(err));
         results.push({ guestId: guest.id, status: "failed", error: err.message || String(err) });
       }
+      await new Promise((resolve) => setTimeout(resolve, 1500));
     }
     res.json({ success: true, results });
   } catch (error) {

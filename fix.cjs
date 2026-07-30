@@ -1,0 +1,1 @@
+const fs = require('fs'); let code = fs.readFileSync('src/modules/guests/guest.routes.ts', 'utf8'); code = code.replace(/fileUrl = `\$\{appUrl\}\/wappin_pdf\/\$\{pdfFilename\}`;/, 'fileUrl = `/api/guests/download-physical-pdf/`;'); fs.writeFileSync('src/modules/guests/guest.routes.ts', code);
