@@ -1053,14 +1053,17 @@ router4.post("/send-wappin", jwtAuthGuard, tenantGuard, async (req, res) => {
           throw new Error("Tamu ini dan Event ini tidak memiliki file PDF undangan. Harap unggah PDF terlebih dahulu.");
         }
         const matches = targetBase64.match(/^data:(.+);base64,(.+)$/);
-        fileUrl = "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf";
         if (matches && matches.length === 3) {
           fs2.writeFileSync(physicalPdfPath, Buffer.from(matches[2], "base64"));
+          fileUrl = `${appUrl}/api/guests/download-physical-pdf/${pdfFilename}`;
         } else if (targetBase64.startsWith("http://") || targetBase64.startsWith("https://")) {
+          fileUrl = targetBase64;
         } else {
+          fileUrl = guest.customInvitationFile ? `${appUrl}/api/guests/public/invitation/${guest.barcodeUid}/undangan.pdf` : `${appUrl}/api/events/public/invitation/${event.eventName.toLowerCase().replace(/[^a-z0-9]+/g, "-")}/undangan.pdf`;
         }
       } catch (err) {
         console.error("Error creating physical PDF:", err);
+        fileUrl = guest.customInvitationFile ? `${appUrl}/api/guests/public/invitation/${guest.barcodeUid}/undangan.pdf` : `${appUrl}/api/events/public/invitation/${event.eventName.toLowerCase().replace(/[^a-z0-9]+/g, "-")}/undangan.pdf`;
       }
       const eventDateStr = new Date(event.eventDate || "").toLocaleDateString("id-ID", { timeZone: "Asia/Jakarta", weekday: "long", year: "numeric", month: "long", day: "numeric" });
       const eventTimeStr = new Date(event.eventDate || "").toLocaleTimeString("id-ID", { timeZone: "Asia/Jakarta", hour: "2-digit", minute: "2-digit" }).replace(".", ":");

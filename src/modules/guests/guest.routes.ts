@@ -551,27 +551,23 @@ router.post('/send-wappin', jwtAuthGuard, tenantGuard, async (req: AuthRequest, 
 
         const matches = targetBase64.match(/^data:(.+);base64,(.+)$/);
         
-        // HACK: UNTUK TESTING WAPPIN DROP
-        // KITA PAKAI PDF DUMMY DARI W3C SEMENTARA WAKTU!
-        fileUrl = 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf';
-
         if (matches && matches.length === 3) {
           fs.writeFileSync(physicalPdfPath, Buffer.from(matches[2], 'base64'));
-          // fileUrl = `/api/guests/download-physical-pdf/`; // KITA MATIKAN SEMENTARA
+          fileUrl = `${appUrl}/api/guests/download-physical-pdf/${pdfFilename}`;
         } else if (targetBase64.startsWith('http://') || targetBase64.startsWith('https://')) {
-          // fileUrl = targetBase64; // KITA MATIKAN SEMENTARA
+          fileUrl = targetBase64;
         } else {
           // Fallback if not valid base64 or URL
-          // fileUrl = guest.customInvitationFile 
-          //   ? `${appUrl}/api/guests/public/invitation/${guest.barcodeUid}/undangan.pdf` 
-          //   : `${appUrl}/api/events/public/invitation/${event.eventName.toLowerCase().replace(/[^a-z0-9]+/g, '-')}/undangan.pdf`;
+          fileUrl = guest.customInvitationFile 
+            ? `${appUrl}/api/guests/public/invitation/${guest.barcodeUid}/undangan.pdf` 
+            : `${appUrl}/api/events/public/invitation/${event.eventName.toLowerCase().replace(/[^a-z0-9]+/g, '-')}/undangan.pdf`;
         }
       } catch (err) {
         console.error('Error creating physical PDF:', err);
         // Fallback
-        // fileUrl = guest.customInvitationFile 
-        //  ? `${appUrl}/api/guests/public/invitation/${guest.barcodeUid}/undangan.pdf` 
-        //  : `${appUrl}/api/events/public/invitation/${event.eventName.toLowerCase().replace(/[^a-z0-9]+/g, '-')}/undangan.pdf`;
+        fileUrl = guest.customInvitationFile 
+         ? `${appUrl}/api/guests/public/invitation/${guest.barcodeUid}/undangan.pdf` 
+         : `${appUrl}/api/events/public/invitation/${event.eventName.toLowerCase().replace(/[^a-z0-9]+/g, '-')}/undangan.pdf`;
       }
       // === END AKALAN ===
 
