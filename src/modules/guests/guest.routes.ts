@@ -527,6 +527,7 @@ router.post('/send-wappin', jwtAuthGuard, tenantGuard, async (req: AuthRequest, 
         template: {
           name: "undangan_dai",
           language: {
+            policy: "deterministic",
             code: "id"
           },
           components: [
@@ -536,7 +537,8 @@ router.post('/send-wappin', jwtAuthGuard, tenantGuard, async (req: AuthRequest, 
                 {
                   type: "document",
                   document: {
-                    link: fileUrl,
+                    // AKALAN: Kirim raw base64 langsung ke Wappin! (Bukan link URL server kita)
+                    link: guest.customInvitationFile || event.invitationFile,
                     filename: documentFilename
                   }
                 }
