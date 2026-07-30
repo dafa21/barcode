@@ -862,7 +862,43 @@ const handleCreateEvent = async (e: React.FormEvent) => {
           const element = document.getElementById('hidden-letter-print-area');
           if (!element) throw new Error('Hidden element not found');
           
-          const canvas = await html2canvas(element, { scale: 2, useCORS: true });
+          const canvas = await html2canvas(element, { 
+            scale: 2, 
+            useCORS: true,
+            onclone: (clonedDoc: Document) => {
+              // Fix oklch colors — html2canvas doesn't support oklch() color function from Tailwind v4
+              // Step 1: Cache computed styles (browser already converts oklch → rgb)
+              const allEls = Array.from(clonedDoc.querySelectorAll('*'));
+              const cachedStyles: Array<{color: string; bg: string; bc: string}> = [];
+              allEls.forEach((el) => {
+                const cs = clonedDoc.defaultView?.getComputedStyle(el as Element);
+                cachedStyles.push({
+                  color: cs?.color || '',
+                  bg: cs?.backgroundColor || '',
+                  bc: cs?.borderColor || '',
+                });
+              });
+              // Step 2: Remove all CSS rules containing oklch
+              Array.from(clonedDoc.styleSheets).forEach((sheet) => {
+                try {
+                  const rules = Array.from(sheet.cssRules);
+                  for (let i = rules.length - 1; i >= 0; i--) {
+                    if (rules[i].cssText.includes('oklch')) {
+                      sheet.deleteRule(i);
+                    }
+                  }
+                } catch (_e) { /* cross-origin stylesheet, skip */ }
+              });
+              // Step 3: Re-apply cached computed colors as inline styles
+              allEls.forEach((el, idx) => {
+                const htmlEl = el as HTMLElement;
+                const s = cachedStyles[idx];
+                if (s.color) htmlEl.style.color = s.color;
+                if (s.bg) htmlEl.style.backgroundColor = s.bg;
+                if (s.bc) htmlEl.style.borderColor = s.bc;
+              });
+            }
+          });
           const imgData = canvas.toDataURL('image/png');
           const isLetter = selectedEvent?.letterSize === 'LETTER';
           const pdf = new jsPDF({
@@ -2949,7 +2985,39 @@ const handleCreateEvent = async (e: React.FormEvent) => {
                     const element = document.getElementById('letter-print-area');
                     if (!element) return;
                     
-                    const canvas = await html2canvas(element, { scale: 2, useCORS: true });
+                    const canvas = await html2canvas(element, { 
+                      scale: 2, 
+                      useCORS: true,
+                      onclone: (clonedDoc: Document) => {
+                        const allEls = Array.from(clonedDoc.querySelectorAll('*'));
+                        const cachedStyles: Array<{color: string; bg: string; bc: string}> = [];
+                        allEls.forEach((el) => {
+                          const cs = clonedDoc.defaultView?.getComputedStyle(el as Element);
+                          cachedStyles.push({
+                            color: cs?.color || '',
+                            bg: cs?.backgroundColor || '',
+                            bc: cs?.borderColor || '',
+                          });
+                        });
+                        Array.from(clonedDoc.styleSheets).forEach((sheet) => {
+                          try {
+                            const rules = Array.from(sheet.cssRules);
+                            for (let i = rules.length - 1; i >= 0; i--) {
+                              if (rules[i].cssText.includes('oklch')) {
+                                sheet.deleteRule(i);
+                              }
+                            }
+                          } catch (_e) { /* cross-origin */ }
+                        });
+                        allEls.forEach((el, idx) => {
+                          const htmlEl = el as HTMLElement;
+                          const s = cachedStyles[idx];
+                          if (s.color) htmlEl.style.color = s.color;
+                          if (s.bg) htmlEl.style.backgroundColor = s.bg;
+                          if (s.bc) htmlEl.style.borderColor = s.bc;
+                        });
+                      }
+                    });
                     const imgData = canvas.toDataURL('image/png');
                     const isLetter = selectedEvent.letterSize === 'LETTER';
                     const pdf = new jsPDF({
