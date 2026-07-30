@@ -501,8 +501,8 @@ router.post('/send-wappin', jwtAuthGuard, tenantGuard, async (req: AuthRequest, 
       const rsvpUrl = `${appUrl}/rsvp/${guest.barcodeUid}`;
       
       const fileUrl = guest.customInvitationFile 
-        ? `${appUrl}/api/guests/public/invitation/${guest.barcodeUid}` 
-        : `${appUrl}/api/events/public/invitation/${event.eventName.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`;
+        ? `${appUrl}/api/guests/public/invitation/${guest.barcodeUid}?ext=.pdf` 
+        : `${appUrl}/api/events/public/invitation/${event.eventName.toLowerCase().replace(/[^a-z0-9]+/g, '-')}?ext=.pdf`;
 
       const eventDateStr = new Date(event.eventDate || '').toLocaleDateString('id-ID', { timeZone: 'Asia/Jakarta', weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
       const eventTimeStr = new Date(event.eventDate || '').toLocaleTimeString('id-ID', { timeZone: 'Asia/Jakarta', hour: '2-digit', minute: '2-digit' }).replace('.', ':');
@@ -517,7 +517,6 @@ router.post('/send-wappin', jwtAuthGuard, tenantGuard, async (req: AuthRequest, 
         template: {
           name: "undangan_dai",
           language: {
-            policy: "deterministic",
             code: "id"
           },
           components: [
