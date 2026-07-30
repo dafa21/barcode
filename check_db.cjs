@@ -1,0 +1,1 @@
+const { db } = require('./dist/src/db/index.cjs'); async function run() { try { const g = await db.query('SELECT * FROM events LIMIT 1'); console.log(g); } catch(e) { console.error(e); } process.exit(0); } run();
