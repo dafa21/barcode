@@ -528,12 +528,21 @@ router.post('/send-wappin', jwtAuthGuard, tenantGuard, async (req: AuthRequest, 
         
         // Extract base64
         const targetBase64 = guest.customInvitationFile || event.invitationFile || '';
+        
+        if (!targetBase64) {
+          throw new Error('Tamu ini dan Event ini tidak memiliki file PDF undangan. Harap unggah PDF terlebih dahulu.');
+        }
+
         const matches = targetBase64.match(/^data:(.+);base64,(.+)$/);
+        
         if (matches && matches.length === 3) {
           fs.writeFileSync(physicalPdfPath, Buffer.from(matches[2], 'base64'));
           fileUrl = `${appUrl}/wappin_pdf/${pdfFilename}`;
+        } else if (targetBase64.startsWith('http://') || targetBase64.startsWith('https://')) {
+          // Jika di database tersimpan URL langsung, jangan bikin file fisik, pakai URL itu!
+          fileUrl = targetBase64;
         } else {
-          // Fallback if not valid base64
+          // Fallback if not valid base64 or URL
           fileUrl = guest.customInvitationFile 
             ? `${appUrl}/api/guests/public/invitation/${guest.barcodeUid}/undangan.pdf` 
             : `${appUrl}/api/events/public/invitation/${event.eventName.toLowerCase().replace(/[^a-z0-9]+/g, '-')}/undangan.pdf`;
