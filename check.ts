@@ -1,0 +1,1 @@
+import { db } from './src/db'; import { events } from './src/db/schema'; async function run() { const evs = await db.select().from(events).limit(1); console.log(evs[0].invitationFile ? evs[0].invitationFile.substring(0, 100) : 'null'); process.exit(0); } run();

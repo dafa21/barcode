@@ -1052,7 +1052,7 @@ router4.post("/send-wappin", jwtAuthGuard, tenantGuard, async (req, res) => {
         if (!targetBase64) {
           throw new Error("Tamu ini dan Event ini tidak memiliki file PDF undangan. Harap unggah PDF terlebih dahulu.");
         }
-        const matches = targetBase64.match(/^data:(.+);base64,(.+)$/);
+        const matches = targetBase64.match(/^data:(.+);base64,([\s\S]+)$/);
         if (matches && matches.length === 3) {
           fs2.writeFileSync(physicalPdfPath, Buffer.from(matches[2], "base64"));
           fileUrl = `${appUrl}/api/guests/download-physical-pdf/${pdfFilename}`;
