@@ -876,7 +876,6 @@ const handleCreateEvent = async (e: React.FormEvent) => {
           }
           // Step 2: Remove ALL style/link elements from DOM
           const styleEls = Array.from(document.querySelectorAll('style, link[rel="stylesheet"]'));
-          const savedStyleInfo = styleEls.map(el => ({ element: el, parent: el.parentNode, nextSibling: el.nextSibling }));
           styleEls.forEach(el => el.remove());
           
           // Step 3: html2canvas — no stylesheets = no oklch error
@@ -884,10 +883,9 @@ const handleCreateEvent = async (e: React.FormEvent) => {
           try {
             canvas = await html2canvas(element, { scale: 2, useCORS: true });
           } finally {
-            // Step 4: Restore stylesheets
-            savedStyleInfo.forEach(({ element: el, parent, nextSibling }) => {
-              if (parent) { nextSibling ? parent.insertBefore(el, nextSibling) : parent.appendChild(el); }
-            });
+            // Step 4: Restore stylesheets (just append back to head)
+            styleEls.forEach(el => document.head.appendChild(el));
+            // Restore original inline styles
             allEls.forEach((el, idx) => {
               const htmlEl = el as HTMLElement;
               if (originalInlineStyles[idx]) { htmlEl.setAttribute('style', originalInlineStyles[idx]); }
@@ -2989,16 +2987,13 @@ const handleCreateEvent = async (e: React.FormEvent) => {
                       }
                     }
                     const printStyleEls = Array.from(document.querySelectorAll('style, link[rel="stylesheet"]'));
-                    const printSaved = printStyleEls.map(el => ({ element: el, parent: el.parentNode, nextSibling: el.nextSibling }));
                     printStyleEls.forEach(el => el.remove());
                     
                     let canvas: HTMLCanvasElement;
                     try {
                       canvas = await html2canvas(element, { scale: 2, useCORS: true });
                     } finally {
-                      printSaved.forEach(({ element: el, parent, nextSibling }) => {
-                        if (parent) { nextSibling ? parent.insertBefore(el, nextSibling) : parent.appendChild(el); }
-                      });
+                      printStyleEls.forEach(el => document.head.appendChild(el));
                       printAllEls.forEach((el, idx) => {
                         const htmlEl = el as HTMLElement;
                         if (printOrigStyles[idx]) { htmlEl.setAttribute('style', printOrigStyles[idx]); }
