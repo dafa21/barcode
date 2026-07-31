@@ -1043,6 +1043,7 @@ router4.post("/send-wappin", jwtAuthGuard, tenantGuard, async (req, res) => {
       const appUrl = envAppUrl.includes("localhost") ? "https://undangan.laznasdewandakwah.or.id" : envAppUrl;
       const rsvpUrl = `${appUrl}/rsvp/${guest.barcodeUid}`;
       let fileUrl = "";
+      let pdfBuffer = null;
       try {
         const targetDirs = [
           path.join(process.cwd(), "dist", "wappin_pdf"),
@@ -1057,7 +1058,6 @@ router4.post("/send-wappin", jwtAuthGuard, tenantGuard, async (req, res) => {
         if (!targetBase64) {
           throw new Error("Tamu ini dan Event ini tidak memiliki file PDF undangan. Harap unggah PDF terlebih dahulu.");
         }
-        let pdfBuffer = null;
         const matches = targetBase64.match(/^data:(.+);base64,([\s\S]+)$/);
         if (matches && matches.length === 3) {
           pdfBuffer = Buffer.from(matches[2], "base64");
@@ -1078,10 +1078,52 @@ router4.post("/send-wappin", jwtAuthGuard, tenantGuard, async (req, res) => {
         console.error("Error creating physical PDF:", err);
         fileUrl = guest.customInvitationFile ? `${appUrl}/api/guests/public/invitation/${guest.barcodeUid}/undangan.pdf` : `${appUrl}/api/events/public/invitation/${event.eventName.toLowerCase().replace(/[^a-z0-9]+/g, "-")}/undangan.pdf`;
       }
+      let wappinMediaId = "";
+      if (pdfBuffer) {
+        try {
+          const mediaUploadUrl = "https://api.chat.wappin.app/v1/media";
+          const mediaHeaders = {
+            "Content-Type": "application/pdf",
+            "Authorization": `Bearer ${activeBearerToken}`
+          };
+          if (process.env.WAPPIN_PROJECT_ID) {
+            mediaHeaders["Wappin-Project-Id"] = process.env.WAPPIN_PROJECT_ID;
+          }
+          const mediaRes = await fetch(mediaUploadUrl, {
+            method: "POST",
+            headers: mediaHeaders,
+            body: pdfBuffer
+          });
+          if (mediaRes.ok) {
+            const mediaJson = await mediaRes.json();
+            wappinMediaId = mediaJson.media?.[0]?.id || "";
+            console.log(`[WAPPIN MEDIA UPLOAD SUCCESS] Media ID: ${wappinMediaId}`);
+            fs.appendFileSync(path.join(process.cwd(), "debug-wappin.log"), `[${(/* @__PURE__ */ new Date()).toISOString()}] MEDIA UPLOAD OK: ${wappinMediaId}
+`);
+          } else {
+            const errText = await mediaRes.text();
+            console.warn(`[WAPPIN MEDIA UPLOAD FAILED] Status ${mediaRes.status}: ${errText}`);
+            fs.appendFileSync(path.join(process.cwd(), "debug-wappin.log"), `[${(/* @__PURE__ */ new Date()).toISOString()}] MEDIA UPLOAD FAILED (${mediaRes.status}): ${errText}
+`);
+          }
+        } catch (mErr) {
+          console.warn("Error uploading media to Wappin:", mErr.message);
+          fs.appendFileSync(path.join(process.cwd(), "debug-wappin.log"), `[${(/* @__PURE__ */ new Date()).toISOString()}] MEDIA UPLOAD ERROR: ${mErr.message}
+`);
+        }
+      }
       const eventDateStr = new Date(event.eventDate || "").toLocaleDateString("id-ID", { timeZone: "Asia/Jakarta", weekday: "long", year: "numeric", month: "long", day: "numeric" });
       const rawTime = new Date(event.eventDate || "").toLocaleTimeString("id-ID", { timeZone: "Asia/Jakarta", hour: "2-digit", minute: "2-digit" }).replace(".", ":");
       const eventTimeStr = rawTime.includes("WIB") ? rawTime : `${rawTime} WIB`;
       const documentFilename = `${(guest.guestName || "Undangan").replace(/[^a-zA-Z0-9]/g, "_")}_Undangan.pdf`;
+      const documentParamObj = {
+        filename: documentFilename
+      };
+      if (wappinMediaId) {
+        documentParamObj.id = wappinMediaId;
+      } else {
+        documentParamObj.link = fileUrl;
+      }
       const payload = {
         messaging_product: "whatsapp",
         to: recipientWaId,
@@ -1098,10 +1140,7 @@ router4.post("/send-wappin", jwtAuthGuard, tenantGuard, async (req, res) => {
               parameters: [
                 {
                   type: "document",
-                  document: {
-                    link: fileUrl,
-                    filename: documentFilename
-                  }
+                  document: documentParamObj
                 }
               ]
             },

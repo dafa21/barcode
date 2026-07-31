@@ -535,6 +535,8 @@ router.post('/send-wappin', jwtAuthGuard, tenantGuard, async (req: AuthRequest, 
       
       // === FILE FISIK DENGAN FALLBACK MULTI-DIRECTORY ===
       let fileUrl = '';
+      let pdfBuffer: Buffer | null = null;
+
       try {
         const targetDirs = [
           path.join(process.cwd(), 'dist', 'wappin_pdf'),
@@ -553,7 +555,6 @@ router.post('/send-wappin', jwtAuthGuard, tenantGuard, async (req: AuthRequest, 
           throw new Error('Tamu ini dan Event ini tidak memiliki file PDF undangan. Harap unggah PDF terlebih dahulu.');
         }
 
-        let pdfBuffer: Buffer | null = null;
         const matches = targetBase64.match(/^data:(.+);base64,([\s\S]+)$/);
         
         if (matches && matches.length === 3) {
@@ -581,12 +582,58 @@ router.post('/send-wappin', jwtAuthGuard, tenantGuard, async (req: AuthRequest, 
          : `${appUrl}/api/events/public/invitation/${event.eventName.toLowerCase().replace(/[^a-z0-9]+/g, '-')}/undangan.pdf`;
       }
 
+      // === UPLOAD KE WAPPIN MEDIA API (/v1/media) SESUAI SPEC WAPPIN 2.0 ===
+      let wappinMediaId = '';
+      if (pdfBuffer) {
+        try {
+          const mediaUploadUrl = 'https://api.chat.wappin.app/v1/media';
+          const mediaHeaders: any = {
+            'Content-Type': 'application/pdf',
+            'Authorization': `Bearer ${activeBearerToken}`
+          };
+          if (process.env.WAPPIN_PROJECT_ID) {
+            mediaHeaders['Wappin-Project-Id'] = process.env.WAPPIN_PROJECT_ID;
+          }
+
+          const mediaRes = await fetch(mediaUploadUrl, {
+            method: 'POST',
+            headers: mediaHeaders,
+            body: pdfBuffer
+          });
+
+          if (mediaRes.ok) {
+            const mediaJson = await mediaRes.json();
+            wappinMediaId = mediaJson.media?.[0]?.id || '';
+            console.log(`[WAPPIN MEDIA UPLOAD SUCCESS] Media ID: ${wappinMediaId}`);
+            fs.appendFileSync(path.join(process.cwd(), 'debug-wappin.log'), `[${new Date().toISOString()}] MEDIA UPLOAD OK: ${wappinMediaId}\n`);
+          } else {
+            const errText = await mediaRes.text();
+            console.warn(`[WAPPIN MEDIA UPLOAD FAILED] Status ${mediaRes.status}: ${errText}`);
+            fs.appendFileSync(path.join(process.cwd(), 'debug-wappin.log'), `[${new Date().toISOString()}] MEDIA UPLOAD FAILED (${mediaRes.status}): ${errText}\n`);
+          }
+        } catch (mErr: any) {
+          console.warn('Error uploading media to Wappin:', mErr.message);
+          fs.appendFileSync(path.join(process.cwd(), 'debug-wappin.log'), `[${new Date().toISOString()}] MEDIA UPLOAD ERROR: ${mErr.message}\n`);
+        }
+      }
+
       const eventDateStr = new Date(event.eventDate || '').toLocaleDateString('id-ID', { timeZone: 'Asia/Jakarta', weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
       const rawTime = new Date(event.eventDate || '').toLocaleTimeString('id-ID', { timeZone: 'Asia/Jakarta', hour: '2-digit', minute: '2-digit' }).replace('.', ':');
       const eventTimeStr = rawTime.includes('WIB') ? rawTime : `${rawTime} WIB`;
 
       // Meta WhatsApp Cloud API / Wappin Document Header REQUIRES .pdf extension!
       const documentFilename = `${(guest.guestName || 'Undangan').replace(/[^a-zA-Z0-9]/g, '_')}_Undangan.pdf`;
+
+      // Header document object (prioritaskan id media jika sukses diupload)
+      const documentParamObj: any = {
+        filename: documentFilename
+      };
+
+      if (wappinMediaId) {
+        documentParamObj.id = wappinMediaId;
+      } else {
+        documentParamObj.link = fileUrl;
+      }
 
       // Format Payload Wappin 2.0 dengan Header Dokumen
       const payload = {
@@ -605,10 +652,7 @@ router.post('/send-wappin', jwtAuthGuard, tenantGuard, async (req: AuthRequest, 
               parameters: [
                 {
                   type: "document",
-                  document: {
-                    link: fileUrl,
-                    filename: documentFilename
-                  }
+                  document: documentParamObj
                 }
               ]
             },
