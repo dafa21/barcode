@@ -642,16 +642,11 @@ router.post('/send-wappin', jwtAuthGuard, tenantGuard, async (req: AuthRequest, 
       // Meta WhatsApp Cloud API / Wappin Document Header REQUIRES .pdf extension!
       const documentFilename = `${(guest.guestName || 'Undangan').replace(/[^a-zA-Z0-9]/g, '_')}_Undangan.pdf`;
 
-      // Header document object (prioritaskan id media jika sukses diupload)
+      // Header document object
       const documentParamObj: any = {
-        filename: documentFilename
+        filename: documentFilename,
+        link: fileUrl
       };
-
-      if (wappinMediaId) {
-        documentParamObj.id = wappinMediaId;
-      } else {
-        documentParamObj.link = fileUrl;
-      }
 
       // Format Payload Wappin 2.0 dengan Header Dokumen
       const payload = {
