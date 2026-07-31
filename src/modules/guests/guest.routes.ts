@@ -526,8 +526,8 @@ router.post('/send-wappin', jwtAuthGuard, tenantGuard, async (req: AuthRequest, 
       if (phoneStr.startsWith('0')) phoneStr = '62' + phoneStr.slice(1);
       if (!phoneStr.startsWith('62')) phoneStr = '62' + phoneStr;
       
-      // Wappin API expects number without '+'
-      const recipientWaId = phoneStr;
+      // Wappin API merekomendasikan format +62
+      const recipientWaId = '+' + phoneStr;
 
       const envAppUrl = process.env.APP_URL || 'https://undangan.laznasdewandakwah.or.id';
       const appUrl = envAppUrl.includes('localhost') ? 'https://undangan.laznasdewandakwah.or.id' : envAppUrl;
@@ -589,6 +589,202 @@ router.post('/send-wappin', jwtAuthGuard, tenantGuard, async (req: AuthRequest, 
           const mediaUploadUrl = 'https://api.chat.wappin.app/v1/media';
           const mediaHeaders: any = {
             'Content-Type': 'application/pdf',
+            'Content-Length': pdfBuffer.length.toString(),
+            'Authorization': `Bearer ${activeBearerToken}`
+          };
+          if (process.env.WAPPIN_PROJECT_ID) {
+            mediaHeaders['Wappin-Project-Id'] = process.env.WAPPIN_PROJECT_ID;
+          }
+
+          const mediaRes = await fetch(mediaUploadUrl, {
+            method: 'POST',
+            headers: mediaHeaders,
+            body: pdfBuffer
+          });
+
+          if (mediaRes.ok) {
+            const mediaJson = await mediaRes.json();
+            wappinMediaId = mediaJson.media?.[0]?.id || '';
+            console.log(`[WAPPIN MEDIA UPLOAD SUCCESS] Media ID: ${wappinMediaId}`);
+            fs.appendFileSync(path.join(process.cwd(), 'debug-wappin.log'), `[${new Date().toISOString()}] MEDIA UPLOAD OK: ${wappinMediaId}\n`);
+          } else {
+            const errText = await mediaRes.text();
+            console.warn(`[WAPPIN MEDIA UPLOAD FAILED] Status ${mediaRes.status}: ${errText}`);
+            fs.appendFileSync(path.join(process.cwd(), 'debug-wappin.log'), `[${new Date().toISOString()}] MEDIA UPLOAD FAILED (${mediaRes.status}): ${errText}\n`);
+          }
+        } catch (mErr: any) {
+          console.warn('Error uploading media to Wappin:', mErr.message);
+          fs.appendFileSync(path.join(process.cwd(), 'debug-wappin.log'), `[${new Date().toISOString()}] MEDIA UPLOAD ERROR: ${mErr.message}\n`);
+        }
+      }
+
+      const eventDateStr = new Date(event.eventDate || '').toLocaleDateString('id-ID', { timeZone: 'Asia/Jakarta', weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+      const rawTime = new Date(event.eventDate || '').toLocaleTimeString('id-ID', { timeZone: 'Asia/Jakarta', hour: '2-digit', minute: '2-digit' }).replace('.', ':');
+      const eventTimeStr = rawTime.includes('WIB') ? rawTime : `${rawTime} WIB`;
+
+      // Meta WhatsApp Cloud API / Wappin Document Header REQUIRES .pdf extension!
+      const documentFilename = `${(guest.guestName || 'Undangan').replace(/[^a-zA-Z0-9]/g, '_')}_Undangan.pdf`;
+
+      // Header document object (prioritaskan id media jika sukses diupload)
+      const documentParamObj: any = {
+        filename: documentFilename
+      };
+
+      if (wappinMediaId) {
+        documentParamObj.id = wappinMediaId;
+      } else {
+        documentParamObj.link = fileUrl;
+      }
+
+      // Format Payload Wappin 2.0 dengan Header Dokumen
+      const payload = {
+        messaging_product: "whatsapp",
+        to: recipientWaId,
+        type: "template",
+        template: {
+          name: "undangan_dai",
+          language: {
+            policy: "deterministic",
+            code: "id"
+          },
+          components: [
+            {
+              type: "header",
+              parameters: [
+                {
+                  type: "document",
+                  document: documentParamObj
+                }
+              ]
+            },
+            {
+              type: "body",
+              parameters: [
+                { type: "text", text: (guest.guestName || "-").replace(/[\r\n]+/g, ' ') },
+                { type: "text", text: (event.eventName || "Acara").replace(/[\r\n]+/g, ' ') },
+                { type: "text", text: eventDateStr || "-" },
+                { type: "text", text: eventTimeStr || "-" },
+                { type: "text", text: (event.location || "-").replace(/[\r\n]+/g, ' ') },
+                { type: "text", text: fileUrl },
+                { type: "text", text: rsvpUrl }
+              ]
+            }
+          ]
+        }
+      };
+
+      try {
+        const sendUrl = 'https://api.chat.wappin.app/v1/messages';
+        
+        const headers: any = {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${activeBearerToken}`
+        };
+        if (process.env.WAPPIN_PROJECT_ID) {
+          headers['Wappin-Project-Id'] = process.env.WAPPIN_PROJECT_ID;
+        }
+
+        const response = await fetch(sendUrl, {
+          method: 'POST',
+          headers,
+          body: JSON.stringify(payload)
+        });
+
+          if (!response.ok) {
+            const wappinError = await response.json().catch(() => ({}));
+            const errMsg = wappinError.errors?.[0]?.details || wappinError.errors?.[0]?.title || `HTTP ${response.status} ${JSON.stringify(wappinError)}`;
+            fs.appendFileSync(path.join(process.cwd(), 'debug-wappin.log'), `[${new Date().toISOString()}] WAPPIN ERROR: ${errMsg}\nPAYLOAD: ${JSON.stringify(payload, null, 2)}\n\n`);
+            throw new Error(errMsg);
+          }
+          
+          fs.appendFileSync(path.join(process.cwd(), 'debug-wappin.log'), `[${new Date().toISOString()}] WAPPIN SUCCESS for ${recipientWaId}\n\n`);
+
+        
+        const data = await response.json();
+        console.log(`[WAPPIN SUCCESS] Ke ${recipientWaId}:`, JSON.stringify(data));
+        
+        // Update DB (Dibungkus try-catch agar tidak error merah di PM2 jika lupa db:push)
+        try {
+          await db.update(guests).set({ wappinSent: true }).where(eq(guests.id, guest.id));
+        } catch (dbErr: any) {
+          console.warn('Wappin message sent, but failed to update DB (run db:push):', dbErr.message);
+        }
+        
+        results.push({ guestId: guest.id, status: 'success', data });
+      } catch (err: any) {
+        console.error(`[WAPPIN FAILED] Ke ${recipientWaId}:`, err.message || String(err));
+        results.push({ guestId: guest.id, status: 'failed', error: err.message || String(err) });
+      }
+      
+      // Jeda 1.5 detik antar pengiriman supaya API Wappin tidak diam-diam membuang pesan (Rate Limit / Anti-Spam beruntun)
+      await new Promise(resolve => setTimeout(resolve, 1500));
+    }
+
+      const hasError = results.some(r => r.status === 'failed');
+      if (hasError) {
+        const errDetails = results.filter(r => r.status === 'failed').map(r => r.error).join(' | ');
+        fs.appendFileSync(path.join(process.cwd(), 'debug-wappin.log'), `[${new Date().toISOString()}] BULK FAILURES: ${errDetails}\n\n`);
+        return res.status(400).json({ error: `Gagal: ${errDetails}`, results });
+      }
+
+      return res.json({ success: true, results });
+    } catch (error: any) {
+let fileUrl = '';
+      let pdfBuffer: Buffer | null = null;
+
+      try {
+        const targetDirs = [
+          path.join(process.cwd(), 'dist', 'wappin_pdf'),
+          path.join(process.cwd(), 'public', 'wappin_pdf'),
+          path.join(process.cwd(), 'wappin_pdf')
+        ];
+        
+        targetDirs.forEach(dir => {
+          if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+        });
+        
+        const pdfFilename = `${guest.barcodeUid}_${Date.now()}.pdf`;
+        const targetBase64 = guest.customInvitationFile || event.invitationFile || '';
+        
+        if (!targetBase64) {
+          throw new Error('Tamu ini dan Event ini tidak memiliki file PDF undangan. Harap unggah PDF terlebih dahulu.');
+        }
+
+        const matches = targetBase64.match(/^data:(.+);base64,([\s\S]+)$/);
+        
+        if (matches && matches.length === 3) {
+          pdfBuffer = Buffer.from(matches[2], 'base64');
+        } else if (targetBase64.trim().startsWith('JVBERi')) {
+          pdfBuffer = Buffer.from(targetBase64.trim(), 'base64');
+        }
+
+        if (pdfBuffer) {
+          targetDirs.forEach(dir => {
+            fs.writeFileSync(path.join(dir, pdfFilename), pdfBuffer!);
+          });
+          fileUrl = `${appUrl}/api/guests/download-physical-pdf/${pdfFilename}`;
+        } else if (targetBase64.startsWith('http://') || targetBase64.startsWith('https://')) {
+          fileUrl = targetBase64;
+        } else {
+          fileUrl = guest.customInvitationFile 
+            ? `${appUrl}/api/guests/public/invitation/${guest.barcodeUid}/undangan.pdf` 
+            : `${appUrl}/api/events/public/invitation/${event.eventName.toLowerCase().replace(/[^a-z0-9]+/g, '-')}/undangan.pdf`;
+        }
+      } catch (err) {
+        console.error('Error creating physical PDF:', err);
+        fileUrl = guest.customInvitationFile 
+         ? `${appUrl}/api/guests/public/invitation/${guest.barcodeUid}/undangan.pdf` 
+         : `${appUrl}/api/events/public/invitation/${event.eventName.toLowerCase().replace(/[^a-z0-9]+/g, '-')}/undangan.pdf`;
+      }
+
+      // === UPLOAD KE WAPPIN MEDIA API (/v1/media) SESUAI SPEC WAPPIN 2.0 ===
+      let wappinMediaId = '';
+      if (pdfBuffer) {
+        try {
+          const mediaUploadUrl = 'https://api.chat.wappin.app/v1/media';
+          const mediaHeaders: any = {
+            'Content-Type': 'application/pdf',
+            'Content-Length': pdfBuffer.length.toString(),
             'Authorization': `Bearer ${activeBearerToken}`
           };
           if (process.env.WAPPIN_PROJECT_ID) {
@@ -732,5 +928,22 @@ router.post('/send-wappin', jwtAuthGuard, tenantGuard, async (req: AuthRequest, 
       res.status(500).json({ error: 'Internal server error: ' + (error.stack || error.message || String(error)) });
     }
 });
+
+  router.get('/debug-wappin-logs', (req, res) => {
+    try {
+      const logPath = require('path').join(process.cwd(), 'debug-wappin.log');
+      const fs = require('fs');
+      if (fs.existsSync(logPath)) {
+        const logs = fs.readFileSync(logPath, 'utf8');
+        const lines = logs.split('\n').filter(Boolean).slice(-100);
+        res.setHeader('Content-Type', 'text/plain');
+        res.send(lines.join('\n'));
+      } else {
+        res.send('Log file not found at: ' + logPath);
+      }
+    } catch (e: any) {
+      res.status(500).send(e.message);
+    }
+  });
 
 export default router;
