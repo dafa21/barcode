@@ -220,23 +220,14 @@ router.put('/:id', async (req: AuthRequest, res) => {
       return res.status(403).json({ error: 'Forbidden' });
     }
 
-    const updated = await db.update(events)
-      .set({
-        eventName,
-        eventDate: new Date(eventDate),
-        location,
-        mapsLink,
-        isActive,
-        logo,
-        twibbonBackground,
-        twibbonConfig,
-        invitationFile,
-        letterBackground,
-        letterSize,
-        letterContent,
-      backsound,
-      heroImage,
-      gallery,
+    const updateData: any = {
+      eventName,
+      eventDate: new Date(eventDate),
+      location,
+      mapsLink,
+      isActive,
+      letterSize,
+      letterContent,
       themePrimary,
       themeSecondary,
       openingQuote,
@@ -245,7 +236,19 @@ router.put('/:id', async (req: AuthRequest, res) => {
       socialWebsite,
       socialYoutube,
       socialInstagram,
-      })
+    };
+    
+    if (logo !== undefined && logo !== 'exists') updateData.logo = logo;
+    if (twibbonBackground !== undefined && twibbonBackground !== 'exists') updateData.twibbonBackground = twibbonBackground;
+    if (twibbonConfig !== undefined) updateData.twibbonConfig = twibbonConfig;
+    if (invitationFile !== undefined && invitationFile !== 'exists') updateData.invitationFile = invitationFile;
+    if (letterBackground !== undefined && letterBackground !== 'exists') updateData.letterBackground = letterBackground;
+    if (backsound !== undefined && backsound !== 'exists') updateData.backsound = backsound;
+    if (heroImage !== undefined && heroImage !== 'exists') updateData.heroImage = heroImage;
+    if (gallery !== undefined && gallery !== 'exists') updateData.gallery = gallery;
+
+    const updated = await db.update(events)
+      .set(updateData)
       .where(eq(events.id, id))
       .returning();
       

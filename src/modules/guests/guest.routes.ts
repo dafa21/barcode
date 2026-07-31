@@ -228,7 +228,7 @@ router.put('/:id', async (req: AuthRequest, res) => {
       guestType: guestType || null,
       picId: picId || null,
       isVip: isVip !== undefined ? !!isVip : guestResult[0].isVip,
-      customInvitationFile: customInvitationFile !== undefined ? customInvitationFile : guestResult[0].customInvitationFile,
+      customInvitationFile: (customInvitationFile !== undefined && customInvitationFile !== 'exists') ? customInvitationFile : guestResult[0].customInvitationFile,
     }).where(eq(guests.id, id)).returning();
 
     res.json(updated[0]);
