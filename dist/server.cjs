@@ -973,14 +973,18 @@ router4.post("/mark-manual-wa", jwtAuthGuard, tenantGuard, async (req, res) => {
   }
 });
 router4.get("/download-physical-pdf/:filename", (req, res) => {
-  const isDev = process.env.NODE_ENV !== "production";
-  const staticDir = isDev ? path.join(process.cwd(), "public") : path.join(process.cwd(), "dist");
-  const pdfDir = path.join(staticDir, "wappin_pdf");
-  const filePath = path.join(pdfDir, req.params.filename);
-  if (fs.existsSync(filePath)) {
+  const filename = req.params.filename;
+  const candidatePaths = [
+    path.join(process.cwd(), "dist", "wappin_pdf", filename),
+    path.join(process.cwd(), "public", "wappin_pdf", filename),
+    path.join(process.cwd(), "wappin_pdf", filename)
+  ];
+  const foundPath = candidatePaths.find((p) => fs.existsSync(p));
+  if (foundPath) {
     res.setHeader("Content-Type", "application/pdf");
-    res.setHeader("Content-Disposition", `inline; filename="${req.params.filename}"`);
-    res.sendFile(filePath);
+    res.setHeader("Content-Disposition", `inline; filename="${filename}"`);
+    res.setHeader("Cache-Control", "public, max-age=86400");
+    res.sendFile(foundPath);
   } else {
     res.status(404).send("PDF not found di physical drive");
   }
@@ -1040,21 +1044,30 @@ router4.post("/send-wappin", jwtAuthGuard, tenantGuard, async (req, res) => {
       const rsvpUrl = `${appUrl}/rsvp/${guest.barcodeUid}`;
       let fileUrl = "";
       try {
-        const isProd = process.env.NODE_ENV === "production";
-        const staticDir = isProd ? path.join(process.cwd(), "dist") : path.join(process.cwd(), "public");
-        const tempPdfDir = path.join(staticDir, "wappin_pdf");
-        if (!fs.existsSync(tempPdfDir)) {
-          fs.mkdirSync(tempPdfDir, { recursive: true });
-        }
+        const targetDirs = [
+          path.join(process.cwd(), "dist", "wappin_pdf"),
+          path.join(process.cwd(), "public", "wappin_pdf"),
+          path.join(process.cwd(), "wappin_pdf")
+        ];
+        targetDirs.forEach((dir) => {
+          if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+        });
         const pdfFilename = `${guest.barcodeUid}_${Date.now()}.pdf`;
-        const physicalPdfPath = path.join(tempPdfDir, pdfFilename);
         const targetBase64 = guest.customInvitationFile || event.invitationFile || "";
         if (!targetBase64) {
           throw new Error("Tamu ini dan Event ini tidak memiliki file PDF undangan. Harap unggah PDF terlebih dahulu.");
         }
+        let pdfBuffer = null;
         const matches = targetBase64.match(/^data:(.+);base64,([\s\S]+)$/);
         if (matches && matches.length === 3) {
-          fs.writeFileSync(physicalPdfPath, Buffer.from(matches[2], "base64"));
+          pdfBuffer = Buffer.from(matches[2], "base64");
+        } else if (targetBase64.trim().startsWith("JVBERi")) {
+          pdfBuffer = Buffer.from(targetBase64.trim(), "base64");
+        }
+        if (pdfBuffer) {
+          targetDirs.forEach((dir) => {
+            fs.writeFileSync(path.join(dir, pdfFilename), pdfBuffer);
+          });
           fileUrl = `${appUrl}/api/guests/download-physical-pdf/${pdfFilename}`;
         } else if (targetBase64.startsWith("http://") || targetBase64.startsWith("https://")) {
           fileUrl = targetBase64;
@@ -1066,8 +1079,9 @@ router4.post("/send-wappin", jwtAuthGuard, tenantGuard, async (req, res) => {
         fileUrl = guest.customInvitationFile ? `${appUrl}/api/guests/public/invitation/${guest.barcodeUid}/undangan.pdf` : `${appUrl}/api/events/public/invitation/${event.eventName.toLowerCase().replace(/[^a-z0-9]+/g, "-")}/undangan.pdf`;
       }
       const eventDateStr = new Date(event.eventDate || "").toLocaleDateString("id-ID", { timeZone: "Asia/Jakarta", weekday: "long", year: "numeric", month: "long", day: "numeric" });
-      const eventTimeStr = new Date(event.eventDate || "").toLocaleTimeString("id-ID", { timeZone: "Asia/Jakarta", hour: "2-digit", minute: "2-digit" }).replace(".", ":");
-      const documentFilename = `${guest.guestName}_Undangan`.replace(/[^a-zA-Z0-9]/g, "_");
+      const rawTime = new Date(event.eventDate || "").toLocaleTimeString("id-ID", { timeZone: "Asia/Jakarta", hour: "2-digit", minute: "2-digit" }).replace(".", ":");
+      const eventTimeStr = rawTime.includes("WIB") ? rawTime : `${rawTime} WIB`;
+      const documentFilename = `${(guest.guestName || "Undangan").replace(/[^a-zA-Z0-9]/g, "_")}_Undangan.pdf`;
       const payload = {
         messaging_product: "whatsapp",
         to: recipientWaId,
