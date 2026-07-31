@@ -1,0 +1,2434 @@
+{
+  "meta": {
+    "version": "1.0.6"
+  },
+  "templates": [
+    {
+      "name": "undangan_dai",
+      "previous_category": "UTILITY",
+      "parameter_format": "POSITIONAL",
+      "components": [
+        {
+          "type": "HEADER",
+          "format": "DOCUMENT",
+          "example": {
+            "header_handle": [
+              "https://scontent.whatsapp.net/v/t61.29466-34/700428632_1462378335612913_5872253535728247238_n.pdf?ccb=1-7&_nc_sid=8b1bef&_nc_ohc=3pbpJFGtZ_sQ7kNvwE4YFhz&_nc_oc=Ado6hdoZxQaZ4rPjQPfkezjARozAQXEBBDGROwovJVXSIKo0vLqv6uMWCfTkjgDemNQ&_nc_zt=3&_nc_ht=scontent.whatsapp.net&edm=AH51TzQEAAAA&_nc_gid=8wD6cDNZhbEbu1LIJaDhvw&_nc_tpa=Q5bMBQE9rUHbzqsxAMAha4q-XFfPoaMVXQa0WBg3oY04AiLoGUHGlsPs7Mt_Vo218mGY5yCaUvX_AUak&oh=01_Q5Aa5AEu4v1Wb5wmr8QSJqAXoO8_3Dgl8Ymk92ffeOSjEh4Bhw&oe=6A93D1EF"
+            ]
+          }
+        },
+        {
+          "type": "BODY",
+          "text": "Assalamu'alaikum Warahmatullahi Wabarakatuh.\n\nYth. Bapak/Ibu {{1}}\n\nDengan hormat, kami mengundang Bapak/Ibu untuk menghadiri:\n\n🌟 {{2}}\n\n📅Hari/Tanggal: {{3}}\n⏰Waktu: {{4}}\n📍Tempat: {{5}}\n\nUndangan Resmi:\n{{6}}\n\nKonfirmasi Kehadiran (RSVP):\n{{7}}\n\nMohon melakukan konfirmasi kehadiran melalui tautan RSVP. Setelah konfirmasi, sistem akan menerbitkan ID Card beserta QR Code sebagai tiket masuk acara.\n\nAtas perhatian dan kehadiran Bapak/Ibu, kami ucapkan terima kasih.\n\nWassalamu'alaikum Warahmatullahi Wabarakatuh.\n\nPanitia Penyelenggara\n\nWebsite     : https://laznasdewandakwah.or.id\nYouTube     : https://youtu.be/4CqSG0ZbuPY?si=jik111I5FIG3Ziwt\nInstagram : https://www.instagram.com/laznasdewandakwah?igsh=a2dq",
+          "example": {
+            "body_text": [
+              [
+                "Budi",
+                "Pelepasan Dai",
+                "20, April 2026",
+                "08.00 - 10.00 WIB",
+                "Aula Masjid",
+                "https://undangan.laznasdewandakwah.or.id/rsvp/618d9376-a14e-4fe1-a30b-f52a2d07105e",
+                "https://undangan.laznasdewandakwah.or.id/api/events/public/invitation/tasyakur-55-tahun-dakwah-pedalaman-dewan-dakwah"
+              ]
+            ]
+          }
+        }
+      ],
+      "language": "id",
+      "status": "APPROVED",
+      "category": "MARKETING",
+      "disable_ios_autofill": false,
+      "is_primary_device_delivery_only": false,
+      "id": "1462378328946247",
+      "namespace": "f8b46dc6_a650_4334_b920_bf693ebe7ccd"
+    },
+    {
+      "name": "undangan_salsa",
+      "parameter_format": "POSITIONAL",
+      "components": [
+        {
+          "type": "HEADER",
+          "format": "TEXT",
+          "text": "UNDANGAN RESMI"
+        },
+        {
+          "type": "BODY",
+          "text": "Assalamu'alaikum Warahmatullahi Wabarakatuh.\n\nYth. Ibu Salsa\n\nDengan hormat, kami mengundang Ibu untuk menghadiri acara **Tasyakur 55 Tahun Dakwah Pedalaman Dewan Dakwah** yang akan diselenggarakan pada:\n\n**Hari/Tanggal:** Sabtu, 15 Agustus 2026\n**Waktu:** 01.00 WIB\n**Tempat:** Aula Masjid Al Furqan Dewan Dakwah\nJl. Kramat Raya No. 45, Senen, Jakarta Pusat\n\n**Undangan Resmi:**\nhttps://undangan.laznasdewandakwah.or.id/api/events/public/invitation/tasyakur-55-tahun-dakwah-pedalaman-dewan-dakwah\n\n**Konfirmasi Kehadiran (RSVP):**\nhttps://undangan.laznasdewandakwah.or.id/rsvp/88b104f2-f5f4-4304-a800-580d910a0f4b\n\nMohon melakukan konfirmasi kehadiran melalui tautan RSVP. Setelah konfirmasi, sistem akan menerbitkan ID Card beserta QR Code sebagai tiket masuk.\n\nAtas perhatian dan kehadiran Ibu, kami ucapkan terima kasih.\n\nWassalamu'alaikum Warahmatullahi Wabarakatuh.\n\n**Panitia Penyelenggara**\n\nWebsite: https://laznasdewandakwah.or.id\nYouTube: https://youtu.be/4CqSG0ZbuPY?si=jik111I5FIG3Ziwt"
+        },
+        {
+          "type": "BUTTONS",
+          "buttons": [
+            {
+              "type": "PHONE_NUMBER",
+              "text": "Konfirmasi Kehadiran",
+              "phone_number": "+6281210002656"
+            }
+          ]
+        }
+      ],
+      "language": "id",
+      "status": "APPROVED",
+      "category": "MARKETING",
+      "disable_ios_autofill": false,
+      "is_primary_device_delivery_only": false,
+      "id": "2222786638479923",
+      "namespace": "f8b46dc6_a650_4334_b920_bf693ebe7ccd"
+    },
+    {
+      "name": "undangan_zikri",
+      "parameter_format": "POSITIONAL",
+      "components": [
+        {
+          "type": "BODY",
+          "text": "Assalamu'alaikum Warahmatullahi Wabarakatuh.\n\nYth. Bapak/Ibu Zikri,\n\nDengan hormat, kami mengundang Bapak/Ibu untuk menghadiri:\n\nTasyakur 55 Tahun Dakwah Pedalaman Dewan Dakwah\n\nHari/Tanggal: Sabtu, 15 Agustus 2026\nWaktu: 01.00 WIB\nTempat: Aula Masjid Al Furqan Dewan Dakwah\nJl. Kramat Raya No. 45, Senen, Jakarta Pusat\n\nUndangan Resmi:\nhttps://undangan.laznasdewandakwah.or.id/api/events/public/invitation/tasyakur-55-tahun-dakwah-pedalaman-dewan-dakwah\n\nKonfirmasi Kehadiran (RSVP):\nhttps://undangan.laznasdewandakwah.or.id/rsvp/618d9376-a14e-4fe1-a30b-f52a2d07105e\n\nMohon melakukan konfirmasi kehadiran melalui tautan RSVP. Setelah konfirmasi, sistem akan menerbitkan ID Card beserta QR Code sebagai tiket masuk acara.\n\nAtas perhatian dan kehadiran Bapak/Ibu, kami ucapkan terima kasih.\n\nWassalamu'alaikum Warahmatullahi Wabarakatuh.\n\nPanitia Penyelenggara\n\nWebsite: https://laznasdewandakwah.or.id\nYouTube: https://youtu.be/4CqSG0ZbuPY?si=jik111I5FIG3Ziwt\nInstagram: https://www.instagram.com/laznasdewandakwah?igsh=a2dq"
+        }
+      ],
+      "language": "id",
+      "status": "APPROVED",
+      "category": "MARKETING",
+      "disable_ios_autofill": false,
+      "is_primary_device_delivery_only": false,
+      "id": "1553416226275375",
+      "namespace": "f8b46dc6_a650_4334_b920_bf693ebe7ccd"
+    },
+    {
+      "name": "promo_tasyrik_2",
+      "parameter_format": "POSITIONAL",
+      "components": [
+        {
+          "type": "HEADER",
+          "format": "IMAGE",
+          "example": {
+            "header_handle": [
+              "https://scontent.whatsapp.net/v/t61.29466-34/647479889_1535150984746481_6418748145628652372_n.jpg?ccb=1-7&_nc_sid=8b1bef&_nc_ohc=E65zK6w3i5UQ7kNvwF5A6tD&_nc_oc=AdqXr7K2qrLcM6quonNN-Nq6N8trWv7N0ZKg6YrFe2SXCl8FMRBXD095_5TU6by-wmQ&_nc_zt=3&_nc_ht=scontent.whatsapp.net&edm=AH51TzQEAAAA&_nc_gid=8wD6cDNZhbEbu1LIJaDhvw&_nc_tpa=Q5bMBQF7E9l7bBIfiFIv3g35gs4CbB4YyYgMDGlunOiNnP3frUrU7VtCQrzGWcpz31JVgobiFV5Ggh0k&oh=01_Q5Aa5AFiGDWJBYxAMAOZw2iDy4E82CX8Ps0y3z0o4m5wHWUDaw&oe=6A93C48F"
+            ]
+          }
+        },
+        {
+          "type": "BODY",
+          "text": "*Tinggal Sedikit Lagi, 50 Ekor Masih Dibutuhkan*\n\nMenghadirkan kebahagiaan bagi saudara kita di pedalaman yang mungkin hanya setahun sekali menikmati daging.\n\n✨ InsyaAllah qurban Bapak/Ibu akan membantu menguatkan dakwah para da’i hingga pelosok negeri.\n\n⏳ *Menuju penutupan 29 Mei 2026*.\n\nPilihan Qurban Hemat 2026:\n▫️ Qurban Sapi 1/7 Hemat : Rp 1.850.000\n▫️ Qurban Kambing Hemat : Rp 1.750.000\n\nMari lanjutkan kembali kebaikan qurban tahun ini…\nKarena bisa jadi, qurban Anda adalah kebahagiaan yang mereka tunggu. 🤍\n*Website* :\nhttps://laznasdewandakwah.or.id/Sapi-1per7-Hemat/3831?lz=wp2\n\n*Rekening Qurban* : \nBSI 702 739 1917 a.n. Lazis Dewan Da'wah"
+        }
+      ],
+      "language": "id",
+      "status": "APPROVED",
+      "category": "MARKETING",
+      "disable_ios_autofill": false,
+      "is_primary_device_delivery_only": false,
+      "id": "1535150981413148",
+      "namespace": "f8b46dc6_a650_4334_b920_bf693ebe7ccd"
+    },
+    {
+      "name": "tasyrik_promo",
+      "parameter_format": "POSITIONAL",
+      "components": [
+        {
+          "type": "HEADER",
+          "format": "IMAGE",
+          "example": {
+            "header_handle": [
+              "https://scontent.whatsapp.net/v/t61.29466-34/698095156_1465221234824419_2023779533298736630_n.jpg?ccb=1-7&_nc_sid=8b1bef&_nc_ohc=1u9Gg4ERecMQ7kNvwHpUO7j&_nc_oc=Adp93PdiNvOiwacP4ooRgO9KJXYyYUj6T1IMNhKBC-HM-0kUc1bzWatsc0RwWTX2p10&_nc_zt=3&_nc_ht=scontent.whatsapp.net&edm=AH51TzQEAAAA&_nc_gid=8wD6cDNZhbEbu1LIJaDhvw&_nc_tpa=Q5bMBQG8FFC2aVInv3kwk8J0TkW2NYgl2Q6b8B3hVDyIJNZkey_6e4UKKeOW8SUeYIbKMfBovahcv0xo&oh=01_Q5Aa5AEHfP4xBeJFQYca95PgTZyfVWWDczpH2t139BKVZ2dGYA&oe=6A93D4F0"
+            ]
+          }
+        },
+        {
+          "type": "BODY",
+          "text": "*Tinggal Sedikit Lagi, 50 Ekor Masih Dibutuhkan*\n\nMenghadirkan kebahagiaan bagi saudara kita di pedalaman yang mungkin hanya setahun sekali menikmati daging.\n\n✨ InsyaAllah qurban Bapak/Ibu akan membantu menguatkan dakwah para da’i hingga pelosok negeri.\n\n⏳ *Menuju penutupan 29 Mei 2026*.\n\nPilihan Qurban Hemat 2026:\n▫️ Qurban Sapi 1/7 Hemat : Rp 1.850.000\n▫️ Qurban Kambing Hemat : Rp 1.750.000\n\nMari lanjutkan kembali kebaikan qurban tahun ini…\nKarena bisa jadi, qurban Anda adalah kebahagiaan yang mereka tunggu. 🤍\n*Website* :\nhttps://laznasdewandakwah.or.id/Sapi-1per7-Hemat/3831?lz=wp2\n\n*Rekening Qurban* : \nBSI 702 739 1917 a.n. Lazis Dewan Da'wah\n\n*Promo kali ini mendapatkan hadiah (Buku Karya Ust Pizaro) khusus pengiriman Jabodetabek*"
+        },
+        {
+          "type": "FOOTER",
+          "text": "Qurban Menguatkan Mereka di Pedalaman"
+        },
+        {
+          "type": "BUTTONS",
+          "buttons": [
+            {
+              "type": "PHONE_NUMBER",
+              "text": "Bismillah Qurban",
+              "phone_number": "+6281385043630"
+            }
+          ]
+        }
+      ],
+      "language": "id",
+      "status": "APPROVED",
+      "category": "MARKETING",
+      "disable_ios_autofill": false,
+      "is_primary_device_delivery_only": false,
+      "id": "1465221231491086",
+      "namespace": "f8b46dc6_a650_4334_b920_bf693ebe7ccd"
+    },
+    {
+      "name": "konfirmasi_qurban_buku",
+      "parameter_format": "POSITIONAL",
+      "components": [
+        {
+          "type": "HEADER",
+          "format": "IMAGE",
+          "example": {
+            "header_handle": [
+              "https://scontent.whatsapp.net/v/t61.29466-34/645626671_995192123379048_5964577575568321393_n.jpg?ccb=1-7&_nc_sid=8b1bef&_nc_ohc=lBXi9qQYG3QQ7kNvwEkX-Bm&_nc_oc=AdrjaLtN2iX12OHKEZGr8lxt4SukLESZU-MhaDg1JcbA2cPrGvFwA1RJs118aWDMGUI&_nc_zt=3&_nc_ht=scontent.whatsapp.net&edm=AH51TzQEAAAA&_nc_gid=8wD6cDNZhbEbu1LIJaDhvw&_nc_tpa=Q5bMBQGAozORhTfPKfrnP9xxPi0xxXW2Fz2U_adN5csLlXzFEFbcglUX2fUlQr484DjA9kTXnT6AvSmG&oh=01_Q5Aa5AGrBaNRn3rX74fi2hjksdOoYAzfZzFrx-dYw3snM0xKEQ&oe=6A93BAE7"
+            ]
+          }
+        },
+        {
+          "type": "BODY",
+          "text": "Assalamualaikum Warahmatullahi Wabarakatuh.\n\nSemoga Bapak atau Ibu senantiasa diberikan kesehatan, keberkahan, dan kemudahan dalam setiap aktivitas 😊\n\nSebagai bentuk terima kasih karena telah menunaikan ibadah qurban melalui LAZNAS Dewan Dakwah, insyaAllah kami ingin mengirimkan buku karya Ustadz Pizaro Gozali yang berjudul *“Runtuhnya Mitos Kehebatan Tentara Israel”*\n\nUntuk itu, mohon kesediaan Bapak atau Ibu mengirimkan alamat lengkap penerima beserta nomor yang dapat dihubungi agar proses pengiriman buku dapat kami lakukan.\n\nJazakumullahu khairan atas kepercayaan dan dukungan Bapak/Ibu kepada LAZNAS Dewan Dakwah.\n\nWassalamu’alaikum Warahmatullahi Wabarakatuh."
+        }
+      ],
+      "language": "id",
+      "status": "APPROVED",
+      "category": "UTILITY",
+      "disable_ios_autofill": false,
+      "is_primary_device_delivery_only": false,
+      "id": "995192120045715",
+      "namespace": "f8b46dc6_a650_4334_b920_bf693ebe7ccd"
+    },
+    {
+      "name": "qurban_ploting",
+      "parameter_format": "POSITIONAL",
+      "components": [
+        {
+          "type": "BODY",
+          "text": "Alhamdulillah , Qurban {{1}} {{2}},  Telah kami terima dana untuk pembelian hewan qurban, dengan keterangan : \nQurban a/n. {{3}} \nJenis Qurban : {{4}} \n\nLokasi Potong/Lokasi Pendistribusian : {{5}} \nEst. Waktu Potong : {{6}} , {{7}}\nTracking Qurban : {{8}} \n\nTeiring do'a\n\nآجْرَكَ اللهُ فِيْمَا اَعْطَيْتَ، وَبَارَكَ فِيْمَا اَبْقَيْتَ وَ جَعَلَ اللهُ لَكَ طَهُوْرًا\nSemoga Allah memberikan pahala atas apa yang diberikan dan memberikan keberkahan atas (harta) Bapak/Ibu dan Keluarga. Aamiin ya Rabb\n\nTerima kasih :)\n\n*Note: Data Qurban Bapak/Ibu sudah kami kirim ke lapangan, sehingga kami tidak menerima perubahan data qurban",
+          "example": {
+            "body_text": [
+              [
+                "Bapak",
+                "Ahmad",
+                "Ahmad",
+                "Kambing",
+                "NTT",
+                "09.00",
+                "WIT",
+                "laznasdewandakwah.or.id"
+              ]
+            ]
+          }
+        },
+        {
+          "type": "FOOTER",
+          "text": "Pesan Otomatis"
+        }
+      ],
+      "language": "id",
+      "status": "APPROVED",
+      "category": "UTILITY",
+      "disable_ios_autofill": false,
+      "is_primary_device_delivery_only": false,
+      "correct_category": "UTILITY",
+      "id": "1171152527272157",
+      "namespace": "f8b46dc6_a650_4334_b920_bf693ebe7ccd"
+    },
+    {
+      "name": "qurban_pizaro_palestina",
+      "previous_category": "UTILITY",
+      "parameter_format": "POSITIONAL",
+      "components": [
+        {
+          "type": "HEADER",
+          "format": "IMAGE",
+          "example": {
+            "header_handle": [
+              "https://scontent.whatsapp.net/v/t61.29466-34/673699976_1952773862018756_6658125426651426364_n.jpg?ccb=1-7&_nc_sid=8b1bef&_nc_ohc=IGo1Re7vqUQQ7kNvwEOD06I&_nc_oc=Adq-l_ROt4n-lilXKNUs3DjnqeGPPnV7YOlerVy_UmhVNRp-P_whD_O_jWZ7oUpPQpI&_nc_zt=3&_nc_ht=scontent.whatsapp.net&edm=AH51TzQEAAAA&_nc_gid=8wD6cDNZhbEbu1LIJaDhvw&_nc_tpa=Q5bMBQEWGJJxQ5AXDWs6ZR4blvoaDkex_dyr-cC2BmwXkBiXLsX40JLhQ7wMpYkqp_JhrMGaZ1SUKWlZ&oh=01_Q5Aa5AFPeHruMqMp2mBQMAQwMCK9htjd76EKi3VzJAPv3XcyCA&oe=6A93B870"
+            ]
+          }
+        },
+        {
+          "type": "BODY",
+          "text": "*Jangan Biarkan Tenda-Tenda Pengungsian Palestina Sepi dari Kebahagiaan Qurban Tahun ini*\n\nTahun ini, camp-camp pengungsian Palestina tidak lagi dipenuhi aroma masakan qurban. Yang tersisa hanyalah debu, reruntuhan, dan perjuangan untuk bertahan hidup.\n\nSahabat, tahun lalu qurban Anda menghadirkan kebahagiaan bagi mereka. Di tengah keterbatasan, saudara-saudara kita di Palestina merasa tidak sendiri.\n\nNamun hari ini, keadaan semakin berat. Untuk mendapatkan sepotong roti saja, mereka harus mempertaruhkan nyawa.\nTahun lalu lebih dari 400 orang membersamai perjuangan mereka. Kini, baru sedikit yang kembali hadir. Jika kita berhenti, siapa lagi yang akan menguatkan mereka?\n\n*🤝 Kuatkan mereka dengan qurban kita*\n\n🌐 Website:\nhttps://laznasdewandakwah.or.id/Qurban-Frozen-Palestina-1447h/3782?lz=wp2\n\n💳 Rekening Qurban : \nBSI 702 739 1917 a.n. Lazis Dewan Da'wah\n\n*Promo kali ini mendapatkan hadiah Kaos Palestina khusus pengiriman Jabodetabek*"
+        },
+        {
+          "type": "FOOTER",
+          "text": "Informasi & konfirmasi : 0858-8282-4343 (Zikri)"
+        },
+        {
+          "type": "BUTTONS",
+          "buttons": [
+            {
+              "type": "PHONE_NUMBER",
+              "text": "Qurban Sekarang",
+              "phone_number": "+6285882824343"
+            }
+          ]
+        }
+      ],
+      "language": "id",
+      "status": "APPROVED",
+      "category": "MARKETING",
+      "disable_ios_autofill": false,
+      "is_primary_device_delivery_only": false,
+      "id": "1949457375683738",
+      "namespace": "f8b46dc6_a650_4334_b920_bf693ebe7ccd"
+    },
+    {
+      "name": "qurban_afrika_promo_1250",
+      "previous_category": "UTILITY",
+      "parameter_format": "POSITIONAL",
+      "components": [
+        {
+          "type": "HEADER",
+          "format": "IMAGE",
+          "example": {
+            "header_handle": [
+              "https://scontent.whatsapp.net/v/t61.29466-34/674874508_859202899919977_7520764902800588075_n.jpg?ccb=1-7&_nc_sid=8b1bef&_nc_ohc=otHlEtl77yUQ7kNvwFGGsqw&_nc_oc=AdoCj53GhFOgqhoFAeYIsJ-D_rpFZSBCX3SeCTxFQ-1SHGYk2prZBgwJsTL0i5QyA-s&_nc_zt=3&_nc_ht=scontent.whatsapp.net&edm=AH51TzQEAAAA&_nc_gid=8wD6cDNZhbEbu1LIJaDhvw&_nc_tpa=Q5bMBQET4MEep1aowa7W8qx6qK92t9vhVoM0qYGMSUpxobfDdbCTSPhh6xdXhnibMrGn7hngVzkQUszz&oh=01_Q5Aa5AEeZmChRA20af06C2sdblOrgSRlkivifTgl60PDsqi9_w&oe=6A93B2C5"
+            ]
+          }
+        },
+        {
+          "type": "BODY",
+          "text": "*Penampilan Boleh Keren, tapi Keberkahannya Jauh Lebih Paten*\n\n✅​Jangan Sampai Kalah Siap Sama Sapi yang Satu Ini\n\n✅Dia sudah siap berangkat ke Afrika, membawa nama dan niat tulus sahabat untuk membahagiakan saudara-saudara kita di sana.\n\n ✅Dengan program Patungan 1/7 Sapi Afrika dari LAZNAS Dewan Da'wah, ibadah qurban sahabat tahun ini dijamin sesuai syariat, praktis, murah, dan pastinya tepat sasaran.\n\n✅​ Cukup dengan Rp 1.250.000 sahabat sudah bisa menunaikan qurban loh\n\n✅​Dokumentasi Transparan: dapat sertifikat berisi laporan Foto dan Video Lengkap proses qurban Anda\n\n✅​Harga Spesial Terbatas: hanya berlaku sampai 27 Mei 2026! Waktu terus berjalan\n\n✅​Manfaatnya luas: Menjangkau wilayah di Afrika yang sangat jarang menyantap daging.\n\n​Uang bisa dicari, tapi kesempatan menyambut Idul Adha dengan qurban terbaik belum tentu datang lagi.\n\n*Yuk, jangan ditunda-tunda kebaikan ini lagi sebelum slotnya penuh atau harga kembali normal*\n\n*Rekening Qurban*\n🏧​ BSI an Lazis Dewan Da'wah: 702 739 1917"
+        },
+        {
+          "type": "FOOTER",
+          "text": "Informasi & Layanan Jemput Qurban: 085882824343 (Zikri)"
+        },
+        {
+          "type": "BUTTONS",
+          "buttons": [
+            {
+              "type": "PHONE_NUMBER",
+              "text": "Qurban Sekarang",
+              "phone_number": "+6285882824343"
+            }
+          ]
+        }
+      ],
+      "language": "id",
+      "status": "APPROVED",
+      "category": "MARKETING",
+      "disable_ios_autofill": false,
+      "is_primary_device_delivery_only": false,
+      "id": "859202896586644",
+      "namespace": "f8b46dc6_a650_4334_b920_bf693ebe7ccd"
+    },
+    {
+      "name": "qurban_sasa_frozen",
+      "parameter_format": "POSITIONAL",
+      "components": [
+        {
+          "type": "HEADER",
+          "format": "IMAGE",
+          "example": {
+            "header_handle": [
+              "https://scontent.whatsapp.net/v/t61.29466-34/627026506_1568726181921318_8177444550913292168_n.jpg?ccb=1-7&_nc_sid=8b1bef&_nc_ohc=B0UWUZRAidgQ7kNvwH-EYh5&_nc_oc=Ado9rzrPhS98edBDB1mq_3MOiYj6ebPfrq6XZk8GM83HWEzaqRlzSBxE6ulW3dthqLg&_nc_zt=3&_nc_ht=scontent.whatsapp.net&edm=AH51TzQEAAAA&_nc_gid=8wD6cDNZhbEbu1LIJaDhvw&_nc_tpa=Q5bMBQHRGuhBTS65vrvhVUAM75zbB4qfdw7sRqsXxM1Igq8l4J5PtEfPTvpkM5_XrAfPhrAB_823LnzU&oh=01_Q5Aa5AFmXCYJb63i0ND4D6MVMGBMlrzxRuuklshjj267aIJpgQ&oe=6A93D63A"
+            ]
+          }
+        },
+        {
+          "type": "BODY",
+          "text": "*Jangan Biarkan Tenda-Tenda Pengungsian Palestina Sepi dari Kebahagiaan Qurban Tahun ini*\n\nTahun ini, camp-camp pengungsian Palestina tidak lagi dipenuhi aroma masakan qurban. Yang tersisa hanyalah debu, reruntuhan, dan perjuangan untuk bertahan hidup.\n\nSahabat, tahun lalu qurban Anda menghadirkan kebahagiaan bagi mereka. Di tengah keterbatasan, saudara-saudara kita di Palestina merasa tidak sendiri.\n\nNamun hari ini, keadaan semakin berat. Untuk mendapatkan sepotong roti saja, mereka harus mempertaruhkan nyawa.\nTahun lalu lebih dari 400 orang membersamai perjuangan mereka. Kini, baru sedikit yang kembali hadir. Jika kita berhenti, siapa lagi yang akan menguatkan mereka?\n\n🤝 Kuatkan mereka dengan qurban kita\n\nSahabat yang kembali berqurban tahun ini akan mendapatkan Hadiah buku “Runtuhnya Mitos Kehebatan Israel” karya Pizaro Gozali Idrus.\n\n💳 Rekening Qurban\nBSI 702 739 1917 a.n. Lazis Dewan Da'wah\n\n📱Informasi dan konfirmasi\n📞 6282258880726"
+        },
+        {
+          "type": "FOOTER",
+          "text": "Bismillah Bisa Qurban"
+        },
+        {
+          "type": "BUTTONS",
+          "buttons": [
+            {
+              "type": "PHONE_NUMBER",
+              "text": "Bismillah Bisa Qurban",
+              "phone_number": "+6282258880726"
+            }
+          ]
+        }
+      ],
+      "language": "id",
+      "status": "APPROVED",
+      "category": "MARKETING",
+      "disable_ios_autofill": false,
+      "is_primary_device_delivery_only": false,
+      "id": "1568726178587985",
+      "namespace": "f8b46dc6_a650_4334_b920_bf693ebe7ccd"
+    },
+    {
+      "name": "qurban_hemat2",
+      "parameter_format": "POSITIONAL",
+      "components": [
+        {
+          "type": "HEADER",
+          "format": "IMAGE",
+          "example": {
+            "header_handle": [
+              "https://scontent.whatsapp.net/v/t61.29466-34/687997077_1262864286001673_5342345174428384666_n.png?ccb=1-7&_nc_sid=8b1bef&_nc_ohc=hytH1oQZ1JEQ7kNvwHXZucJ&_nc_oc=Ado865BlMYpKiWhEMd5B61fKrT-IyO5vMV_Iudy7E710Y11r7eNS3B8yghVfzwmd_Ow&_nc_zt=3&_nc_ht=scontent.whatsapp.net&edm=AH51TzQEAAAA&_nc_gid=8wD6cDNZhbEbu1LIJaDhvw&_nc_tpa=Q5bMBQHDcrD0kUMqXUdRwxm_ZujDPjtlUF6_jmgBxXptpc8T8CnYpZk5fVzYTZ8WhStDJOAYBLWweXEs&oh=01_Q5Aa5AGO4Xu-8AsFpADfDzRoBB4MUnuGhOpaAycpgqTH3hk5bw&oe=6A93C5CF"
+            ]
+          }
+        },
+        {
+          "type": "BODY",
+          "text": "*Qurbanmu, Jadi Hadiah Terindah untuk Orangtua*\n\n✅Sahabat..\n\nBerqurban untuk orangtua adalah salah satu bentuk birrul walidain tertinggi yang mendatangkan pahala berlipat, karena menyenangkan hati mereka, serta menjadi wujud syukur kita.\n\n✅Qurban untuk orangtua sah hukumnya dengan izin dari orangtua\n\n🫶🏻 Mulai Rp. 1.400.000, sahabat sudah bisa memberikan hadiah qurban ini untuk Ayah dan Ibu..\n\n😃 Special untuk sahabat Laznas Dewan Da'wah, ada harga hemat untuk qurban berikut:\n\n🐄 1/7 Sapi Afrika ~Rp. 1.400.000~ Rp. 1.200.000\n🐄 1/7 Sapi untuk Masyarakat Pedalaman ~Rp. 2.360.000~ Rp. 1.850.000\n🐄 1/7 Sapi untuk Korban Genosida Palestina Rp. ~2.650.000~ Rp. 2.550.000\n\n*Yuk, Berikan Ayah dan Ibu Kita Qurban terbaik tahun ini melalui*\n\n*Rekening Qurban*\n🏧 BSI # 702 739 1917\nLazis Dewan Da'wah\n\n🏧 Mandiri # 122 000 588 1985\nLaznas Dewan Da'wah\n\n*Informasi/Konfirmasi*\n0858-8282-4343\n\n Segera Amankan Qurbanmu ya Sahabat! Qurban Hemat Hanya Sampai 15-05-2025\n\nJazaakumullah Khairal Jazaa"
+        },
+        {
+          "type": "BUTTONS",
+          "buttons": [
+            {
+              "type": "URL",
+              "text": "Ambil Promo Sekarang",
+              "url": "https://laznasdewandakwah.or.id/qurban?lz=wp1"
+            }
+          ]
+        }
+      ],
+      "language": "id",
+      "status": "APPROVED",
+      "category": "MARKETING",
+      "disable_ios_autofill": false,
+      "is_primary_device_delivery_only": false,
+      "id": "1262864282668340",
+      "namespace": "f8b46dc6_a650_4334_b920_bf693ebe7ccd"
+    },
+    {
+      "name": "kajian_qurban",
+      "parameter_format": "POSITIONAL",
+      "components": [
+        {
+          "type": "HEADER",
+          "format": "IMAGE",
+          "example": {
+            "header_handle": [
+              "https://scontent.whatsapp.net/v/t61.29466-34/661643507_1511920663820472_4558434202251157193_n.png?ccb=1-7&_nc_sid=8b1bef&_nc_ohc=WyLoBcE2qqIQ7kNvwHM3g8h&_nc_oc=AdoeF_kWnMMzjQNtpYaHRsqOuRJIy9Y-31sqqj1WnXt3hXS89AZk3N3i7vgI0BszDRI&_nc_zt=3&_nc_ht=scontent.whatsapp.net&edm=AH51TzQEAAAA&_nc_gid=8wD6cDNZhbEbu1LIJaDhvw&_nc_tpa=Q5bMBQEjyVuPdtfnXUt7GRUmfUfq8wv8hOIO0O5xv1QGthxALu4k4qjifsmrd2BVdWC0i62dzdf_f_yy&oh=01_Q5Aa5AEQROua-sPPdeM2wmWV7BMuelzk_KRCZ7eNDAoc7QAZXQ&oe=6A93D8E2"
+            ]
+          }
+        },
+        {
+          "type": "BODY",
+          "text": "*MALAM INI: “Tanya Jawab Seputar Qurban” *\n\nMenjelang Idul Adha, masih banyak hal seputar pelaksanaan qurban yang sering menjadi pertanyaan.\n\nMulai dari hukum qurban, ketentuan hewan, qurban untuk keluarga maupun orang tua yang telah wafat, hingga berbagai persoalan qurban lainnya.\n\nInsyaAllah, semua akan dikupas tuntas dalam kajian spesial Tanya Jawab Seputar Qurban ✨\n\n👤 DR. KH. Jeje Zaenudin, M.Ag.\n🗓️ Rabu, 13 Mei 2026\n⏰ 19.00 WIB – selesai\n📍 Live via Zoom\n\nKlik link di bawah ini untuk bergabung:\nhttps://us06web.zoom.us/j/82115568333?pwd=xxaaQURbn7qpQ7290WpbTbeVexZIIY.1\n\n* ID Rapat: 821 1556 8333\n* Kode Sandi: laznas\n\nYuk bantu sebarkan informasi ini dan ajak keluarga maupun sahabat untuk ikut belajar bersama ✨\n\n*Info Program Qurban:*\n👉 https://laznasdewandakwah.or.id/qurban?lz=wp1"
+        }
+      ],
+      "language": "id",
+      "status": "APPROVED",
+      "category": "MARKETING",
+      "disable_ios_autofill": false,
+      "is_primary_device_delivery_only": false,
+      "id": "1511920660487139",
+      "namespace": "f8b46dc6_a650_4334_b920_bf693ebe7ccd"
+    },
+    {
+      "name": "kajian_qurban",
+      "parameter_format": "POSITIONAL",
+      "components": [
+        {
+          "type": "HEADER",
+          "format": "IMAGE",
+          "example": {
+            "header_handle": [
+              "https://scontent.whatsapp.net/v/t61.29466-34/688157766_928118400273183_3573440458756499425_n.png?ccb=1-7&_nc_sid=8b1bef&_nc_ohc=W54fX6jBncoQ7kNvwEwwrxf&_nc_oc=AdoaEUoJOungMUKCVk3CiRcSbVMIKCWAiW9fAstyhyNHPf1DYy3TgkG_D9KNtqKifyI&_nc_zt=3&_nc_ht=scontent.whatsapp.net&edm=AH51TzQEAAAA&_nc_gid=8wD6cDNZhbEbu1LIJaDhvw&_nc_tpa=Q5bMBQGAj1zdhcMcoCrqR74j2hN54QyYprVlBo-2C3RCnHckk-9OSmr8VAkrsmc2FcNbbQHQF26iLXEU&oh=01_Q5Aa5AF9qDLWxUmXFttlR7eMkoblzM1jWEnRv38IRZ1QYl3rDw&oe=6A93CCE7"
+            ]
+          }
+        },
+        {
+          "type": "BODY",
+          "text": "*KAJIAN MALAM INI: “Tanya Jawab Seputar Qurban”* \n\nMenjelang Idul Adha, masih banyak hal seputar pelaksanaan qurban yang sering menjadi pertanyaan.  \n\nMulai dari hukum qurban, ketentuan hewan, qurban untuk keluarga maupun orang tua yang telah wafat, hingga berbagai persoalan qurban lainnya.\n\nInsyaAllah, semua akan dikupas tuntas dalam kajian spesial Tanya Jawab Seputar Qurban ✨\n\n*👤 DR. KH. Jeje Zaenudin, M.Ag.*\n🗓️ Rabu, 13 Mei 2026\n⏰ 19.15 WIB – selesai\n📍 Live via Zoom\n\nKlik link di bawah ini untuk bergabung:\nhttps://us06web.zoom.us/j/82115568333?pwd=xxaaQURbn7qpQ7290WpbTbeVexZIIY.1\n\n- ID Rapat: 821 1556 8333\n- Kode Sandi: laznas\n\nInfo Program Qurban:\n👉 https://laznasdewandakwah.or.id/qurban?lz=mci"
+        },
+        {
+          "type": "BUTTONS",
+          "buttons": [
+            {
+              "type": "PHONE_NUMBER",
+              "text": "Info Qurban",
+              "phone_number": "+6281338885552"
+            }
+          ]
+        }
+      ],
+      "language": "id",
+      "status": "APPROVED",
+      "category": "MARKETING",
+      "disable_ios_autofill": false,
+      "is_primary_device_delivery_only": false,
+      "id": "928118396939850",
+      "namespace": "f8b46dc6_a650_4334_b920_bf693ebe7ccd"
+    },
+    {
+      "name": "qurban_shopee",
+      "parameter_format": "POSITIONAL",
+      "components": [
+        {
+          "type": "HEADER",
+          "format": "IMAGE",
+          "example": {
+            "header_handle": [
+              "https://scontent.whatsapp.net/v/t61.29466-34/653042967_1446451950139594_2851654096477110352_n.png?ccb=1-7&_nc_sid=8b1bef&_nc_ohc=S7kIn288d-sQ7kNvwFAeFvB&_nc_oc=Adq0xLo_U8xfEdYFRqJnEACQt8T9SNI-Ld_Di9CRdzrXrA9R3cd1vgZFSSMyqUsjxs8&_nc_zt=3&_nc_ht=scontent.whatsapp.net&edm=AH51TzQEAAAA&_nc_gid=8wD6cDNZhbEbu1LIJaDhvw&_nc_tpa=Q5bMBQED5ZOhGUklhC_tEGfNFxeHwXdlfaKTKkJ1PxyTBMG7JoWytNktWc4WZy0lF5Wkm2fTr9XMyHRw&oh=01_Q5Aa5AFZ_tPRkhDpAV3W1LL6IOeXcY1_GiGQruSS7aFGq6zyjg&oe=6A93A894"
+            ]
+          }
+        },
+        {
+          "type": "BODY",
+          "text": "*Berikan Hadiah Terindah untuk Orang Tua dengan Qurban Satu Jutaan*\n\nQurban mudah mulai 1 jutaan saja bisa melalui Shopee! Buka aplikasi dan cari Laznas Dewan Dakwah atau dengan klik s.id/qurban hemat di laman pencarian. \n\n*Bismillah bisa qurban dan berikan hadiah terindah untuk Bapak dan Ibu kita di momen Iduladha💙*\n\nwww.laznasdewandakwah.or.id?wp1\n\n*Informasi/Konfirmasi*\n0858-8282-4343\n\n#LaznasDewanDakwah"
+        },
+        {
+          "type": "BUTTONS",
+          "buttons": [
+            {
+              "type": "URL",
+              "text": "Qurban Sekarang",
+              "url": "http://www.laznasdewandakwah.or.id/?wp1"
+            }
+          ]
+        }
+      ],
+      "language": "id",
+      "status": "APPROVED",
+      "category": "MARKETING",
+      "disable_ios_autofill": false,
+      "is_primary_device_delivery_only": false,
+      "id": "1446451946806261",
+      "namespace": "f8b46dc6_a650_4334_b920_bf693ebe7ccd"
+    },
+    {
+      "name": "qurban_promo_2",
+      "parameter_format": "POSITIONAL",
+      "components": [
+        {
+          "type": "HEADER",
+          "format": "IMAGE",
+          "example": {
+            "header_handle": [
+              "https://scontent.whatsapp.net/v/t61.29466-34/546515613_2805857853090964_8816419219077869354_n.png?ccb=1-7&_nc_sid=8b1bef&_nc_ohc=N9LjwFZhtTAQ7kNvwGTGmHF&_nc_oc=Adr16te1SMtOIzJV2iWOuoUGStnxMOKUMxaApWeLmDRVPEGyttNLUSYctpZINyVqKc8&_nc_zt=3&_nc_ht=scontent.whatsapp.net&edm=AH51TzQEAAAA&_nc_gid=8wD6cDNZhbEbu1LIJaDhvw&_nc_tpa=Q5bMBQE5Q9VmDR7kRqIQQ2LXL8eUa654Oafci9kJVbsszGMkfcP4Wh7N6CMl0ukdx07Ug8D_72hW4S1j&oh=01_Q5Aa5AHA9NfUnZlKdCrXR0VmU0-SaJAk7GCnx6hBTzjTCIleDA&oe=6A93A704"
+            ]
+          }
+        },
+        {
+          "type": "BODY",
+          "text": "*Qurban untuk Orangtua, Bakti Tertinggi Seorang Anak*\n\n✅Sahabat..\nBerqurban untuk orangtua adalah salah satu bentuk birrul walidain tertinggi yang mendatangkan pahala berlipat, karena menyenangkan hati mereka, serta menjadi wujud syukur kita.\n\n✅Qurban untuk orangtua sah hukumnya dengan izin dari orangtua\n\n🫶🏻 *Mulai Rp. ~1.400.000~ Rp. 1.200.000, sahabat sudah bisa memberikan hadiah qurban ini untuk Ayah dan Ibu..*\n\n😃 Special untuk sahabat Laznas Dewan Da'wah, ada harga hemat untuk qurban berikut:\n\n🐄 1/7 Sapi Afrika Rp. ~1.400.000~ Rp. 1.200.000\n🐄 1/7 Sapi untuk Masyarakat Pedalaman ~Rp. 2.360.000~ Rp. 1.850.000\n🐄 1/7 Sapi untuk Korban Genosida Palestina ~Rp. 2.650.000~ Rp. 2.550.000\n\n*Yuk, Berikan Ayah dan Ibu Kita Qurban terbaik tahun ini melalui*\n*Rekening Qurban*\n🏧 BSI # 702 739 1917\nLazis Dewan Da'wah\n\n🏧 Mandiri # 122 000 588 1985\nLaznas Dewan Da'wah\n\nWebsite: https://laznasdewandakwah.or.id/qurban?lz=wp2"
+        },
+        {
+          "type": "FOOTER",
+          "text": "Jangan sampai terlewatkan Hanya sampai 15 Mei 2026"
+        }
+      ],
+      "language": "id",
+      "status": "APPROVED",
+      "category": "MARKETING",
+      "disable_ios_autofill": false,
+      "is_primary_device_delivery_only": false,
+      "id": "2805857849757631",
+      "namespace": "f8b46dc6_a650_4334_b920_bf693ebe7ccd"
+    },
+    {
+      "name": "qurban_pedalaman",
+      "previous_category": "UTILITY",
+      "parameter_format": "POSITIONAL",
+      "components": [
+        {
+          "type": "HEADER",
+          "format": "VIDEO",
+          "example": {
+            "header_handle": [
+              "https://scontent.whatsapp.net/v/t61.29466-34/638441149_1500307405011131_8781425330466769460_n.mp4?ccb=1-7&_nc_sid=8b1bef&_nc_ohc=tQOHbKHnXIUQ7kNvwER5_vG&_nc_oc=AdqLIT0cMzU2NUVtWAsh-ZGopUXxHaI3ei8LjgiUAdoX6B_PvrR9OXf8R5nVdCFY4Vw&_nc_zt=28&_nc_ht=scontent.whatsapp.net&edm=AH51TzQEAAAA&_nc_gid=8wD6cDNZhbEbu1LIJaDhvw&_nc_tpa=Q5bMBQHhJ91-CX0vMQ9eMYKpcu2ie_WPimpGOzgUu0jrZam37rqkfDeXHM2IVS34Sp2m4bhDogAZO7cm&oh=01_Q5Aa5AErurKZKidZdl_2-XAC57TaQ6qemrBZqrtHhTsZtWNrUQ&oe=6A93A592"
+            ]
+          }
+        },
+        {
+          "type": "BODY",
+          "text": "*Setahun Sekali Makan Daging:Jangan Biarkan Bahagia Mereka Terhenti*\n\nBapak, Ibu Sahabat Da'wah..\nPernahkah kita membayangkan, rasa daging yang biasa kita nikmati, adalah kemewahan yang hanya datang setahun sekali bagi saudara kita di pedalaman?\n\n✅Di Lambentana dan Mentawai, para mualaf berjuang di tengah keterbatasan, merindukan gizi yang jarang mereka temui. \n\n✅Di Yakora dan Bintuni, Papua, hanya ada gema takbir, namun tak ada hewan yang disembelih, karena mereka tak mampu berquban..\n\n✅Bahkan di pelosok Aceh dan Meranti, ada desa yang pernah melewati 6 tahun tanpa sekali pun mencicipi daging qurban.\n\nBagi mereka, Qurban bukan sekadar ibadah menyembelih hewan.\nQurban adalah hari perayaan gizi. Qurban adalah bukti bahwa mereka tidak dilupakan.\n\nKarena satu hewan qurban darimu, adalah penyambung asa dan kebahagiaan bagi mereka yang terisolasi oleh jarak dan ekonomi.\n*Salurkan Qurban Terbaikmu* Hari ini melalui:\n*Rekening Qurban*:\nBSI 702 739 1917"
+        },
+        {
+          "type": "FOOTER",
+          "text": "Mari jadikan Qurban tahun ini Senyuman untuk mereka"
+        },
+        {
+          "type": "BUTTONS",
+          "buttons": [
+            {
+              "type": "PHONE_NUMBER",
+              "text": "Qurban Sekarang",
+              "phone_number": "+6281385043630"
+            }
+          ]
+        }
+      ],
+      "language": "id",
+      "status": "APPROVED",
+      "category": "MARKETING",
+      "disable_ios_autofill": false,
+      "is_primary_device_delivery_only": false,
+      "id": "1500307401677798",
+      "namespace": "f8b46dc6_a650_4334_b920_bf693ebe7ccd"
+    },
+    {
+      "name": "admin_6",
+      "parameter_format": "POSITIONAL",
+      "components": [
+        {
+          "type": "HEADER",
+          "format": "VIDEO",
+          "example": {
+            "header_handle": [
+              "https://scontent.whatsapp.net/v/t61.29466-34/661614727_1286978949621031_399207469597495802_n.mp4?ccb=1-7&_nc_sid=8b1bef&_nc_ohc=Rubnu3jjl9UQ7kNvwEijH9y&_nc_oc=AdpTklWiUt-34xS79qHzbCjDc3IX7LruRYAHXYU3la5WSBPQYZkOISvbov_GKmp8faM&_nc_zt=28&_nc_ht=scontent.whatsapp.net&edm=AH51TzQEAAAA&_nc_gid=8wD6cDNZhbEbu1LIJaDhvw&_nc_tpa=Q5bMBQFwAWGD2ckbrHQIgRSL61j0Tea66p6DcMoM8HAtViQbPHdO9-msptVZGoCrzq9VRf1-07-fe_tI&oh=01_Q5Aa5AEm_6QN9JWlDIPjdtniWO2gEW1QWmDajsRCz6y-j8V2vQ&oe=6A93D3B1"
+            ]
+          }
+        },
+        {
+          "type": "BODY",
+          "text": "*Sahabat, ini kisah dari pinggiran kota, dari Kabupaten Bekasi*. \n\n✅Setiap tahun, di momen Iduladha, saudara kita di pinggiran kota masih banyak yang tak kebagian daging qurban. Ada rasa kesal di hati karena di momen hari raya tak ada yang istimewa selain shalat Ied dan takbiran.\n\n✅Di momen Iduladha, di hari-hari tasyrik, warga melanjutkan aktivitas seperti biasa tanpa ada kegembiraan Hari Raya. \n\n✅Tahun ini, BismillahBisaQurban dan bahagiakan saudara di pinggiran kota dengan qurban terbaik kita\n\n*BismillahBisaQurban dan bahagiakan saudara di pinggiran kota*\n\nInformasi Harga Qurban Doka\n📌 Doka Darussalam ± 20 kg: Rp 2.400.000.\n📌Doka Ma’wa ± 23 kg: Rp 2.975.000.\n📌Doka Na’im ± 28 kg: Rp 3.700.000.\n📌Doka’Adn ± 33 kg: Rp 4.200.000.\n📌Doka Firdaus ± 38 kg: Rp 4.800.000.\n\nRekening Qurban\nBSI 702 739 1917\nLazis Dewan Da'wah\n\n📱Informasi dan konfirmasi\n📞 082258880726"
+        },
+        {
+          "type": "BUTTONS",
+          "buttons": [
+            {
+              "type": "PHONE_NUMBER",
+              "text": "Qurban Sekarang",
+              "phone_number": "+6282258880726"
+            }
+          ]
+        }
+      ],
+      "language": "id",
+      "status": "APPROVED",
+      "category": "MARKETING",
+      "disable_ios_autofill": false,
+      "is_primary_device_delivery_only": false,
+      "id": "1286978946287698",
+      "namespace": "f8b46dc6_a650_4334_b920_bf693ebe7ccd"
+    },
+    {
+      "name": "qurban_admin_2",
+      "previous_category": "UTILITY",
+      "parameter_format": "POSITIONAL",
+      "components": [
+        {
+          "type": "HEADER",
+          "format": "VIDEO",
+          "example": {
+            "header_handle": [
+              "https://scontent.whatsapp.net/v/t61.29466-34/594094747_972729155237547_2326834766866910245_n.mp4?ccb=1-7&_nc_sid=8b1bef&_nc_ohc=j8VtRvHzvCEQ7kNvwGVBakZ&_nc_oc=Ado5MhPjQA1MoqBeq_WVLuwGQgzAlsDc6jyaMNdPvpzW589UGgpzUSMhQmyqAJFUq8c&_nc_zt=28&_nc_ht=scontent.whatsapp.net&edm=AH51TzQEAAAA&_nc_gid=8wD6cDNZhbEbu1LIJaDhvw&_nc_tpa=Q5bMBQGBqL5-d7ADI-Flcgmfa0FKEa82Za1c-CXqMvhvldjvIySHinFuW3ifPlfdHxqIt28iqji1YqNY&oh=01_Q5Aa5AFMU-35fa-NhAyzwVeUbeB2iQnudCJ987WGkfToF8Xu3w&oe=6A93D207"
+            ]
+          }
+        },
+        {
+          "type": "BODY",
+          "text": "*Kilas Balik Distribusi Qurbanmu yang Bahagiakan Masyarakat Kecil di Nusa Tenggara Barat*\n\nMeski dikenal sebagai salah satu daerah penghasil sapi, nyatanya masih banyak wilayah di Nusa Tenggara Barat yang minim distribusi qurban. \n\nAlhamdulillah, amanah qurban sahabat tahun lalu berhasil disalurkan tim Laznas Dewan Dakwah hingga pelosok NTB dan menjadi kebahagiaan bagi masyarakat yang membutuhkan.\n\nWajah penuh syukur terlihat saat mereka menerima daging qurban untuk dimasak dan dinikmati bersama keluarga di momen Iduladha. Tahun 2026 ini, Bismillah #BisaQurban.\n\nJadikan qurban sebagai bukti ketaatan dan luasnya manfaat, dari kota hingga penjuru negeri.\n\n*Rekening Qurban* :\nBSI: 702 739 1917 a.n. Lazis Dewan Da’wah\nKonfirmasi: 0813 3888 5552 (Admin)"
+        },
+        {
+          "type": "BUTTONS",
+          "buttons": [
+            {
+              "type": "PHONE_NUMBER",
+              "text": "Qurban Sekarang",
+              "phone_number": "+6281338885552"
+            }
+          ]
+        }
+      ],
+      "language": "id",
+      "status": "APPROVED",
+      "category": "MARKETING",
+      "disable_ios_autofill": false,
+      "is_primary_device_delivery_only": false,
+      "id": "972729151904214",
+      "namespace": "f8b46dc6_a650_4334_b920_bf693ebe7ccd"
+    },
+    {
+      "name": "qurban2026",
+      "parameter_format": "POSITIONAL",
+      "components": [
+        {
+          "type": "HEADER",
+          "format": "IMAGE",
+          "example": {
+            "header_handle": [
+              "https://scontent.whatsapp.net/v/t61.29466-34/629260486_1898150114210965_4807374459420238942_n.png?ccb=1-7&_nc_sid=8b1bef&_nc_ohc=YZBbo2q6J5AQ7kNvwHTaHnY&_nc_oc=Adp24CdGYL1wHnmDGesEoniCv1r3zgR-5CVfyeprshT0hcRDRVAwS8KNPmKqYjHQtOc&_nc_zt=3&_nc_ht=scontent.whatsapp.net&edm=AH51TzQEAAAA&_nc_gid=8wD6cDNZhbEbu1LIJaDhvw&_nc_tpa=Q5bMBQH1RgZr8bCsJ-XjKZQzNY6xC9tyy2jVVHYv2lg0m37OnCYQI9tJptPhZt2JI4iplrIen3SY8jII&oh=01_Q5Aa5AFzEdFHpEhaxRAiQNWpqVrBytAMS7pTTImWrXBTKnfalQ&oe=6A93CACF"
+            ]
+          }
+        },
+        {
+          "type": "BODY",
+          "text": "*Assalamu'alaykum warahmatullah Wabarakatuh*\n\nBapak/Ibu bagaimana kabarnya?\n\nSemoga kebaikan dunia akhirat senantiasa Allah berikan untuk Bapak/Ibu dan kita semua. Aamiin ya Rabbal 'Alamiin.🤲🏻.\n\nBapak Ibu kami izin menginfokan, Alhamdulillah Qurban Bapak/Ibu dan kita semua tahun 2025/1445 H,  melalui Laznas Dewan Da'wah Telah membahagiakan 26 Provinsi, 6 Negara, 242.048 jiwa\n\nTahun 2026 ini, kami ingin mengajak Bapak/Ibu untuk berqurban kembali bersama kami menjangkau daerah - daerah yang sulit qurban dan membutuhkan..\n\n* Start from *Rp. 1.400.000* Bapak/Ibu sudah bisa berqurban\n* Qurban dipinggiran kota, Bapak/Ibu dapat ikut *menyembelih sendiri didampingi tim profesional*\n* Qurban untuk Pedalaman sudah *termasuk infaq jariyah sumur air*\n* Dan banyak keistimewaan lainnya..\n\n*Yuk segera tunaikan qurban Bapak/Ibu melalui*↩️\n\n*Rekening Qurban*\n🏧BSI # 702 739 1917\nLazis Dewan Da'wah\n\n🏧Mandiri: 122 000 588 1985 an Laznas Dewan Da'wah\n\n*Informasi dan Konfirmasi*\n0858-8282-4343\n\n_Jazaakumullah khairal jazaa_"
+        }
+      ],
+      "language": "id",
+      "status": "APPROVED",
+      "category": "MARKETING",
+      "disable_ios_autofill": false,
+      "is_primary_device_delivery_only": false,
+      "id": "1898150110877632",
+      "namespace": "f8b46dc6_a650_4334_b920_bf693ebe7ccd"
+    },
+    {
+      "name": "qurban_salsa",
+      "previous_category": "UTILITY",
+      "parameter_format": "POSITIONAL",
+      "components": [
+        {
+          "type": "HEADER",
+          "format": "IMAGE",
+          "example": {
+            "header_handle": [
+              "https://scontent.whatsapp.net/v/t61.29466-34/593961062_1299687502131560_4704841998674196768_n.jpg?ccb=1-7&_nc_sid=8b1bef&_nc_ohc=eEd-fz-8FKcQ7kNvwHVXDt8&_nc_oc=Ado46IGjN97hxwSTxpt4ncPDpPShi_hzYYalZsM_Fy6ecPE2LAMsC8qWO4LhmZrqWUE&_nc_zt=3&_nc_ht=scontent.whatsapp.net&edm=AH51TzQEAAAA&_nc_gid=8wD6cDNZhbEbu1LIJaDhvw&_nc_tpa=Q5bMBQHuNRJ1X-iAfOV28cpQc8d6iLzX8_7mOjTKeGJrVmg6QRfAT5yk-DZuGQSUODvo4Z1Iqej4X0E_&oh=01_Q5Aa5AE7ihaPcfI5YU2pJ5R0UjJ2SMgYSy1X9j0s0JIAF3SRsw&oe=6A93B80A"
+            ]
+          }
+        },
+        {
+          "type": "BODY",
+          "text": "*SPESIAL* *Qurban Tanpa Batas dengan Harga Terbaik*, \n*Yuk Segera Amankan*\n\nAssalamualaikum warahmatullahi wabarakatuh Bapak/Ibu, \n✅ Sahabat, Idul Adha adalah momen berbagi kebahagiaan. Namun, masih banyak saudara kita di pedalaman, pinggiran kota, hingga Palestina dan luar negeri yang jarang merasakan nikmatnya daging qurban.\n\nMari jadikan qurban kita lebih luas manfaatnya \nTak hanya menjadi ibadah, tapi juga menghadirkan harapan dan menebar senyum bagi mereka yang membutuhkan. \n\n✅ Special untuk Bapak/Ibu, sampai 30 April 2026, dengan harga Rp.1.750.000, Bapak/Ibu sudah bisa qurban satu ekor kambing/domba\n\n▶️ Stok Terbatas Yuk, amankan qurbanmu segera, melalui ⤵️\n\nRekening Qurban\nBSI 702 739 1917 an Lazis Dewan Da'wah\n\nInformasi dan Konfirmasi\n085161800288\n\nSemoga Allah selalu melapangkan rezeki dan hati kita untuk senantiasa berbagi kebaikan. Aamiin."
+        },
+        {
+          "type": "FOOTER",
+          "text": "Bismillah Qurban"
+        },
+        {
+          "type": "BUTTONS",
+          "buttons": [
+            {
+              "type": "PHONE_NUMBER",
+              "text": "Bismillah Qurban",
+              "phone_number": "+6285161800288"
+            }
+          ]
+        }
+      ],
+      "language": "id",
+      "status": "APPROVED",
+      "category": "MARKETING",
+      "disable_ios_autofill": false,
+      "is_primary_device_delivery_only": false,
+      "id": "1297927792307531",
+      "namespace": "f8b46dc6_a650_4334_b920_bf693ebe7ccd"
+    },
+    {
+      "name": "qurban_mayang",
+      "previous_category": "UTILITY",
+      "parameter_format": "POSITIONAL",
+      "components": [
+        {
+          "type": "HEADER",
+          "format": "IMAGE",
+          "example": {
+            "header_handle": [
+              "https://scontent.whatsapp.net/v/t61.29466-34/646602752_1502552708076950_5145666339382655770_n.jpg?ccb=1-7&_nc_sid=8b1bef&_nc_ohc=zAy9feLIZDwQ7kNvwHXPmDB&_nc_oc=Adr9N-OZf9qdjWE3bw1S7zZ-1EJ1hK7N5MrUsJ5mGjC60IDgd5FcFpsMx9PY0azQG-k&_nc_zt=3&_nc_ht=scontent.whatsapp.net&edm=AH51TzQEAAAA&_nc_gid=8wD6cDNZhbEbu1LIJaDhvw&_nc_tpa=Q5bMBQGJYcyJ2vqrEET2rcTX-sQKIi-xnA_7WHQ8wF9MNKbdQAAeRfLIP1ed4-nxSmGzO-fi_kzcA_zf&oh=01_Q5Aa5AEnpD8gBkF0S8zD2eImkFebqhl6P2BjWHqx1ZA8wFsAVw&oe=6A93C454"
+            ]
+          }
+        },
+        {
+          "type": "BODY",
+          "text": "*Hadiahkan Bahagia ke Pelosok hingga Bumi Syam Melalui Qurbanmu* \n\nAssalamu’alaikum Bapak/Ibu yang dirahmati Allah,\nTahun lalu, qurban dari Bapak/Ibu menjadi berkah: \n✅Memperbaiki gizi \n✅Menguatkan dakwah di pedalaman \n✅Membahagiakan para muallaf dan masyarakat yang terpinggirkan \n✅ Serta menguatkan saudara-saudara kita di Bumi Syam, Palestina hingga Benua Hitam, Afrika.\n\nTahun ini, izinkan kami kembali mengajak Bapak/Ibu menebar cinta dan dakwah melalui program “Bismillah Bisa Qurban” bersama LAZNAS Dewan Dakwah.\n\nWebsite: https://laznasdewandakwah.or.id/qurban?lz=8b0092d3\nRekening Qurban Bank Syariah Indonesia: 7027391917 a.n. Lazis Dewan Da’wah\n\nInformasi dan konfirmasi :\n0812-1294-9400 (Mayang)\n\nQurban Bapak/Ibu bukan hanya ibadah… \nNamun menjadi cahaya yang sampai ke penjuru negeri hingga bumi syam yang diberkahi"
+        },
+        {
+          "type": "FOOTER",
+          "text": "*Qurban Terbaikmu, Dakwah dan Silaturahmi Terjauhmu*"
+        },
+        {
+          "type": "BUTTONS",
+          "buttons": [
+            {
+              "type": "PHONE_NUMBER",
+              "text": "Bismillah Bisa Qurban",
+              "phone_number": "+6281212949400"
+            }
+          ]
+        }
+      ],
+      "language": "id",
+      "status": "APPROVED",
+      "category": "MARKETING",
+      "disable_ios_autofill": false,
+      "is_primary_device_delivery_only": false,
+      "id": "1496706805328207",
+      "namespace": "f8b46dc6_a650_4334_b920_bf693ebe7ccd"
+    },
+    {
+      "name": "qurban_dini",
+      "previous_category": "UTILITY",
+      "parameter_format": "POSITIONAL",
+      "components": [
+        {
+          "type": "HEADER",
+          "format": "IMAGE",
+          "example": {
+            "header_handle": [
+              "https://scontent.whatsapp.net/v/t61.29466-34/646579473_1508646404187738_916984936027863128_n.jpg?ccb=1-7&_nc_sid=8b1bef&_nc_ohc=HPpZXV8fR3QQ7kNvwFaTPoU&_nc_oc=Adrq4cjS8x9pJQ_9JijPEV4ALNbQ6Q4tSEWzdj-uAog6bLlFDplAsMu5AZ5l_sd6XXE&_nc_zt=3&_nc_ht=scontent.whatsapp.net&edm=AH51TzQEAAAA&_nc_gid=8wD6cDNZhbEbu1LIJaDhvw&_nc_tpa=Q5bMBQFYtf8rb8PcbUAaTfYoef9rluuO9fbVKoFbOArdjCA1iRhlExlOswzFVe_etIq34TCUQ1wln5FE&oh=01_Q5Aa5AFSTeGxKbp7Ggo_cBvYhP6LKo3-Hgsr58YOO5ePoBWikg&oe=6A93C56A"
+            ]
+          }
+        },
+        {
+          "type": "BODY",
+          "text": "*Bismillah,Bisa Qurban*\nQurban Terbaikmu, Bahagia untuk Mereka yang Menanti\n\nAssalamu’alaikum Bapak/Ibu Sahabat Dakwah\n\nDi pelosok negeri, kampung dhuafa, hingga wilayah binaan da’i, masih banyak saudara kita yang menanti hadirnya kebahagiaan di Hari Raya. 🥹\nMelalui program qurban bersama LAZNAS Dewan Dakwah, qurban insyaAllah akan disalurkan ke daerah pelosok, wilayah minoritas muslim, serta masyarakat dhuafa yang membutuhkan.\n\n*Khusus Qurban Pedalaman: setiap qurban yang ditunaikan juga sudah termasuk kontribusi sedekah pembangunan sumur air untuk daerah yang mengalami kesulitan akses air bersih di pelosok*\n\nYuk, tunaikan qurban terbaikmu. Satu amalan, pahala berlipat\n\nhttps://laznasdewandakwah.or.id/qurban?lz=a4\n\nRekening Qurban\nBank Syariah Indonesia 702 739 1917 a.n LAZIS Dewan Dakwah\n\nInformasi/Konfirmasi\n08111926123"
+        },
+        {
+          "type": "FOOTER",
+          "text": "Bismillah Bisa Qurban"
+        },
+        {
+          "type": "BUTTONS",
+          "buttons": [
+            {
+              "type": "PHONE_NUMBER",
+              "text": "Qurban Sekarang",
+              "phone_number": "+628111926123"
+            }
+          ]
+        }
+      ],
+      "language": "id",
+      "status": "APPROVED",
+      "category": "MARKETING",
+      "disable_ios_autofill": false,
+      "is_primary_device_delivery_only": false,
+      "id": "1508646400854405",
+      "namespace": "f8b46dc6_a650_4334_b920_bf693ebe7ccd"
+    },
+    {
+      "name": "qurban_sasa",
+      "previous_category": "UTILITY",
+      "parameter_format": "POSITIONAL",
+      "components": [
+        {
+          "type": "HEADER",
+          "format": "IMAGE",
+          "example": {
+            "header_handle": [
+              "https://scontent.whatsapp.net/v/t61.29466-34/620182411_2220620318676714_2790664310403564175_n.jpg?ccb=1-7&_nc_sid=8b1bef&_nc_ohc=pCLWwdgNI30Q7kNvwGa-cdX&_nc_oc=Ado8gJuHbyRY_5Mf5rBCZHWC6aA4rvLPQbZsXrBLS7sDqA9-mFLCCNEOVwuQ_XaaHaI&_nc_zt=3&_nc_ht=scontent.whatsapp.net&edm=AH51TzQEAAAA&_nc_gid=8wD6cDNZhbEbu1LIJaDhvw&_nc_tpa=Q5bMBQGwx9_FLXEJOUmFro2O71fRAtnXkO0zmabLTM45l_OQoT46mrZhwRYzt-UF5Efq2Hk9XEuw-GiX&oh=01_Q5Aa5AF-e6PtYu_mJG056k0KRd17p1nOWBsIEWR3DAjrjcdwlQ&oe=6A93CEA7"
+            ]
+          }
+        },
+        {
+          "type": "BODY",
+          "text": "*Bismillah,Bisa Qurban*\nQurban Terbaikmu, Bahagia untuk Mereka yang Menanti\n\nAssalamu’alaikum Bapak/Ibu Sahabat Dakwah\n\nDi pelosok negeri, kampung dhuafa, hingga wilayah binaan da’i, masih banyak saudara kita yang menanti hadirnya kebahagiaan di Hari Raya. 🥹\n\nMelalui program qurban bersama LAZNAS Dewan Dakwah, qurban insyaAllah akan disalurkan ke daerah pelosok, wilayah minoritas muslim, serta masyarakat dhuafa yang membutuhkan.\n\n*Khusus Qurban Pedalaman: setiap qurban yang ditunaikan juga sudah termasuk kontribusi sedekah pembangunan sumur air untuk daerah yang mengalami kesulitan akses air bersih di pelosok*\n\nBismillah, tahun ini kita semua BisaQurban \n\nYuk, tunaikan qurban terbaikmu. Satu amalan, pahala berlipat\n\nRekening Qurban\nBSI *702 739 1917*\na.n. Laznas Dewan Da’wah\n\nInformasi dan konfirmasi\n082258880726"
+        },
+        {
+          "type": "BUTTONS",
+          "buttons": [
+            {
+              "type": "PHONE_NUMBER",
+              "text": "Qurban Sekarang",
+              "phone_number": "+6282258880726"
+            }
+          ]
+        }
+      ],
+      "language": "id",
+      "status": "APPROVED",
+      "category": "MARKETING",
+      "disable_ios_autofill": false,
+      "is_primary_device_delivery_only": false,
+      "id": "2220620315343381",
+      "namespace": "f8b46dc6_a650_4334_b920_bf693ebe7ccd"
+    },
+    {
+      "name": "konfirmasiqurban",
+      "parameter_format": "POSITIONAL",
+      "components": [
+        {
+          "type": "HEADER",
+          "format": "TEXT",
+          "text": "Assalamualaikum Bapak Agus Pranowo"
+        },
+        {
+          "type": "BODY",
+          "text": "Alhamdulillah telah kami terima untuk AQIQAH Multi Manfaat, Berkah Bahagiakan Muslim Pedalaman\nRp 12.100.000\nKode Donasi\n266405\nNama Anak = Muhammad Rasheed\nJenis Kelamin = Laki-Laki\nTmpt Lahir = Jakarta\nTgl Lahir = 08-09-2013\nNama Ayah = Agus Pranowo\nNama Ibu = Ida Siti Farida\nPaket Donasi = PAKET SUPER BAROKAH Domba/Kambing Jantan (Distribusi matang & paket nasi 50 BOX )\nNominal Paket = Rp 3.025.000\nJumlah Paket = 4\n\nMohon izin Bapak, kami mau konfirmasi untuk 2 hewan aqiqah yang di pesan melalui laznas untuk atas nama Muhammad Rasheed \ndan untuk 2 hewan aqiqah yang di pesan lagi untuk atas nama siapa ya pak ? \nkarna bapak memesan di kami ada 4 hewan aqiqah pak .."
+        }
+      ],
+      "language": "id",
+      "status": "APPROVED",
+      "category": "MARKETING",
+      "disable_ios_autofill": false,
+      "is_primary_device_delivery_only": false,
+      "id": "3978384262458723",
+      "namespace": "f8b46dc6_a650_4334_b920_bf693ebe7ccd"
+    },
+    {
+      "name": "qurban_zikri",
+      "previous_category": "UTILITY",
+      "parameter_format": "POSITIONAL",
+      "components": [
+        {
+          "type": "HEADER",
+          "format": "IMAGE",
+          "example": {
+            "header_handle": [
+              "https://scontent.whatsapp.net/v/t61.29466-34/673844791_1289151583351175_4802413497366379027_n.jpg?ccb=1-7&_nc_sid=8b1bef&_nc_ohc=_uE1869pLg4Q7kNvwHnk--B&_nc_oc=AdpD6fF02dQLEOkHGzN27E68FP5Svmb1urk7T-spwsOv84F5BxPjK8TToOKPH6koDS0&_nc_zt=3&_nc_ht=scontent.whatsapp.net&edm=AH51TzQEAAAA&_nc_gid=8wD6cDNZhbEbu1LIJaDhvw&_nc_tpa=Q5bMBQG4R-uIag6gXgQdawK3bk-uucTFoP-MDxU-ydvO0ojgORqiBsnXJJgrF4GG8denYoCBbNLdkDDP&oh=01_Q5Aa5AFE_Yk08x_Is-Bl_6HMhGf-ZDGH8_q3rS88erXtcWraqg&oe=6A93D05E"
+            ]
+          }
+        },
+        {
+          "type": "BODY",
+          "text": "Bismillah *BisaQurban* untuk Kuatkan *Rakyat Palestina*\n\n✅Sahabat, Palestina saat ini masih tertindas dan belum merdeka. Di tengah kecaman dan ancaman serangan serta di bawah UU hukuman mati, warga Palestina masih tegak berdiri. \n\n✅Rakyat Palestina adalah penjaga Al Aqsa, penduduk asli yang saat ini banyak terusir dari tanah airnya sendiri.\n\n▶️Iduladha ini, mari kita kuatkan dan bahagiakan warga Palestina dengan qurban terbaik kita. \n\nhttps://www.laznasdewandakwah.or.id/Qurban-Frozen-Palestina-1447h/3782?lz=wp2\n\nRekening Qurban\nBSI 702 739 1917\nLazis Dewan Da'wah\n\nInformasi dan Konfirmasi\n0813 8504 3630"
+        },
+        {
+          "type": "FOOTER",
+          "text": "Bismillah Qurban Sekarang"
+        },
+        {
+          "type": "BUTTONS",
+          "buttons": [
+            {
+              "type": "PHONE_NUMBER",
+              "text": "Qurban Sekarang",
+              "phone_number": "+6281385043630"
+            }
+          ]
+        }
+      ],
+      "language": "id",
+      "status": "APPROVED",
+      "category": "MARKETING",
+      "disable_ios_autofill": false,
+      "is_primary_device_delivery_only": false,
+      "id": "1289151580017842",
+      "namespace": "f8b46dc6_a650_4334_b920_bf693ebe7ccd"
+    },
+    {
+      "name": "qurban_listy_",
+      "previous_category": "UTILITY",
+      "parameter_format": "POSITIONAL",
+      "components": [
+        {
+          "type": "HEADER",
+          "format": "IMAGE",
+          "example": {
+            "header_handle": [
+              "https://scontent.whatsapp.net/v/t61.29466-34/679467140_1914597692558209_2512360547325229133_n.jpg?ccb=1-7&_nc_sid=8b1bef&_nc_ohc=xUOtIQnn_OEQ7kNvwEbQrlA&_nc_oc=AdqgqyagRCtaTnl1ZznaSfpvGhJcnBfsfsO05jiSW-RFg41CoNGAjzHdCuhAVUHmqQs&_nc_zt=3&_nc_ht=scontent.whatsapp.net&edm=AH51TzQEAAAA&_nc_gid=8wD6cDNZhbEbu1LIJaDhvw&_nc_tpa=Q5bMBQFxw5CACjtqihfACxxpEU6JFGQ_dlBFTs6GP6gMrIkXk3um-6bOxJw_knfYy7i2NdgO6CCaIQb8&oh=01_Q5Aa5AG8Y1FlAVPJUAx6jv3QcNORutmTMg8NO1qOLmkLXCT1hw&oe=6A93B00A"
+            ]
+          }
+        },
+        {
+          "type": "BODY",
+          "text": "*Qurban Darimu Kuatkan Saudara Palestina, Bismillah Bisa Qurban*\n\n✅Sahabat, Qurban bagi saudara Palestina kita sangat bermakna..\n\n✅Di tengah penindasan yang di lakukan Zioni5, hadirnya daging qurban menjadi penyemangat untuk mereka..\n\n✅Di tengah tenda pengungsian yang apa adanya, di tengah sedihnya kehilangan keluarga, qurban darimu menjadi bukti bahwa mereka tidak sendiri..\n\nMenjelang Idul adha ini, izinkan kami mengajak Bapak/Ibu berqurban 1/7 Sapi Frozen Rp. 2.650.000 untuk masyarakat Palestina di manapun berada..\n\nMelalui Rekening Qurban\nBSI # 702 739 1917\nLazis Dewan Da'wah\n\nInformasi dan Konfirmasi\n085882824343"
+        },
+        {
+          "type": "FOOTER",
+          "text": "Bismillah Bisa Qurban"
+        },
+        {
+          "type": "BUTTONS",
+          "buttons": [
+            {
+              "type": "PHONE_NUMBER",
+              "text": "Klik Qurban Sekarang",
+              "phone_number": "+6285882824343"
+            }
+          ]
+        }
+      ],
+      "language": "id",
+      "status": "APPROVED",
+      "category": "MARKETING",
+      "disable_ios_autofill": false,
+      "is_primary_device_delivery_only": false,
+      "id": "1914597689224876",
+      "namespace": "f8b46dc6_a650_4334_b920_bf693ebe7ccd"
+    },
+    {
+      "name": "qurban_promo",
+      "previous_category": "UTILITY",
+      "parameter_format": "POSITIONAL",
+      "components": [
+        {
+          "type": "HEADER",
+          "format": "IMAGE",
+          "example": {
+            "header_handle": [
+              "https://scontent.whatsapp.net/v/t61.29466-34/629260486_3228199974019657_6043812411130990473_n.jpg?ccb=1-7&_nc_sid=8b1bef&_nc_ohc=zVsVVINWmV4Q7kNvwG1YS0N&_nc_oc=AdrhYHXypo0lzS3PkwIZAmLZObzQ7sIvdQUpztlyW8rA6AZXJMKiwc7PIMsUYOxqsiE&_nc_zt=3&_nc_ht=scontent.whatsapp.net&edm=AH51TzQEAAAA&_nc_gid=8wD6cDNZhbEbu1LIJaDhvw&_nc_tpa=Q5bMBQFuvZHofkBMennGCxYHP71UAsl8mPT1w2gb9QkvdeIuAue3Yn0b17RUCrWSSFYfhye_TF_3j2-P&oh=01_Q5Aa5AG7EizGI38KckTVdSfloMAJ522OhxYt7TDqXa808i_iWg&oe=6A93CE60"
+            ]
+          }
+        },
+        {
+          "type": "BODY",
+          "text": "*Dzulqa’dah sudah tiba, saatnya siapkan qurban terbaikmu*\n\nJangan lewatkan kesempatan berbuat kebaikan di bulan mulia ini \nKabar baiknya:\nSekarang qurban jadi lebih mudah dan terjangkau\n\nMelalui program spesial Promo Dzulqa’dah, sahabat sudah bisa ikut berqurban:\n🐐 Mulai dari tidak sampai 2 juta rupiah\n✅ Sesuai syariat\n✅ Amanah & terpercaya\n✅ Tepat sasaran, hingga pelosok negeri\n\n*Promo hanya sampai akhir April 2026!*\n\nInformasi & Konfirmasi :\n0858-8282-4343 (Zikriani)"
+        },
+        {
+          "type": "FOOTER",
+          "text": "Yuk, jangan tunda niat baikmu"
+        },
+        {
+          "type": "BUTTONS",
+          "buttons": [
+            {
+              "type": "PHONE_NUMBER",
+              "text": "Siap Qurban",
+              "phone_number": "+6285882824343"
+            }
+          ]
+        }
+      ],
+      "language": "id",
+      "status": "APPROVED",
+      "category": "MARKETING",
+      "disable_ios_autofill": false,
+      "is_primary_device_delivery_only": false,
+      "id": "3228199970686324",
+      "namespace": "f8b46dc6_a650_4334_b920_bf693ebe7ccd"
+    },
+    {
+      "name": "qurban_pinggir_kota_testing",
+      "previous_category": "UTILITY",
+      "parameter_format": "POSITIONAL",
+      "components": [
+        {
+          "type": "HEADER",
+          "format": "VIDEO",
+          "example": {
+            "header_handle": [
+              "https://scontent.whatsapp.net/v/t61.29466-34/596383840_26350980827917394_8001307812492103964_n.mp4?ccb=1-7&_nc_sid=8b1bef&_nc_ohc=3KpQSb6R8n4Q7kNvwHFMyBO&_nc_oc=AdrOgELLdO1UGql9VxzoqDYLEDQ-4uG7C4b_MtdU-MX9vEilJoBzuObMMqo65TXHiVA&_nc_zt=28&_nc_ht=scontent.whatsapp.net&edm=AH51TzQEAAAA&_nc_gid=8wD6cDNZhbEbu1LIJaDhvw&_nc_tpa=Q5bMBQFX350gD6QIo8HfQhVitkUt0mDLtam5E8IkKHOfk4cpc6twwJkxg4E74oZR3_xUU-Gq1yP1i-2Z&oh=01_Q5Aa5AGE1KtP9mg91u1WvinC2E4wyU1fV9dpNNBYqWmV3Sys2Q&oe=6A93A409"
+            ]
+          }
+        },
+        {
+          "type": "BODY",
+          "text": "*Bismillah #BisaQurban Bahagiakan Masyarakat Pinggiran Kota*\n\nDi antara meriahnya Iduladha di kota-kota besar, melimpahnya hewan, masih ada masyarakat yang tak merasakan daging qurban. \n\nQurban bukan hanya sekadar kegiatan tahunan. Qurban adalah harapan dan simbol kebersamaan. \n\nLaznas Dewan Dakwah menghadirkan Qurban Pinggiran Kota untuk meratakan persebaran daging qurban sampai pada saudara kita yang sering terlupakan. \n\nBenefit : \n✅ Sahabat bisa ikut datang langsung\n✅ Bisa ikut serta dalam proses penyembelihan qurban\n✅ Dapatkan laporan lengkap dan real-time\n\nMari hadirkan daging qurban hingga pada saudara kita di pinggiran kota bersama Laznas Dewan Dakwah ✨ \n\n*Rekening Qurban*\nBSI 702 739 1917\nLaznas Dewan Da'wah\n\nInformasi dan Konfirmasi\n0813 3888 5552"
+        },
+        {
+          "type": "BUTTONS",
+          "buttons": [
+            {
+              "type": "PHONE_NUMBER",
+              "text": "Yuk Qurbang Sekarang",
+              "phone_number": "+6281338885552"
+            }
+          ]
+        }
+      ],
+      "language": "id",
+      "status": "APPROVED",
+      "category": "MARKETING",
+      "disable_ios_autofill": false,
+      "is_primary_device_delivery_only": false,
+      "id": "26342580125424131",
+      "namespace": "f8b46dc6_a650_4334_b920_bf693ebe7ccd"
+    },
+    {
+      "name": "qurban_perkotaan",
+      "previous_category": "UTILITY",
+      "parameter_format": "POSITIONAL",
+      "components": [
+        {
+          "type": "HEADER",
+          "format": "TEXT",
+          "text": "Bismillah #BisaQurban"
+        },
+        {
+          "type": "BODY",
+          "text": "Tahun ini, jadikan qurbanmu lebih dari sekadar ibadah—jadikan ia hadiah kebahagiaan untuk saudara kita di pinggiran kota yang jarang merasakan daging qurban.\n\nSatu qurban darimu = senyum, harapan, dan kebersamaan untuk mereka \n\n✨ Bisa hadir langsung\n✨ Ikut proses penyembelihan\n✨ Laporan lengkap & transparan\n\nYuk, salurkan qurban terbaikmu sekarang juga\nInfo Rekening BSI 702 739 1917"
+        },
+        {
+          "type": "FOOTER",
+          "text": "#QurbankuDakwahku #BisaQurban"
+        },
+        {
+          "type": "BUTTONS",
+          "buttons": [
+            {
+              "type": "URL",
+              "text": "Qurban Sekarang",
+              "url": "https://laznasdewandakwah.or.id/Qurban-Doka-Pinggiran-kota/3793"
+            }
+          ]
+        }
+      ],
+      "language": "id",
+      "status": "APPROVED",
+      "category": "MARKETING",
+      "disable_ios_autofill": false,
+      "is_primary_device_delivery_only": false,
+      "id": "1272242375120823",
+      "namespace": "f8b46dc6_a650_4334_b920_bf693ebe7ccd"
+    },
+    {
+      "name": "zakat_byond",
+      "parameter_format": "POSITIONAL",
+      "components": [
+        {
+          "type": "HEADER",
+          "format": "IMAGE",
+          "example": {
+            "header_handle": [
+              "https://scontent.whatsapp.net/v/t61.29466-34/534424347_941403981667759_8165349032829977070_n.png?ccb=1-7&_nc_sid=8b1bef&_nc_ohc=l2eh_2HRZfgQ7kNvwGN00t-&_nc_oc=AdpsuqyzWPQjCQFAZiLRz1Q1Y_QItf8jdHQ5Iyk8ORl-bUlm7_tKIpImd8itKoMrPcU&_nc_zt=3&_nc_ht=scontent.whatsapp.net&edm=AH51TzQEAAAA&_nc_gid=8wD6cDNZhbEbu1LIJaDhvw&_nc_tpa=Q5bMBQHezUOAo-LflYLWM9erHZCKcK0xLv2YcAth9sFkwkih2_F4ZVP0tz9zfd6M3asqsIburnA2VJNg&oh=01_Q5Aa5AFWnfR_UY-eHbWaZYj98thQiVtKkjB44lEFLSYdYNRd8w&oe=6A93C9B7"
+            ]
+          }
+        },
+        {
+          "type": "BODY",
+          "text": "Assalaamu'alaikum warahmatullaahi wabarakaatuh,\n\n*Bapak/Ibu Yth*\n\nRamadan telah mendekati akhir. Zakat Fitrah menjadi amalan untuk menyucikan diri, menyempurnakan puasa, serta membantu saudara kita yang merayakan Idulfitri dalam keterbatasan.\n\nSebagaimana hadits Ibnu Abbas RA: “Rasulullah shallallahu 'alaihi wa sallam mewajibkan zakat fitrah untuk mensucikan orang berpuasa dan memberi makan orang miskin.” (HR. Abu Dawud)\n\nTunaikan Zakat Fitrah melalui BYOND by BSI: \n* Buka Byond by BSI\n* Pilih Menu Berbagi\n* Klik Slider Zakat Fitrah yang di atas\n* Pilih Dewan Dakwah\n* Tulis \"Atas Nama\" & Pay Zakat\n* Selesaikan transaksi\n\nSemoga Allah SWT melipatgandakan pahala kebaikan Anda.\n\nInfo lebih lanjut LAZNAS Dewan Dakwah 0812-1000-2656\n\nWassalaamu'alaikum warahmatullaahi wabarakaatuh"
+        },
+        {
+          "type": "BUTTONS",
+          "buttons": [
+            {
+              "type": "URL",
+              "text": "Zakat Sekarang",
+              "url": "https://laznasdewandakwah.or.id/zakatfitrah1447h/3629?lz=wp1"
+            }
+          ]
+        }
+      ],
+      "language": "id",
+      "status": "APPROVED",
+      "category": "MARKETING",
+      "disable_ios_autofill": false,
+      "is_primary_device_delivery_only": false,
+      "id": "941403978334426",
+      "namespace": "f8b46dc6_a650_4334_b920_bf693ebe7ccd"
+    },
+    {
+      "name": "zakat_maal",
+      "previous_category": "UTILITY",
+      "parameter_format": "POSITIONAL",
+      "components": [
+        {
+          "type": "HEADER",
+          "format": "IMAGE",
+          "example": {
+            "header_handle": [
+              "https://scontent.whatsapp.net/v/t61.29466-34/620156052_1628367354855149_252188614239174722_n.png?ccb=1-7&_nc_sid=8b1bef&_nc_ohc=vNGiAzKDn0gQ7kNvwF3yrFx&_nc_oc=AdrO14fbAu3r0FrxpU2s0MitzSK9rlHedkUUpaAlSoOEnQbweK7RcPMJwVF1HtnpKI4&_nc_zt=3&_nc_ht=scontent.whatsapp.net&edm=AH51TzQEAAAA&_nc_gid=8wD6cDNZhbEbu1LIJaDhvw&_nc_tpa=Q5bMBQHGPGH6yA3dL00a8xBiyp51pnxCUMoxLAkejycZghZkR83hRqHZ39QjAaolrcQ4DSP-6MggpQ-m&oh=01_Q5Aa5AGmwlTCE1QO5R880qlXB7cPQZI2VJzXiRegrmRMN9oEMw&oe=6A93AA29"
+            ]
+          }
+        },
+        {
+          "type": "BODY",
+          "text": "*Zakatmu Jadi #KebaikanTanpaBatas yang Menembus Keterbatasan*\n\n✅Sahabat, zakat dan infaq darimu melalui Laznas Dewan Dakwah telah menjadi kebaikan tanpa batas. Penguat para da'i/guru ngaji yang dikirim dan ditempatkan di wilayah terpelosok, terpencil, terjauh. \n\n✅Zakat darimu menguatkan saudara muallaf, membantu saudara papa dan dhuafa, serta zakat darimu menjadi penopang dakwah di tempat yang jauh. \n\n✅Di Ramadan ini, mari kembali bersama hadirkan kebahagiaan untuk saudara di penjuru negeri dengan zakat terbaikmu.\n\n✅2,5% harta sahabat jadi 100% manfaat dan #KebaikanTanpaBatas untuk saudara di penjuru negeri. \n\n*Rekening Zakat*\n🏧 BSI # 700 132 7539\n(Laznas Dewan Da'wah) \n\n*Informasi dan konfirmasi*\n0858-8282-4343\n\n#LaznasDewanDakwah #Zakat #ZakatMenembusBatas"
+        },
+        {
+          "type": "BUTTONS",
+          "buttons": [
+            {
+              "type": "URL",
+              "text": "Yuk Zakat Di sini",
+              "url": "https://laznasdewandakwah.or.id/zakatmaal1446h/3092?lz=c80dfd72"
+            }
+          ]
+        }
+      ],
+      "language": "id",
+      "status": "APPROVED",
+      "category": "MARKETING",
+      "disable_ios_autofill": false,
+      "is_primary_device_delivery_only": false,
+      "id": "1628367351521816",
+      "namespace": "f8b46dc6_a650_4334_b920_bf693ebe7ccd"
+    },
+    {
+      "name": "bismillah_lunas_simddii_oke",
+      "previous_category": "MARKETING",
+      "parameter_format": "POSITIONAL",
+      "components": [
+        {
+          "type": "HEADER",
+          "format": "DOCUMENT",
+          "example": {
+            "header_handle": [
+              "https://scontent.whatsapp.net/v/t61.29466-34/645468738_1432002631746070_1561987745881169872_n.pdf?ccb=1-7&_nc_sid=8b1bef&_nc_ohc=53Chz7Z7IE0Q7kNvwHgCnRi&_nc_oc=AdrD2GxGNVjQzoUi-YiCsgGM-_4ciSc5Zm5ecF2dQ53oL0uACYVAUE0TkQkk-UOX13Q&_nc_zt=3&_nc_ht=scontent.whatsapp.net&edm=AH51TzQEAAAA&_nc_gid=8wD6cDNZhbEbu1LIJaDhvw&_nc_tpa=Q5bMBQEuiB6aB3JxsfZivszrxlejTUyBhqSejneaL6zAbcllLRNwCLrIFoaSFWi0QfPzreMzWNE-Kego&oh=01_Q5Aa5AHc27eidV_Th3GdhUsBko_v7di4HegBkNSMbT02egNYSg&oe=6A93B048"
+            ]
+          }
+        },
+        {
+          "type": "BODY",
+          "text": "Assalamu'alaikum Warahmatullah Wabarakatuh {{1}} {{2}}\n\nKami mengucapkan Jazakumullah Khairan Katsiran Ahsanal Jaza atas dukungan Zakat, Infaq dan Sedekah {{3}} dan keluarga\n\nآجْرَكَ اللهُ فِيْمَا اَعْطَيْتَ، وَبَارَكَ فِيْمَا اَبْقَيْتَ وَ جَعَلَ اللهُ لَكَ طَهُوْرًا\n\nSemoga Allah Subahanahu Watta'ala memberikan pahala atas apa yang diberikan dan semoga Allah memberikan keberkahan atas (harta) {{4}} dan Keluarga.\n\nDemikian, Terima kasih sebesar-besarnya atas donasi yang telah ditunaikan {{5}}. Barokallah fiikum\n\n {{6}}\n {{7}}\nWassalamu'alaikum Warahmatullah Wabarakatuh",
+          "example": {
+            "body_text": [
+              [
+                "Bapak",
+                "Ahmad",
+                "Bapak",
+                "Bapak",
+                "Bapak",
+                "Hubungi",
+                "085882824343"
+              ]
+            ]
+          }
+        },
+        {
+          "type": "FOOTER",
+          "text": "Pesan Otomatis"
+        }
+      ],
+      "language": "id",
+      "status": "APPROVED",
+      "category": "UTILITY",
+      "disable_ios_autofill": false,
+      "is_primary_device_delivery_only": false,
+      "correct_category": "UTILITY",
+      "id": "1432002628412737",
+      "namespace": "f8b46dc6_a650_4334_b920_bf693ebe7ccd"
+    },
+    {
+      "name": "penerimaan_kwitansi",
+      "previous_category": "UTILITY",
+      "parameter_format": "POSITIONAL",
+      "components": [
+        {
+          "type": "HEADER",
+          "format": "DOCUMENT",
+          "example": {
+            "header_handle": [
+              "https://scontent.whatsapp.net/v/t61.29466-34/598295406_1473284408139062_3417594412352291449_n.pdf?ccb=1-7&_nc_sid=8b1bef&_nc_ohc=uO8M1T97HTIQ7kNvwGbh3qi&_nc_oc=Adqpnkz1z9lA9uEpxuNrA3RqLjTDECvalHFn9Ab1CXw6bQUwuWrCbS04X9x8cHxE4M0&_nc_zt=3&_nc_ht=scontent.whatsapp.net&edm=AH51TzQEAAAA&_nc_gid=8wD6cDNZhbEbu1LIJaDhvw&_nc_tpa=Q5bMBQFJapzPMZ7HIFbjHZt0gQaUE0KzE8JqCi8CsqGVlNw7054kqDk_iKGv8wMVJ4d5RWuURmVq8nyA&oh=01_Q5Aa5AEUvjzwW8jJlOg04QUJIffULM-N5byXpTDVc7qQ9do3Kg&oe=6A93C866"
+            ]
+          }
+        },
+        {
+          "type": "BODY",
+          "text": "Assalamu'alaikum Warahmatullah Wabarakatuh  {{1}}  {{2}} \n\nKami mengucapkan Jazakumullah Khairan Katsiran Ahsanal Jaza atas dukungan Zakat, Infaq dan Sedekah {{3}}  dan keluarga\n\nآجْرَكَ اللهُ فِيْمَا اَعْطَيْتَ، وَبَارَكَ فِيْمَا اَبْقَيْتَ  وَ جَعَلَ اللهُ لَكَ طَهُوْرًا \n\nSemoga Allah Subahanahu Watta'ala memberikan pahala atas apa yang diberikan dan semoga Allah memberikan keberkahan atas (harta) {{4}}  dan Keluarga.\n\nDemikian, Terima kasih sebesar-besarnya atas donasi yang telah ditunaikan {{5}}.  Barokallah fiikum\n\n{{6}}\n{{7}}\nWassalamu'alaikum Warahmatullah Wabarakatuh",
+          "example": {
+            "body_text": [
+              [
+                "Nama Donatur",
+                "Nama Donatur",
+                "Nama Program",
+                "Jumlah Kwitansi",
+                "Jumlah Nominal",
+                "No Konfirmasi",
+                "No Referensi Kwitansi"
+              ]
+            ]
+          }
+        },
+        {
+          "type": "FOOTER",
+          "text": "Pesan otomatis"
+        }
+      ],
+      "language": "id",
+      "status": "APPROVED",
+      "category": "MARKETING",
+      "disable_ios_autofill": false,
+      "is_primary_device_delivery_only": false,
+      "id": "1473284404805729",
+      "namespace": "f8b46dc6_a650_4334_b920_bf693ebe7ccd"
+    },
+    {
+      "name": "newslatter_adm2",
+      "parameter_format": "POSITIONAL",
+      "components": [
+        {
+          "type": "HEADER",
+          "format": "DOCUMENT",
+          "example": {
+            "header_handle": [
+              "https://scontent.whatsapp.net/v/t61.29466-34/590531506_914085037656141_5039873646724684471_n.pdf?ccb=1-7&_nc_sid=8b1bef&_nc_ohc=ezleIcHXqxQQ7kNvwFqCqoN&_nc_oc=AdoNG-_35MgsqskPpHQIFpElTW8Pi-zgvnMNQzeLtwFHsaiCPgrzNxQ7fauACPSSip8&_nc_zt=3&_nc_ht=scontent.whatsapp.net&edm=AH51TzQEAAAA&_nc_gid=8wD6cDNZhbEbu1LIJaDhvw&_nc_tpa=Q5bMBQHoomreoV1On4pLr9wJbr-8_yQgByB7OtszLozPprLhxDNzB2hHQHYp-EqLuxoVorj3RwwjvlTa&oh=01_Q5Aa5AFGZWIHYaEjepatmosEdvoxNgLofwV_sodFS38vNSKGBw&oe=6A93CCFE"
+            ]
+          }
+        },
+        {
+          "type": "BODY",
+          "text": "*Marhaban Yaa Ramadan* 🌙\n_*Selamat Menunaikan Ibadah Puasa Ramadan 1447 H*_ \n\nAssalamu’alaikum wr wb Pak/Bu {{1}}\n\nDi bulan istimewa ini, mari saling berlomba menjadi yang terbaik di sisi Allah ﷻ. Setiap amal kebaikan dilipatgandakan, setiap sedekah menjadi pemberat timbangan pahala, dan setiap doa mengetuk pintu langit.\n\nMari bersiap menyambut momen #KebaikanTanpaBatas di Ramadan. Semua bisa ambil bagian. Semua bisa ikut berkontribusi. Jangan sampai ketinggalan ✨\n\nSemoga Allah menerima seluruh amal ibadah kita, menguatkan langkah kebaikan kita, serta menjadikan Ramadan ini sebagai titik balik menuju pribadi yang lebih bertakwa. Aamiin ya Rabbal ‘aalamiin.\n\n*Tunaikan Zakat dan Infak terbaikmu melalui :*\n\n➡️ *Rekening Zakat :*\nBSI # 7281220181\na.n Lazis Dewan Da’wah\n\n➡️ *Rekening Infak Ramadan :*\nBSI # 184 4633 220\na.n. Lazis Dewan Da’wah Islamiyah Indonesia\n\nKonfirmasi donasi :\n0813 3888 5552 (Admin 2 LAZNAS Dewan Da'wah)\n\n_Jazaakumullah khair_",
+          "example": {
+            "body_text": [
+              [
+                "Name"
+              ]
+            ]
+          }
+        },
+        {
+          "type": "FOOTER",
+          "text": "Yuk Zakat dan Infaq di LAZNAS Dewan Da'wah"
+        },
+        {
+          "type": "BUTTONS",
+          "buttons": [
+            {
+              "type": "PHONE_NUMBER",
+              "text": "Hubungi Kami",
+              "phone_number": "+6281338885552"
+            }
+          ]
+        }
+      ],
+      "language": "id",
+      "status": "APPROVED",
+      "category": "MARKETING",
+      "disable_ios_autofill": false,
+      "is_primary_device_delivery_only": false,
+      "id": "914085034322808",
+      "namespace": "f8b46dc6_a650_4334_b920_bf693ebe7ccd"
+    },
+    {
+      "name": "fidyah3",
+      "parameter_format": "POSITIONAL",
+      "components": [
+        {
+          "type": "HEADER",
+          "format": "IMAGE",
+          "example": {
+            "header_handle": [
+              "https://scontent.whatsapp.net/v/t61.29466-34/598297512_1194877932415314_112668151300952493_n.png?ccb=1-7&_nc_sid=8b1bef&_nc_ohc=1RiVdKFKLnUQ7kNvwG9aVGw&_nc_oc=Adob3bAdOlivAaBJvHnQolulMrh5jzImuBj81QNyLXkoA_0T2vUgAE4IV3spmWukSSc&_nc_zt=3&_nc_ht=scontent.whatsapp.net&edm=AH51TzQEAAAA&_nc_gid=8wD6cDNZhbEbu1LIJaDhvw&_nc_tpa=Q5bMBQFfyqKuWz1J1KSxfzXVq101IsD3OdD6dhrhqK1-Ud1EamqUb8NvMt2wdb0fdtQSxlTRlmHmBqnI&oh=01_Q5Aa5AFyGPcYpZ0J7bm33SLC4Yd2k34tjGCWvckP4bxnR4PmoQ&oe=6A93BE43"
+            ]
+          }
+        },
+        {
+          "type": "BODY",
+          "text": "Fidyah Darimu Jadi Kebahagiaan Muallaf di NTT\n\n✅Sahabat..\nFidyah yang dititipkan melalui Laznas Dewan Da’wah tidak hanya tersalurkan untuk wilayah Jabodetabek saja..\nAkan tetapi penyaluran fidyah ini meliputi wilayah-wilayah muallaf di pedalaman nusantara, seperti NTT dan lainnya..\n\n✅Mereka menjadi minoritas muslim, namun mereka sangat semangat menjaga iman tetap kuat, terlebih dengan hadirnya para mualaf dari Timor Leste yang kini menetap di Indonesia. Dan dibina oleh da’i muda Ustadz Ma’aruf Wailissa yang mengabdi di sana.\n\nAlhamdulillah sebanyak 60 orang menjadi salah satu penerima manfaat fidyah yang sahabat tunaikan, terimakasih  sahabat..\n\n✅ Ramadhan semakin dekat,  Yuk Tunaikan Fidyah mu kembali, melalui↩️\n\nRekening Donasi/Infak\n🏧Bank Mega Syariah 100 002 2266\nan. Lazis Dewan Da’wah\n\n🏧BSI an Laznas Dewan Da'wah: 700 132 7733\n\nInformasi & Konfirmasi\n📱0858 8282 4343"
+        },
+        {
+          "type": "BUTTONS",
+          "buttons": [
+            {
+              "type": "URL",
+              "text": "Tunaikan Fidyahmu Di sini",
+              "url": "https://laznasdewandakwah.or.id/fidyah1447h/3083?lz=c80dfd72"
+            }
+          ]
+        }
+      ],
+      "language": "id",
+      "status": "APPROVED",
+      "category": "MARKETING",
+      "disable_ios_autofill": false,
+      "is_primary_device_delivery_only": false,
+      "id": "1194877929081981",
+      "namespace": "f8b46dc6_a650_4334_b920_bf693ebe7ccd"
+    },
+    {
+      "name": "fidyah",
+      "parameter_format": "POSITIONAL",
+      "components": [
+        {
+          "type": "BODY",
+          "text": "Kesempatan Terakhir, Yuk Lunasi Hutang Puasamu Sebelum Ramadhan\n\n✅Sya'ban jadi kesempatan terakhir sebelum Ramadhan tiba, segera lunasi hutang puasa jangan ditunda.\n\n✅Sayyidah Aisyah radhiyallahu 'anha dikenal sering mengqadha puasa Ramadhan pada bulan Sya'ban karena kesibukannya melayani Rasulullah ﷺ. Hal ini ia lakukan karena Sya'ban adalah waktu di mana Nabi ﷺ banyak berpuasa sunnah. \n\n✅‘Aisyah radhiyallahu ‘anha juga mengatakan,\n\nلَمْ يَكُنِ النَّبِىُّ – صلى الله عليه وسلم – يَصُومُ شَهْرًا أَكْثَرَ مِنْ شَعْبَانَ ، فَإِنَّهُ كَانَ يَصُومُ شَعْبَانَ كُلَّهُ\n\n“Nabi shallallahu ‘alaihi wa sallam tidak biasa berpuasa pada satu bulan yang lebih banyak dari bulan Sya’ban. Nabi shallallahu ‘alaihi wa sallam biasa berpuasa pada bulan Sya’ban seluruhnya.” (HR. Bukhari no. 1970 dan Muslim no. 1156)\n\n✅Bayar utang puasamu dengan qadha atau fidyah. Cek tabelnya, lunasi utang puasanya sebelum Ramadan tiba.🌙\n\n🏧Rekening Ramadan\nBSI # 1844-633-220 \n(Lazis Dewan Da'wah) \n\nInformasi dan Konfirmasi\n0813 3888 5552"
+        },
+        {
+          "type": "BUTTONS",
+          "buttons": [
+            {
+              "type": "PHONE_NUMBER",
+              "text": "Hubungi Kami",
+              "phone_number": "+6281338885552"
+            }
+          ]
+        }
+      ],
+      "language": "id",
+      "status": "APPROVED",
+      "category": "MARKETING",
+      "disable_ios_autofill": false,
+      "is_primary_device_delivery_only": false,
+      "id": "1632379928054392",
+      "namespace": "f8b46dc6_a650_4334_b920_bf693ebe7ccd"
+    },
+    {
+      "name": "air_untuk_sumatera",
+      "parameter_format": "POSITIONAL",
+      "components": [
+        {
+          "type": "HEADER",
+          "format": "VIDEO",
+          "example": {
+            "header_handle": [
+              "https://scontent.whatsapp.net/v/t61.29466-34/546512564_2024580538384076_626730997833567759_n.mp4?ccb=1-7&_nc_sid=8b1bef&_nc_ohc=kwa-pWfUQCgQ7kNvwHv7-rG&_nc_oc=AdpHJBZshKlgtmJZxfBNCTb7u0_IRP0J9ATw3h02RoaE7rEk4EdnbLakd_mE2D_8Qo4&_nc_zt=28&_nc_ht=scontent.whatsapp.net&edm=AH51TzQEAAAA&_nc_gid=8wD6cDNZhbEbu1LIJaDhvw&_nc_tpa=Q5bMBQEX8KmmeYRCwIk_4Nyrpj5lI-b5ptYX74WRk4PLj37XZcS1vRJLVczE3SdEm7koJWdW020IrGtL&oh=01_Q5Aa5AHVkC_791XYTAKxLhLF9pLggn-wIzFs59vdnLUgh2s1Mw&oe=6A93CEFE"
+            ]
+          }
+        },
+        {
+          "type": "BODY",
+          "text": "*Puluhan Ribu Liter Air Bersih Mengalir untuk Aceh Tamiang*\n\n✅ Alhamdulillah, kebaikan Anda mengalir menjadi air bersih bagi saudara kita terdampak banjir di Aceh Tamiang.\n\n✅ Krisis air bersih masih menjadi tantangan utama pasca banjir besar. Sumber air warga tercemar, sehingga kebutuhan air layak konsumsi dan sanitasi sangat mendesak, khususnya di Desa Air Tenang, Kecamatan Karang Baru.\n\n✅ Merespons kondisi tersebut, Laznas Dewan Dakwah menyalurkan 10.000 liter air bersih melalui armada mobil tangki untuk kebutuhan minum, memasak, sanitasi, serta membantu membersihkan lumpur di rumah, sekolah, dan masjid.\n\n✅Terima kasih kepada para donatur dan muhsinin atas kebaikan yang terus mengalir untuk saudara kita.\n\n✅ Mari terus bergandengan tangan bantu pemulihan Sumatera."
+        },
+        {
+          "type": "FOOTER",
+          "text": "Alirkan Pahala Jariyah di Setiap Air yang Mengalir"
+        },
+        {
+          "type": "BUTTONS",
+          "buttons": [
+            {
+              "type": "URL",
+              "text": "Ringankan Beban Mereka",
+              "url": "https://laznasdewandakwah.or.id/checkout-donasi/ringankan-duka-sumut/3547?lz=wp"
+            }
+          ]
+        }
+      ],
+      "language": "id",
+      "status": "APPROVED",
+      "category": "MARKETING",
+      "disable_ios_autofill": false,
+      "is_primary_device_delivery_only": false,
+      "id": "2024580535050743",
+      "namespace": "f8b46dc6_a650_4334_b920_bf693ebe7ccd"
+    },
+    {
+      "name": "terimakasih_doa_bagi_orang_yang_sakit",
+      "parameter_format": "POSITIONAL",
+      "components": [
+        {
+          "type": "BODY",
+          "text": "Alhamdulillah,\n\nBapak/Ibu  {{1}} Yth.\n\nTerimakasih atas zakat/infaq yang ditunaikan melalui LAZNAS Dewan Dakwah,\n\nTeriring do'a\n\nAjarakallahu fiimaa A'thaita wa Baaraka fiimaa Abqaita wa Ja'alallahu laka thahuruun\n\n\"Semoga Allah memberikan pahala yang berlipatganda utk bapak/ibu {{1}} atas apa yg diberikan serta memberikan keberkahan pada harta bapak/ibu {{1}} dan keluarga yg tersimpan\"\n\nSemoga Allah memberikan kesehatan yg afiyah, kesembuhan dari segala penyakit, serta kebahagiaan dan keselamatan hidup di dunia dan di akhirat utk bapak/ibu {{1}} dan keluarga.\n\nAamiin ya Rabbal'alamiin,,"
+        }
+      ],
+      "language": "id",
+      "status": "REJECTED",
+      "category": "MARKETING",
+      "disable_ios_autofill": false,
+      "is_primary_device_delivery_only": false,
+      "id": "26435404962715029",
+      "namespace": "f8b46dc6_a650_4334_b920_bf693ebe7ccd"
+    },
+    {
+      "name": "konvoi_bencana",
+      "parameter_format": "POSITIONAL",
+      "components": [
+        {
+          "type": "HEADER",
+          "format": "IMAGE",
+          "example": {
+            "header_handle": [
+              "https://scontent.whatsapp.net/v/t61.29466-34/546444038_1592531425429286_4644279793902956576_n.jpg?ccb=1-7&_nc_sid=8b1bef&_nc_ohc=UvHTYe8wBrwQ7kNvwEFev-6&_nc_oc=AdpOqCwobjmY6qllQhrX5nnE5ICdWhgcXxzEJ3dCIbZIdt4yNE7zOMYFmM-BeHh9mLQ&_nc_zt=3&_nc_ht=scontent.whatsapp.net&edm=AH51TzQEAAAA&_nc_gid=8wD6cDNZhbEbu1LIJaDhvw&_nc_tpa=Q5bMBQEGsQ87R2QNR6iwEW_gqjqiCkcv1v4PAgRys5UX3r69utXD6qFH7OeIiFgE4H46Bj6EwMeS3IPv&oh=01_Q5Aa5AG-zwFa_AeHHTNjcQyiflgvBnoiHhWfmR79fMYmNBPn0g&oe=6A93C908"
+            ]
+          }
+        },
+        {
+          "type": "BODY",
+          "text": "Assalamu’alaikum Warahmatullahi Wabarakatuh,\n\nSahabat, telah dua pekan berlalu sejak banjir dan longsor melanda Sumatera. Namun hingga kini, banyak saudara kita masih bertahan di pengungsian, menjalani hari-hari yang penuh keterbatasan dan ketidakpastian.\n\nKebutuhan yang mereka nantikan dengan penuh harap:\n🧣 Selimut & tikar untuk menghangatkan istirahat\n💧 Air bersih sebagai penopang kehidupan\n🕌 Peralatan sholat untuk meneguhkan hati\n🍱 Logistik harian yang terus menipis\n\nInsya Allah, Laznas Dewan Dakwah segera memberangkatkan armada konvoi kemanusiaan guna mengantar bantuan langsung ke tangan mereka yang membutuhkan.\n\nKami memohon doa dan dukungan terbaik dari Sahabat, agar perjalanan konvoi dimudahkan, dan saudara-saudara kita di Sumatera diberi kekuatan melalui ujian ini.\n\nMari bersama meringankan duka mereka.\nSemoga setiap perhatian dan bantuan Sahabat menjadi amal jariyah yang terus mengalir tanpa henti.\n\nJazakumullahu khairan katsiran."
+        },
+        {
+          "type": "BUTTONS",
+          "buttons": [
+            {
+              "type": "URL",
+              "text": "Jadi Penolong Hari Ini",
+              "url": "https://laznasdewandakwah.or.id/checkout-donasi/ringankan-duka-sumut/3547?lz=wp"
+            }
+          ]
+        }
+      ],
+      "language": "id",
+      "status": "APPROVED",
+      "category": "MARKETING",
+      "disable_ios_autofill": false,
+      "is_primary_device_delivery_only": false,
+      "id": "1592531422095953",
+      "namespace": "f8b46dc6_a650_4334_b920_bf693ebe7ccd"
+    },
+    {
+      "name": "bencana_sumbar_aceh",
+      "parameter_format": "POSITIONAL",
+      "components": [
+        {
+          "type": "HEADER",
+          "format": "IMAGE",
+          "example": {
+            "header_handle": [
+              "https://scontent.whatsapp.net/v/t61.29466-34/567634987_1267487788556541_6214832968492581301_n.jpg?ccb=1-7&_nc_sid=8b1bef&_nc_ohc=pWr2GXmEFMIQ7kNvwG885yE&_nc_oc=AdpIFYyCsFsCi1w8gWhN9dMrbfBuR1QTPuTqoS40PLwBLO8TmNAQn267n9xQMNrC_FY&_nc_zt=3&_nc_ht=scontent.whatsapp.net&edm=AH51TzQEAAAA&_nc_gid=8wD6cDNZhbEbu1LIJaDhvw&_nc_tpa=Q5bMBQH8W4JydFAxeN9zBDgqOU33f4y43wR0e2CyMVT9PLgYdD4dN8NeJBTV8dgHgmw77fX-_qJ0WNYJ&oh=01_Q5Aa5AFrLDZT2wkQWHmS_kMCTwoHoI0QO8_eckwCeL_tLW3yVA&oe=6A93C974"
+            ]
+          }
+        },
+        {
+          "type": "BODY",
+          "text": "📌 *Darurat Banjir Sumatera: Mari Kita Kuatkan Saudara Kita*\n\nInnalillahi wa inna ilaihi raji’un\n\nSahabat, duka kembali menyelimuti negeri. Banjir dan longsor di Aceh, Sumut, dan Sumbar meninggalkan luka mendalam.\n\n💔 Hingga kemarin:\n• 604 jiwa meninggal\n• 464 hilang\n• 1,5 juta warga mengungsi\n\nDi tengah situasi ini, Alhamdulillah, Laznas Dewan Dakwah terus hadir membersamai para penyintas. Saat ini telah berdiri 9 Posko Laznas Dewan Dakwah:\n• 3 di Aceh\n• 1 di Sumut\n• 5 di Sumbar\n\nMelalui posko-posko ini, relawan menyalurkan air minum, makanan siap saji, layanan darurat, serta pendampingan bagi warga yang membutuhkan.\n\n🤲 Mohon doanya, Sahabat…\nMusibah besar di tiga provinsi ini terus menunjukkan lonjakan korban, sementara jutaan saudara kita masih berjuang melewati hari-hari sulit.\n\nMari satukan langkah, kuatkan mereka dengan doa dan bantuan terbaik kita melalui ⤵️"
+        },
+        {
+          "type": "FOOTER",
+          "text": "Terima kasih telah membersamai mereka di saat terberat"
+        },
+        {
+          "type": "BUTTONS",
+          "buttons": [
+            {
+              "type": "URL",
+              "text": "Bantu Ringankan Duka",
+              "url": "https://laznasdewandakwah.or.id/checkout-donasi/ringankan-duka-sumut/3547?lz=wp"
+            }
+          ]
+        }
+      ],
+      "language": "id",
+      "status": "APPROVED",
+      "category": "MARKETING",
+      "disable_ios_autofill": false,
+      "is_primary_device_delivery_only": false,
+      "id": "1267487785223208",
+      "namespace": "f8b46dc6_a650_4334_b920_bf693ebe7ccd"
+    },
+    {
+      "name": "sedekah_subuh",
+      "parameter_format": "POSITIONAL",
+      "components": [
+        {
+          "type": "HEADER",
+          "format": "VIDEO",
+          "example": {
+            "header_handle": [
+              "https://scontent.whatsapp.net/v/t61.29466-34/546466804_1217353833834327_4914138990581020830_n.mp4?ccb=1-7&_nc_sid=8b1bef&_nc_ohc=4P8_7c0uOXQQ7kNvwFM5h-w&_nc_oc=AdqRhReHX-iUtdlI5bI2EvsblxyCU2kPZIPjZoymYkwRud1htzIK4y4sHD2pYWbctXs&_nc_zt=28&_nc_ht=scontent.whatsapp.net&edm=AH51TzQEAAAA&_nc_gid=8wD6cDNZhbEbu1LIJaDhvw&_nc_tpa=Q5bMBQEkCz_AHC2rVg7xcBSW8Sz2-AD7FeS7r7ws5G2zEjn8dG7GAEwYsT7bKp1z8jmUg1NonmJ-bRHV&oh=01_Q5Aa5AGV6wub4fUnfKToR4DSE63t-AKweYgX2SYniSPRiWCWKQ&oe=6A93A9DA"
+            ]
+          }
+        },
+        {
+          "type": "BODY",
+          "text": "🌅 *Sedekah Subuhmu, Senyum bagi Para Santri & Jama’ah Dusun Genengan*\n\nSahabat, setiap subuh adalah kesempatan baru untuk menanam kebaikan. Dan Alhamdulillah, Rabu (8/10), dari tetes sedekah subuh yang engkau titipkan, 40 santri TPQ dan 60 ibu-ibu Majelis Taklim di Dusun Genengan bisa menikmati hidangan bergizi yang halal dan penuh keberkahan.\n\nDi balai sederhana itu, mereka makan bersama. Ada tawa santri, ada haru para ibu, ada doa-doa lirih yang mereka panjatkan… semua untuk para pemberi kebaikan seperti dirimu. ❤️\n\nProgram ini menjadi langkah awal dari implementasi Kampung Zakat, yang bertujuan menghadirkan gizi, perhatian, dan kasih sayang untuk masyarakat desa.\n\nSahabat,\nSetiap makanan yang mereka santap hari ini… adalah pahala yang mengalir untukmu esok.\nSetiap senyum yang merekah… adalah saksi cintamu kepada sesama.\n\n🌙 Mari titipkan sedekah subuhmu, walau sedikit, ia berarti besar bagi mereka.\n\nSemoga Allah membalas setiap kebaikanmu dengan rezeki yang lapang dan hati yang tenang. Aamiin"
+        },
+        {
+          "type": "FOOTER",
+          "text": "Satu Sedekah Subuh, Seribu Kebaikan Mengalir"
+        },
+        {
+          "type": "BUTTONS",
+          "buttons": [
+            {
+              "type": "URL",
+              "text": "Jadilah Penolong Hari Ini",
+              "url": "https://laznasdewandakwah.or.id/checkout-donasi/sedekahsubuh/3017?lz=wp"
+            }
+          ]
+        }
+      ],
+      "language": "id",
+      "status": "APPROVED",
+      "category": "MARKETING",
+      "disable_ios_autofill": false,
+      "is_primary_device_delivery_only": false,
+      "id": "1217353830500994",
+      "namespace": "f8b46dc6_a650_4334_b920_bf693ebe7ccd"
+    },
+    {
+      "name": "doa_utuk_orang_sakit",
+      "parameter_format": "POSITIONAL",
+      "components": [
+        {
+          "type": "BODY",
+          "text": "Assalamu’alaikum {{1}}\n\nSemoga Allah angkat segala sakitnya dan berikan kesembuhan yang sempurna.\nاللهم رب الناس أذهب البأس واشفِ أنت الشافي، لا شفاء إلا شفاؤك\n\nMasya Allah, semangat dan keikhlasan {{1}} luar biasa, tetap ingin berbuat baik meski sedang dirawat.\nInsya Allah setiap niat {{1}} bernilai pahala besar di sisi-Nya. Aamiin ya Rabb..\n\nDoa terbaik untuk kesehatan dan keberkahan {{1}} selalu. 🤲",
+          "example": {
+            "body_text": [
+              [
+                "Bapak Anwar"
+              ]
+            ]
+          }
+        }
+      ],
+      "language": "id",
+      "status": "APPROVED",
+      "category": "MARKETING",
+      "disable_ios_autofill": false,
+      "is_primary_device_delivery_only": false,
+      "id": "828149263485245",
+      "namespace": "f8b46dc6_a650_4334_b920_bf693ebe7ccd"
+    },
+    {
+      "name": "bc_palestina_byond_ceasfire",
+      "parameter_format": "POSITIONAL",
+      "components": [
+        {
+          "type": "HEADER",
+          "format": "IMAGE",
+          "example": {
+            "header_handle": [
+              "https://scontent.whatsapp.net/v/t61.29466-34/546466804_1796045445130811_5768332798951135774_n.jpg?ccb=1-7&_nc_sid=8b1bef&_nc_ohc=xV2dpPtTjLMQ7kNvwH1QhMI&_nc_oc=Adrmc4g4W98LeEbBZxj36-K6fSJ8_4r7_9mX6lWKlaYkI69MqDmsF0RUxnQmkxnydic&_nc_zt=3&_nc_ht=scontent.whatsapp.net&edm=AH51TzQEAAAA&_nc_gid=8wD6cDNZhbEbu1LIJaDhvw&_nc_tpa=Q5bMBQGn8HHQpQdi2DaLLGfMWsxl2UHFsNXpcRtLU8p3iUM2axFEPDa7a6AuQeAqdcUafX196DGV6u1n&oh=01_Q5Aa5AGlVw7TNKoK-Px0YnCCrtMOgkuGBB5Bh3C8x_E4o4J93w&oe=6A93BF36"
+            ]
+          }
+        },
+        {
+          "type": "BODY",
+          "text": "*Bantuanmu untuk Gaza Tak Berhenti di Sini!*\n\n✅ Gencatan senjata (ceasefire) akhirnya diumumkan. Namun, itu bukan tanda bahwa penderitaan Gaza telah usai. Di balik reruntuhan, jutaan warga masih berjuang bertahan hidup, tanpa rumah, tanpa air bersih, tanpa makanan yang layak.\n\n✅ *Saat suara senjata berhenti, perjuangan kemanusiaan justru dimulai.* Saatnya kita hadir membantu Gaza pulih, menata harapan baru bagi mereka yang kehilangan segalanya.\n\n✅ Dari mana pun kita berada, kita bisa ikut ambil peran. Kirimkan doa dan donasi terbaikmu melalui Laznas Dewan Dakwah lewat aplikasi BYOND.\n\n🟢 Caranya:\n⿡ Unduh & buka aplikasi BYOND\n⿢ Pilih Menu Berbagi → Infak/Zakat\n⿣ Pilih Laznas Dewan Dakwah sbg lembaga tujuan\n⿤ Masukkan nominal → konfirmasi → PIN\n✅ Zakat/Infakmu untuk Palestina telah tersalurkan!\n\n🤲🏼 Jangan biarkan Gaza berjuang sendiri.\nCeasefire bukan akhir perjuangan, tapi awal pemulihan.\n💚 *Satu Klik Darimu, Harapan Baru untuk Gaza*"
+        },
+        {
+          "type": "FOOTER",
+          "text": "Karena Setiap Donasi Adalah Doa yang Terkabul di Gaza."
+        },
+        {
+          "type": "BUTTONS",
+          "buttons": [
+            {
+              "type": "URL",
+              "text": "Dari Kita untuk Gaza",
+              "url": "https://play.google.com/store/apps/details?id=co.id.bankbsi.superapp&pcampaignid=web_share"
+            }
+          ]
+        }
+      ],
+      "language": "id",
+      "status": "APPROVED",
+      "category": "MARKETING",
+      "disable_ios_autofill": false,
+      "is_primary_device_delivery_only": false,
+      "id": "1796045441797478",
+      "namespace": "f8b46dc6_a650_4334_b920_bf693ebe7ccd"
+    },
+    {
+      "name": "sosialisasi_byond",
+      "parameter_format": "POSITIONAL",
+      "components": [
+        {
+          "type": "HEADER",
+          "format": "IMAGE",
+          "example": {
+            "header_handle": [
+              "https://scontent.whatsapp.net/v/t61.29466-34/523378370_1373678754124540_3997936047345555399_n.jpg?ccb=1-7&_nc_sid=8b1bef&_nc_ohc=Bwlm-mRt5W8Q7kNvwHoPvr9&_nc_oc=Adq48BuuYEDarhB-LDkas1q1G6EIGIsGIslDg1eGJs5t3j96ranbUzcF7YEXiSZ44_A&_nc_zt=3&_nc_ht=scontent.whatsapp.net&edm=AH51TzQEAAAA&_nc_gid=8wD6cDNZhbEbu1LIJaDhvw&_nc_tpa=Q5bMBQFWBVucXfKCD9HHqgKez1Gg2eKfv6P8BjuWXDGpcLeOOWGT80Sn4mONBt7EsfHfB7xdBMjzbSnE&oh=01_Q5Aa5AHclik7n9EICt-vR2wIggug4-f12iC99LXGRCAmFdpJ4g&oe=6A93BFDE"
+            ]
+          }
+        },
+        {
+          "type": "BODY",
+          "text": "*Bantuanmu untuk Gaza Tiba dengan Sekali Klik Saja!*\n\n✅ Genap 2 tahun 3 hari sejak 7 Oktober 2023, momen pertama rakyat Gaza melawan, bangkit memperjuangkan kemerdekaan Palestina.\n\n✅ Serangan demi serangan tak henti menghantam Gaza, menjadikannya sebagai lokasi genosida terbesar saat ini. Tragisnya, semua itu tersiar langsung di layar ponsel kita.\n\n✅ *Dua tahun berlalu, namun luka Gaza tak berlalu pilu. Masih ada 1,5 juta jiwa saudara kita yang bertahan hidup dalam keterbatasan, menanti uluran tangan dari kita yang masih diberi aman.*\n\n✅ Dari mana pun kita berada, kita tetap bisa membantu. Melalui doa dan donasi terbaik di Laznas Dewan Dakwah lewat aplikasi BYOND.\n\n🟢 Caranya:\n1️⃣ Unduh & buka aplikasi BYOND\n2️⃣ Pilih Menu Berbagi → Infak/Zakat\n3️⃣ *Pilih Laznas Dewan Dakwah* sbg lembaga tujuan\n4️⃣ Masukkan nominal → konfirmasi → PIN\n✅ Zakat/Infakmu untuk Palestina telah tersalurkan!\n\n✊🏼 Jangan berhenti suarakan, jangan berhenti perjuangkan, sampai Palestina benar-benar merdeka. 🇵🇸"
+        },
+        {
+          "type": "FOOTER",
+          "text": "Satu Klik Darimu, Satu Nyawa Terselamatkan"
+        },
+        {
+          "type": "BUTTONS",
+          "buttons": [
+            {
+              "type": "URL",
+              "text": "Bismillah Bantu Palestina",
+              "url": "https://play.google.com/store/apps/details?id=co.id.bankbsi.superapp&pcampaignid=web_share"
+            }
+          ]
+        }
+      ],
+      "language": "id",
+      "status": "APPROVED",
+      "category": "MARKETING",
+      "disable_ios_autofill": false,
+      "is_primary_device_delivery_only": false,
+      "id": "1373678744124541",
+      "namespace": "f8b46dc6_a650_4334_b920_bf693ebe7ccd"
+    },
+    {
+      "name": "konfirmasi_kendala_donasi",
+      "parameter_format": "POSITIONAL",
+      "components": [
+        {
+          "type": "BODY",
+          "text": "Assalamu’alaikum Bapak/Ibu {{1}}\n\nAlhamdulillah donasi Bapak/Ibu sudah kami terima dengan baik. Kami juga melihat ada beberapa percobaan donasi sebelumnya yang belum berhasil.\n\nApabila berkenan, mohon dapat dibagikan kendala yang dirasakan saat proses donasi, agar ke depan kami dapat meningkatkan layanan menjadi lebih mudah dan nyaman..\n\nTerima kasih atas kebaikan serta kepercayaan Bapak/Ibu. Semoga Allah membalas dengan keberkahan yang berlimpah 🤲✨",
+          "example": {
+            "body_text": [
+              [
+                "name"
+              ]
+            ]
+          }
+        },
+        {
+          "type": "BUTTONS",
+          "buttons": [
+            {
+              "type": "URL",
+              "text": "Kunjungi Website Kami",
+              "url": "https://laznasdewandakwah.or.id/campaign?lz=wp"
+            }
+          ]
+        }
+      ],
+      "language": "id",
+      "status": "APPROVED",
+      "category": "MARKETING",
+      "disable_ios_autofill": false,
+      "is_primary_device_delivery_only": false,
+      "id": "1395927722172578",
+      "namespace": "f8b46dc6_a650_4334_b920_bf693ebe7ccd"
+    },
+    {
+      "name": "undangan_pelepasan_dai",
+      "parameter_format": "POSITIONAL",
+      "components": [
+        {
+          "type": "HEADER",
+          "format": "IMAGE",
+          "example": {
+            "header_handle": [
+              "https://scontent.whatsapp.net/v/t61.29466-34/510567966_24557259800534862_5562585428224697550_n.jpg?ccb=1-7&_nc_sid=8b1bef&_nc_ohc=jqcdQC3iB3UQ7kNvwEYRuXW&_nc_oc=Adpi685rYx6Ug4t2aAUvoBTIe98yAO4mRYzzCGmHMioR77JXRovCl09yFJNvN1VLNvQ&_nc_zt=3&_nc_ht=scontent.whatsapp.net&edm=AH51TzQEAAAA&_nc_gid=8wD6cDNZhbEbu1LIJaDhvw&_nc_tpa=Q5bMBQHygBMt0RYHW73Rhu3THY9wcDhiwUEVytHRfYImOREUJWToZfQf3jkTMS0k9GBZ-Y0U7nGDS0jK&oh=01_Q5Aa5AEZ3UWz_hemRkwn3waMVgvLCgO9AdoDSzMB5kRG2XdlUQ&oe=6A93CF6C"
+            ]
+          }
+        },
+        {
+          "type": "BODY",
+          "text": "Assalamu'alaikum warahmatullahi wabarakatuh..\n\nSemoga Bapak/Ibu {{1}} dalam keadaan sehat yg afiyah dan senantiasa dlm lindungan Allah ya. Aamiin ya Rabb..\nMohon izin menungdang Bapak/Ibu dlm acara *Ceremony Pelepasan Dai ke Pelosok Negeri* yang Insya Allah akan diselenggarakan pada:\n\nHari/Tanggal : Kamis, 31 Juli 2025\nWaktu : Pukul 12.00 WIB - Selesai\nLokasi : Paragon Community Hub, Jl. Swadarma Raya No.41 10, RT.10/RW.8, Ulujami, Kec. Pesanggrahan, Kota Jakarta Selatan, Daerah Khusus Ibukota Jakarta 12250\nLink Google Maps : https://maps.app.goo.gl/q5hYigjDjgEWu2Uu8\n\nSemoga berkenan hadir ya pak/bu..\nJazaakumullah khair wa baarakallah fiikum..\n\n*Informasi & Konfirmasi Kehadiran* : *0858-8282-4343*\n\n*Mohon berkenan konfirmasi kehadiran utk pendataan ya..",
+          "example": {
+            "body_text": [
+              [
+                "name"
+              ]
+            ]
+          }
+        },
+        {
+          "type": "BUTTONS",
+          "buttons": [
+            {
+              "type": "URL",
+              "text": "Konfirmasi Kehadiran",
+              "url": "https://bit.ly/hadirceremony"
+            }
+          ]
+        }
+      ],
+      "language": "id",
+      "status": "APPROVED",
+      "category": "MARKETING",
+      "disable_ios_autofill": false,
+      "is_primary_device_delivery_only": false,
+      "id": "24557259797201529",
+      "namespace": "f8b46dc6_a650_4334_b920_bf693ebe7ccd"
+    },
+    {
+      "name": "bismillah_bukti_setor_donasi_simddii",
+      "previous_category": "UTILITY",
+      "parameter_format": "POSITIONAL",
+      "components": [
+        {
+          "type": "HEADER",
+          "format": "DOCUMENT",
+          "example": {
+            "header_handle": [
+              "https://scontent.whatsapp.net/v/t61.29466-34/516812547_1471693187338792_404125438525200909_n.pdf?ccb=1-7&_nc_sid=8b1bef&_nc_ohc=MKzENK736RAQ7kNvwHfhQhR&_nc_oc=Adq3E_vw5wI2lbD3iviHMJdx23sMfQ6lcpCUydGW3mZCj8O_8AO4y8jbV773Tvyg-lk&_nc_zt=3&_nc_ht=scontent.whatsapp.net&edm=AH51TzQEAAAA&_nc_gid=8wD6cDNZhbEbu1LIJaDhvw&_nc_tpa=Q5bMBQHgORg9ZHmbr5t9783jBtd6b5SeAdbOYej1voqXgQOm1bRfs86kT7KaActHJJxvnt0yXFdRgqQz&oh=01_Q5Aa5AHtWtnjb13xJWKTMgqPD7TmOy8R4A5U-OKh5xgJ2pCurg&oe=6A93A5DB"
+            ]
+          }
+        },
+        {
+          "type": "BODY",
+          "text": "Pesan Otomatis. \n\nAssalamu'alaikum Warahmatullah Wabarakatuh  {{1}}  {{2}} \n\nKami mengucapkan Jazakumullah Khairan Katsiran Ahsanal Jaza atas dukungan Zakat, Infaq dan Sedekah {{3}}  dan keluarga\n\nآجْرَكَ اللهُ فِيْمَا اَعْطَيْتَ، وَبَارَكَ فِيْمَا اَبْقَيْتَ  وَ جَعَلَ اللهُ لَكَ طَهُوْرًا \n\nSemoga Allah Subahanahu Watta'ala memberikan pahala atas apa yang diberikan dan semoga Allah memberikan keberkahan atas (harta) {{4}}  dan Keluarga.\n\nKami mengajak Bapak/Ibu untuk berpartisipasi dalam Survei Kepuasan Donatur, sebagai bentuk evaluasi dan upaya kami meningkatkan pelayanan, tata kelola, dan transparansi lembaga.\n\nSilakan isi survei melalui link berikut:\n📋 https://forms.gle/JBM5VnTWYW8BnQdm9\n\nDemikian, Terima kasih sebesar-besarnya atas donasi yang telah ditunaikan {{5}}.  Barokallah fiikum\n\n{{6}}\n{{7}}\nWassalamu'alaikum Warahmatullah Wabarakatuh",
+          "example": {
+            "body_text": [
+              [
+                "Bapak",
+                "Ahmad",
+                "Bapak",
+                "Bapak",
+                "Bapak",
+                "hubungi",
+                "6283238232"
+              ]
+            ]
+          }
+        },
+        {
+          "type": "BUTTONS",
+          "buttons": [
+            {
+              "type": "QUICK_REPLY",
+              "text": "Customer Service"
+            }
+          ]
+        }
+      ],
+      "language": "id",
+      "status": "APPROVED",
+      "category": "MARKETING",
+      "disable_ios_autofill": false,
+      "is_primary_device_delivery_only": false,
+      "id": "1225540998620680",
+      "namespace": "f8b46dc6_a650_4334_b920_bf693ebe7ccd"
+    },
+    {
+      "name": "bismillah_reminder_infaq_rutin",
+      "parameter_format": "POSITIONAL",
+      "components": [
+        {
+          "type": "BODY",
+          "text": "Pesan Otomatis.\n\nAssalamu'alaikum Warahmatullahi Wabarakatuh\nBapak/Ibu/Keluarga  {{1}}\n\nBerikut Program yang telah dipilih pada Notifikasi Donasi :\n\nProgram   :  {{2}} \nWaktu Notifikasi  :\t{{3}} \nLink Program   : {{4}} \n\nSemoga Allah memberikan kesehatan, kemudahan urusan serta keberkahan rezeki untuk Bapak/Ibu berserta Keluarga.  \nAamiin ya Rabb\nBarokallah fiikum\n {{5}} \n {{6}}",
+          "example": {
+            "body_text": [
+              [
+                "Ahmad",
+                "Sedekah Makan",
+                "Sedekah Subuh",
+                "laznasdewandakwah.or.id",
+                "untuk berhenti reminder klik",
+                "laznasdewandakwah.or.id"
+              ]
+            ]
+          }
+        },
+        {
+          "type": "BUTTONS",
+          "buttons": [
+            {
+              "type": "QUICK_REPLY",
+              "text": "Customer Service"
+            }
+          ]
+        }
+      ],
+      "language": "id",
+      "status": "APPROVED",
+      "category": "UTILITY",
+      "disable_ios_autofill": false,
+      "is_primary_device_delivery_only": false,
+      "id": "415326221523959",
+      "namespace": "f8b46dc6_a650_4334_b920_bf693ebe7ccd"
+    },
+    {
+      "name": "terimakasih_donasi_almarhum",
+      "parameter_format": "POSITIONAL",
+      "components": [
+        {
+          "type": "BODY",
+          "text": "Masya Allah Walhamdulillah..\n\nTerimakasih atas zakat/infaq yang disalurkan melalui LAZNAS Dewan Dakwah,\n\nTeriring do'a\n_Ajarakallahu fiimaa A'thaita wa Baaraka fiimaa Abqaita_\n\n\"Semoga Allah memberikan pahala yang berlipatganda utk {{1}} atas apa yg diinfaqkan serta memberikan keberkahan pada harta {{2}} yang tersimpan\"\n\nSemoga Allah memberikan rahmat, ampunan Nya utk {{1}}, semoga Allah melapangkan kubur {{1}} , menjadikan kuburnya sebagai taman-taman surga-Nya, dan semoga Allah mempertemukan kembali {{2}} dan keluarga dengan {{1}} di akhirat nanti di dalam surga-Nya..\n\nAamiin ya Rabbal'alamiin,,",
+          "example": {
+            "body_text": [
+              [
+                "Allahyarham Syuhada",
+                "Istri"
+              ]
+            ]
+          }
+        }
+      ],
+      "language": "id",
+      "status": "APPROVED",
+      "category": "UTILITY",
+      "disable_ios_autofill": false,
+      "is_primary_device_delivery_only": false,
+      "id": "427974160389844",
+      "namespace": "f8b46dc6_a650_4334_b920_bf693ebe7ccd"
+    },
+    {
+      "name": "bismillah_komitmen_simddii_rev",
+      "parameter_format": "POSITIONAL",
+      "components": [
+        {
+          "type": "BODY",
+          "text": "Assalamu’alaikum Warahmatullah Wabarakatuh\n{{1}} {{2}} Yth\n\nTerima kasih atas kesediaannya untuk menjadi keluarga pendukung da’wah pada Road Show Dakwah Pedalaman The Series \n\nAlhamdulillah Komitmen Infaq {{3}} senilai {{4}} untuk {{5}} telah terdata dalam sistem kami. Untuk memudahkan proses verifikasi, mohon melakukan konfirmasi melalui {{6}} {{7}} jika telah melakukan transaksi / transfer ya {{8}}.\n\nJazaakumullah khairal Jazaa, semoga apa yang {{9}} Infaqkan Allah catat sebagai kebaikan yang pahalanya terus mengalir dan bermanfaat untuk ummat. Aamiin ya Allah",
+          "example": {
+            "body_text": [
+              [
+                "Bapak",
+                "Ahmad",
+                "Bapak",
+                "100.000",
+                "1 Bulan",
+                "admin",
+                "08123739127",
+                "Bapak",
+                "Bapak"
+              ]
+            ]
+          }
+        },
+        {
+          "type": "FOOTER",
+          "text": "- Pesan Otomatis"
+        }
+      ],
+      "language": "id",
+      "status": "APPROVED",
+      "category": "UTILITY",
+      "sub_category": "FRAUD_ALERT",
+      "disable_ios_autofill": false,
+      "is_primary_device_delivery_only": false,
+      "id": "488100043971034",
+      "namespace": "f8b46dc6_a650_4334_b920_bf693ebe7ccd"
+    },
+    {
+      "name": "notif_tab_qurban",
+      "parameter_format": "POSITIONAL",
+      "components": [
+        {
+          "type": "BODY",
+          "text": "Assalamu'alaikum {{1}}  {{2}},\n\nKami mengucapkan terima kasih {{3}} telah tergabung dalam Program Tabungan Qurban LAZNAS Dewan Dakwah, sbb:\nNama Paket : {{4}}\nHarga Paket : {{5}}\nJml Angsuran : {{6}}\nTotal tertunaikan: {{7}} \nTotal sisa belum tertunaikan: {{8}} \n\nMohon melakukan konfirmasi melalui {{9}} {{10}} jika telah melakukan transaksi / transfer ya {{11}}.\n\nJazaakumullah khaira Jazaa, semoga apa yang {{12}} Infaqkan Allah catat sebagai kebaikan yang pahalanya terus mengalir dan bermanfaat untuk ummat. Aamiin ya Allah",
+          "example": {
+            "body_text": [
+              [
+                "Bapak",
+                "Ahmad",
+                "Bapak",
+                "Kambing",
+                "2",
+                "1000000",
+                "500000",
+                "500000",
+                "Admin",
+                "0821291212",
+                "Bapak",
+                "Bapak"
+              ]
+            ]
+          }
+        }
+      ],
+      "language": "id",
+      "status": "APPROVED",
+      "category": "UTILITY",
+      "disable_ios_autofill": false,
+      "is_primary_device_delivery_only": false,
+      "id": "890158169599102",
+      "namespace": "f8b46dc6_a650_4334_b920_bf693ebe7ccd"
+    },
+    {
+      "name": "bismillah_lunas_simddii_rev",
+      "parameter_format": "POSITIONAL",
+      "components": [
+        {
+          "type": "HEADER",
+          "format": "DOCUMENT"
+        },
+        {
+          "type": "BODY",
+          "text": "Assalamu'alaikum Warahmatullah Wabarakatuh  {{1}}  {{2}} \n\nKami mengucapkan Jazakumullah Khairan Katsiran Ahsanal Jaza atas dukungan Zakat, Infaq dan Sedekah {{3}}  dan keluarga\n\nآجْرَكَ اللهُ فِيْمَا اَعْطَيْتَ، وَبَارَكَ فِيْمَا اَبْقَيْتَ  وَ جَعَلَ اللهُ لَكَ طَهُوْرًا \n\nSemoga Allah Subahanahu Watta'ala memberikan pahala atas apa yang diberikan dan semoga Allah memberikan keberkahan atas (harta) {{4}}  dan Keluarga.\n\nDemikian, Terima kasih sebesar-besarnya atas donasi yang telah ditunaikan {{5}}.  Barokallah fiikum\n\n{{6}}\n{{7}}\nWassalamu'alaikum Warahmatullah Wabarakatuh",
+          "example": {
+            "body_text": [
+              [
+                "Bapak",
+                "Ahmad",
+                "Bapak",
+                "Bapak",
+                "Bapak",
+                "hun=bungi",
+                "0382371281"
+              ]
+            ]
+          }
+        },
+        {
+          "type": "FOOTER",
+          "text": "- Pesan Otomatis"
+        }
+      ],
+      "language": "id",
+      "status": "APPROVED",
+      "category": "MARKETING",
+      "disable_ios_autofill": false,
+      "is_primary_device_delivery_only": false,
+      "id": "1034967371349682",
+      "namespace": "f8b46dc6_a650_4334_b920_bf693ebe7ccd"
+    },
+    {
+      "name": "sertifikat_qurban_rev",
+      "parameter_format": "POSITIONAL",
+      "components": [
+        {
+          "type": "HEADER",
+          "format": "DOCUMENT"
+        },
+        {
+          "type": "BODY",
+          "text": "Assalamu'alaikum Warahmatullahi Wabarokatuh\n{{1}} {{2}} Yth\n\nAlhamdulillah Qurban {{3}}  Telah Disembelih a.n :\n{{4}} \n\nBerikut kami Lampirkan Laporan Sertifikat Qurban {{5}} {{6}} \n\nJazaakumullah khair atas kepercayaan {{7}} kepada LAZNAS Dewan Dakwah. Aamiin ya Rabb\n\nYuk Istiqomahkan Kebaikanmu melalui :\nlaznasdewandakwah.or.id/campaign",
+          "example": {
+            "body_text": [
+              [
+                "Bapak",
+                "Ahmad",
+                "Bapak",
+                "Agus",
+                "Bapak",
+                "Ahmad",
+                "Bapak"
+              ]
+            ]
+          }
+        },
+        {
+          "type": "FOOTER",
+          "text": "Pesan Otomatis"
+        }
+      ],
+      "language": "id",
+      "status": "APPROVED",
+      "category": "UTILITY",
+      "disable_ios_autofill": false,
+      "is_primary_device_delivery_only": false,
+      "id": "1241842200145947",
+      "namespace": "f8b46dc6_a650_4334_b920_bf693ebe7ccd"
+    },
+    {
+      "name": "follow_up_donatur",
+      "parameter_format": "POSITIONAL",
+      "components": [
+        {
+          "type": "BODY",
+          "text": "Assalamu alaikum Bapak/Ibu {{1}} , Kami ucapkan Jazaakallah Khair telah mendukung  program LAZNAS Dewan Dakwah, Semoga Allah mudahkan urusan Bapak/Ibu dan keluarga. Aamiin\n\nSilakan klik Tombol Customer Service di bawah ini untuk bicara dengan admin kami :)",
+          "example": {
+            "body_text": [
+              [
+                "Ahmad"
+              ]
+            ]
+          }
+        },
+        {
+          "type": "BUTTONS",
+          "buttons": [
+            {
+              "type": "QUICK_REPLY",
+              "text": "Customer Service"
+            }
+          ]
+        }
+      ],
+      "language": "id",
+      "status": "APPROVED",
+      "category": "MARKETING",
+      "disable_ios_autofill": false,
+      "is_primary_device_delivery_only": false,
+      "id": "1958727427919184",
+      "namespace": "f8b46dc6_a650_4334_b920_bf693ebe7ccd"
+    },
+    {
+      "name": "bismillah_aqiqah_attach",
+      "parameter_format": "POSITIONAL",
+      "components": [
+        {
+          "type": "HEADER",
+          "format": "DOCUMENT"
+        },
+        {
+          "type": "BODY",
+          "text": "Assalamu'alaikum Warahmatullah Wabarakatuh {{1}}  {{2}} \n\nKami mengucapkan Jazakumullah Khairan Katsiran Ahsanal Jaza atas Aqiqah {{3}} dan keluarga.\n\n{{4}} \n\nTeriring doa semoga {{5}} menjadi anak yang {{6}}, Berbakti kepada Kedua Orang Tua dan Aqiqahnya ini tercatat sebagai ibadah kepada Allah Subhanahu Watta'ala serta ketaatan kepada petunjuk Nabi Muhammad Sholallahu 'Alaihi Wassalam. Aamiin ya Rabbal alaamiin\n\nTerima kasih atas aqiqah yang telah ditunaikan. Barokallah fiikum\n\nWassalamu'alaikum Warahmatullah Wabarakatuh",
+          "example": {
+            "body_text": [
+              [
+                "Bapak",
+                "Ahmad",
+                "Bapak",
+                "Bapak Ahmad",
+                "ananda muhammad",
+                "Bertaqwa"
+              ]
+            ]
+          }
+        },
+        {
+          "type": "BUTTONS",
+          "buttons": [
+            {
+              "type": "QUICK_REPLY",
+              "text": "Customer Service"
+            }
+          ]
+        }
+      ],
+      "language": "id",
+      "status": "APPROVED",
+      "category": "MARKETING",
+      "disable_ios_autofill": false,
+      "is_primary_device_delivery_only": false,
+      "id": "2592291290969952",
+      "namespace": "f8b46dc6_a650_4334_b920_bf693ebe7ccd"
+    },
+    {
+      "name": "terimakasih_sdh_donasi",
+      "parameter_format": "POSITIONAL",
+      "components": [
+        {
+          "type": "BODY",
+          "text": "Alhamdulillah,\n\nBapak/Ibu {{1}} Yth.\n\nTerimakasih atas zakat/infaq yang ditunaikan melalui LAZNAS Dewan Dakwah,\n\nTeriring do'a\n\nAjarakallahu fiimaa A'thaita wa Baaraka fiimaa Abqaita wa Ja'alallahu laka thahuruun\n\n\"Semoga Allah memberikan pahala yang berlipatganda utk bapak/ibu atas apa yg diberikan serta memberikan keberkahan pada harta bapak/ibu dan keluarga yg tersimpan\"\n\nSemoga Allah memberikan kesehatan yg afiyah, kebahagiaan dan keselamatan hidup di dunia dan di akhirat utk bapak/ibu dan keluarga.\n\nAamiin ya Rabbal'alamiin,,",
+          "example": {
+            "body_text": [
+              [
+                "Nefi"
+              ]
+            ]
+          }
+        }
+      ],
+      "language": "id",
+      "status": "APPROVED",
+      "category": "UTILITY",
+      "disable_ios_autofill": false,
+      "is_primary_device_delivery_only": false,
+      "id": "7928595423861476",
+      "namespace": "f8b46dc6_a650_4334_b920_bf693ebe7ccd"
+    },
+    {
+      "name": "bismillah_reminder_donasi_rev",
+      "parameter_format": "POSITIONAL",
+      "components": [
+        {
+          "type": "BODY",
+          "text": "Assalamu'alaikum Warahmatullahi Wabarakatuh\nBapak/Ibu/Keluarga  {{1}} \n\nBerikut Program yang telah dipilih pada Notifikasi Donasi :\n\nProgram   :  {{2}} \nWaktu Notifikasi  :\t{{3}} \nLink Program   : {{4}} \n\nSemoga Allah memberikan kesehatan, kemudahan urusan serta keberkahan rezeki untuk Bapak/Ibu berserta Keluarga.  \nAamiin ya Rabb\nBarokallah fiikum",
+          "example": {
+            "body_text": [
+              [
+                "Ahmad",
+                "Sedekah Subuh",
+                "Setiap Subuh",
+                "laznasdewandakwah.or.id"
+              ]
+            ]
+          }
+        },
+        {
+          "type": "FOOTER",
+          "text": "-Pesan Otomatis"
+        },
+        {
+          "type": "BUTTONS",
+          "buttons": [
+            {
+              "type": "QUICK_REPLY",
+              "text": "Customer Service"
+            }
+          ]
+        }
+      ],
+      "language": "id",
+      "status": "APPROVED",
+      "category": "MARKETING",
+      "disable_ios_autofill": false,
+      "is_primary_device_delivery_only": false,
+      "id": "8393443687334857",
+      "namespace": "f8b46dc6_a650_4334_b920_bf693ebe7ccd"
+    },
+    {
+      "name": "bismillah_how_to_pay_trxx",
+      "parameter_format": "POSITIONAL",
+      "components": [
+        {
+          "type": "BODY",
+          "text": "Assalamualaikum Bapak/Ibu {{1}}\nTerima kasih sudah melakukan donasi melalui Laznas Dewan Da'wah.\n\nNominal Donasi : {{2}}\nProgram : {{3}}\n\nTanggal Donasi : {{4}}\nKode Transaksi : {{5}}\nMetode Pembayaran : {{6}}\nNo.VA/Norek : {{7}}\nAtas Nama : {{8}}\n\nSatu langkah lagi untuk mewujudkan kebaikan Bapak/Ibu. Silakan melakukan pembayaran donasi sebelum {{9}} . Semoga semua kebaikan Bapak/Ibu diganti dengan rezeki yang berkah berlimpah.\n\nInformasi Langkah Pembayaran :\n\n{{10}}\n\nBarokallah Fiikum",
+          "example": {
+            "body_text": [
+              [
+                "A",
+                "B",
+                "C",
+                "D",
+                "E",
+                "F",
+                "G",
+                "H",
+                "I",
+                "J"
+              ]
+            ]
+          }
+        },
+        {
+          "type": "FOOTER",
+          "text": "Pesan Otomatis"
+        }
+      ],
+      "language": "id",
+      "status": "APPROVED",
+      "category": "UTILITY",
+      "disable_ios_autofill": false,
+      "is_primary_device_delivery_only": false,
+      "id": "503796442150665",
+      "namespace": "f8b46dc6_a650_4334_b920_bf693ebe7ccd"
+    },
+    {
+      "name": "kirim_bsz",
+      "parameter_format": "POSITIONAL",
+      "components": [
+        {
+          "type": "HEADER",
+          "format": "DOCUMENT",
+          "example": {
+            "header_handle": [
+              "https://scontent.whatsapp.net/v/t61.29466-34/425263981_1044435337257949_1090346147489365562_n.pdf?ccb=1-7&_nc_sid=8b1bef&_nc_ohc=ZmHXlN0F_voQ7kNvwG9yqgd&_nc_oc=AdqjZ4RMD_7EQZnY2mgvxeh_qAISe5rFbERmSHFeVNr4lJ8QkREFy0loR_G5A5XNLAo&_nc_zt=3&_nc_ht=scontent.whatsapp.net&edm=AH51TzQEAAAA&_nc_gid=8wD6cDNZhbEbu1LIJaDhvw&_nc_tpa=Q5bMBQEbsMR-0rGs_OPgBjyYWhu_bpYguGozMQpF3dXvCd2Wl3q8g9jtpoVduYPn04GRucK6YVJno7Ng&oh=01_Q5Aa5AFhGN2F2FiGGRWcesx2Qx_rgxsf3oIAazykjthkQ2v7bg&oe=6A93AB82"
+            ]
+          }
+        },
+        {
+          "type": "BODY",
+          "text": "Bismillah..\n\nAssalamu'alaikum Warahmatullahi Wabarakatuh Bapak/Ibu {{1}}\n\nSemoga Bapak/Ibu {{2}} dalam keadaan sehat yang afiyah dan selalu dalam lindungan Allah. Aamiin.\n\nBerikut kami kirimkan Bukti Setor atas zakat yang telah ditunaikan melalui LAZNAS Dewan Dakwah ya ..\n\nJazaakumullah khair wa Baarakallah fiikum,\nMohon maaf apabila terlambat dalam pengiriman..",
+          "example": {
+            "body_text": [
+              [
+                "Bismillah",
+                "oke"
+              ]
+            ]
+          }
+        },
+        {
+          "type": "FOOTER",
+          "text": "Pesan Otomatis"
+        }
+      ],
+      "language": "id",
+      "status": "APPROVED",
+      "category": "UTILITY",
+      "disable_ios_autofill": false,
+      "is_primary_device_delivery_only": false,
+      "id": "1044435333924616",
+      "namespace": "f8b46dc6_a650_4334_b920_bf693ebe7ccd"
+    },
+    {
+      "name": "fup_trx_pending",
+      "parameter_format": "POSITIONAL",
+      "components": [
+        {
+          "type": "BODY",
+          "text": "Assalamualaikum Warahmatullah Wabarakatuh\nBapak/Ibu {{1}} ,\n\nKami ucapkan terima kasih telah berniat baik untuk mendukung program Laznas Dewan Dakwah melalui website laznasdewandakwah.or.id\n\nSaat ini, status donasi Bapak/Ibu masih pending di sistem kami, sebagai berikut :\nNominal Donasi : {{2}}\nProgram : {{3}}\n\nMohon maaf Bapak/Ibu, apakah ada kendala dengan pembayarannya? dapat kami bantu?🙏😊\n\nDonasi bapak/Ibu masih dapat dilakukan ke rekening : BSI # 728 2020 728 a.n Laznas Dewan Dakwah\n\nMohon konfirmasi apabila telah melakukan transfer donasi Bapak/Ibu.\n\nSemoga Allah memberikan kesehatan, kemudahan urusan serta keberkahan rezeki untuk Bapak/Ibu berserta Keluarga... Aamiin ya Rabb\nBarokallah fiikum",
+          "example": {
+            "body_text": [
+              [
+                "Bismillah",
+                "Bismillah",
+                "Bismillah"
+              ]
+            ]
+          }
+        },
+        {
+          "type": "FOOTER",
+          "text": "Pesan Otomatis"
+        }
+      ],
+      "language": "id",
+      "status": "APPROVED",
+      "category": "UTILITY",
+      "disable_ios_autofill": false,
+      "is_primary_device_delivery_only": false,
+      "id": "1531646291101547",
+      "namespace": "f8b46dc6_a650_4334_b920_bf693ebe7ccd"
+    },
+    {
+      "name": "bismillah_bsz_rev",
+      "parameter_format": "POSITIONAL",
+      "components": [
+        {
+          "type": "HEADER",
+          "format": "DOCUMENT",
+          "example": {
+            "header_handle": [
+              "https://scontent.whatsapp.net/v/t61.29466-34/394190276_1184768976058358_6790121497180549019_n.pdf?ccb=1-7&_nc_sid=8b1bef&_nc_ohc=egZi0WyJ4hkQ7kNvwEUgdvF&_nc_oc=AdpD-cAANPgs5KOOEiOeFmYGfr-FY9CehkAc_M93q3N-MCs6YRqnP0N2_oGm14qzNpQ&_nc_zt=3&_nc_ht=scontent.whatsapp.net&edm=AH51TzQEAAAA&_nc_gid=8wD6cDNZhbEbu1LIJaDhvw&_nc_tpa=Q5bMBQG5oVWDGOtVbTUZ7Q56Csrb-eCD5bgCWiPZHy3FCQZfaWvIsSfQLxztnsO71R_fPeJ9exJ3M91G&oh=01_Q5Aa5AHMubaklPB-WhAfeYfgoSZIrZ-B0RHaOSZPc1ph6ZwuAQ&oe=6A93A8F4"
+            ]
+          }
+        },
+        {
+          "type": "BODY",
+          "text": "Assalamu'alaikum Warahmatullah Wabarakatuh {{1}} {{2}}\n\nBerikut kami lampirkan Bukti Setor Zakat {{3}} yang ditunaikan melalui LAZNAS Dewan Da'wah.\n\nTeriring doa,\nآجْرَكَ اللهُ فِيْمَا اَعْطَيْتَ، وَبَارَكَ فِيْمَا اَبْقَيْتَ وَ جَعَلَ اللهُ لَكَ طَهُوْرًا\n\nSemoga Allah Subahanahu Watta'ala memberikan pahala atas Zakat yang diberikan dan semoga Allah memberikan keberkahan atas (harta) {{4}} dan Keluarga.\n\nDemikian, Terima kasih sebesar-besarnya atas donasi yang telah ditunaikan Bapak/Ibu. Barokallah fiikum\n\n{{5}}\n{{6}}\nWassalamu'alaikum Warahmatullah Wabarakatuh",
+          "example": {
+            "body_text": [
+              [
+                "Bismillah",
+                "Bismillah",
+                "Bismillah",
+                "Bismillah",
+                "Bismillah",
+                "Bismillah"
+              ]
+            ]
+          }
+        },
+        {
+          "type": "FOOTER",
+          "text": "Pesan Otomatis"
+        }
+      ],
+      "language": "id",
+      "status": "APPROVED",
+      "category": "UTILITY",
+      "disable_ios_autofill": false,
+      "is_primary_device_delivery_only": false,
+      "id": "1184768972725025",
+      "namespace": "f8b46dc6_a650_4334_b920_bf693ebe7ccd"
+    },
+    {
+      "name": "bismillah_payment_attach",
+      "parameter_format": "POSITIONAL",
+      "components": [
+        {
+          "type": "HEADER",
+          "format": "DOCUMENT",
+          "example": {
+            "header_handle": [
+              "https://scontent.whatsapp.net/v/t61.29466-34/439164635_512128047934018_8908561517842878532_n.pdf?ccb=1-7&_nc_sid=8b1bef&_nc_ohc=Bn05l848aeAQ7kNvwFqfED0&_nc_oc=Ado2tdUO_JAiBDOBtJGl1HAeLnke3ih2a-KRxlEN7325M6WJMzi_RAqVKAWWDsK7RHw&_nc_zt=3&_nc_ht=scontent.whatsapp.net&edm=AH51TzQEAAAA&_nc_gid=8wD6cDNZhbEbu1LIJaDhvw&_nc_tpa=Q5bMBQGbyYmhEblAk2ZcdLkS2CjboP9ZLlzb3ybjgrEKJFfKH3IjQwbySDhaGGJdy76UEhIn16zefyUq&oh=01_Q5Aa5AEVWetjXp9lHNARxQtR3rqf9YYaieeOKJyKn5ika5QnqQ&oe=6A93B717"
+            ]
+          }
+        },
+        {
+          "type": "BODY",
+          "text": "Assalamu'alaikum Warahmatullah Wabarakatuh Bapak/Ibu/Keluarga {{1}}\n\nKami mengucapkan Jazakumullah Khairan Katsiran Ahsanal Jaza atas dukungan Zakat, Infaq dan Sedekah Bapak/Ibu dan keluarga\n\nآجْرَكَ اللهُ فِيْمَا اَعْطَيْتَ، وَبَارَكَ فِيْمَا اَبْقَيْتَ وَ جَعَلَ اللهُ لَكَ طَهُوْرًا\n\nSemoga Allah Subahanahu Watta'ala memberikan pahala atas apa yang diberikan dan semoga Allah memberikan keberkahan atas (harta) Bapak/Ibu dan Keluarga.\n\nDemikian, Terima kasih sebesar-besarnya atas donasi yang telah ditunaikan Bapak/Ibu. Barokallah fiikum\n\n{{2}}\n{{3}}\nWassalamu'alaikum Warahmatullah Wabarakatuh",
+          "example": {
+            "body_text": [
+              [
+                "BApak Andi",
+                "BApak Andi",
+                "BApak Andi"
+              ]
+            ]
+          }
+        }
+      ],
+      "language": "id",
+      "status": "APPROVED",
+      "category": "UTILITY",
+      "disable_ios_autofill": false,
+      "is_primary_device_delivery_only": false,
+      "id": "512128041267352",
+      "namespace": "f8b46dc6_a650_4334_b920_bf693ebe7ccd"
+    },
+    {
+      "name": "bismillah_rekonfirm_komitmen",
+      "parameter_format": "POSITIONAL",
+      "components": [
+        {
+          "type": "BODY",
+          "text": "Assalamu’alaikum Warahmatullah Wabarakatuh\n{{1}} {{2}} Yth..\n\nTerima kasih atas supportnya untuk para da’i yang bertugas di pedalaman nusantara..\nAlhamdulillah sejak bulan {{3}} – {{4}} infaq {{5}} sudah mencapai {{6}} dari Komitmen infaq {{7}} .\n\nSetelah komitmen infaq selesai, apakah {{8}} berkenan kembali untuk tetap mensupport para da’i di pedalaman? Mohon konfirmasi melalui {{9}} {{10}} jika ingin melanjutkan komitmen infaqnya ya {{11}}\n\nJazaakumullah khairal Jazaa, semoga apa yang {{12}} Infaqkan Allah catat sebagai kebaikan yang pahalanya terus mengalir dan bermanfaat untuk ummat. Aamiin ya Allah",
+          "example": {
+            "body_text": [
+              [
+                "Bapak Andi",
+                "Bapak Andi",
+                "Bapak Andi",
+                "Bapak Andi",
+                "Bapak Andi",
+                "Bapak Andi",
+                "Bapak Andi",
+                "Bapak Andi",
+                "Bapak Andi",
+                "Bapak Andi",
+                "Iya",
+                "Alhamdulillah"
+              ]
+            ]
+          }
+        },
+        {
+          "type": "FOOTER",
+          "text": "Pesan Otomatis"
+        },
+        {
+          "type": "BUTTONS",
+          "buttons": [
+            {
+              "type": "QUICK_REPLY",
+              "text": "Customer Service"
+            }
+          ]
+        }
+      ],
+      "language": "id",
+      "status": "APPROVED",
+      "category": "UTILITY",
+      "disable_ios_autofill": false,
+      "is_primary_device_delivery_only": false,
+      "id": "1046673810371308",
+      "namespace": "f8b46dc6_a650_4334_b920_bf693ebe7ccd"
+    },
+    {
+      "name": "bismillah_qurban_web",
+      "parameter_format": "POSITIONAL",
+      "components": [
+        {
+          "type": "HEADER",
+          "format": "DOCUMENT",
+          "example": {
+            "header_handle": [
+              "https://scontent.whatsapp.net/v/t61.29466-34/399451586_1700777524000603_8583790609206338266_n.pdf?ccb=1-7&_nc_sid=8b1bef&_nc_aid=0&_nc_ohc=3wP2vE1d88UQ7kNvwFJzMcI&_nc_oc=AdqS-lBGtek5o0xq9xvlhGCCmnJEjEusf1033BCRDyzwOFKmVnG1kDMdZ6xkqzSKlVk&_nc_zt=3&_nc_ht=scontent.whatsapp.net&edm=AH51TzQEAAAA&_nc_gid=8wD6cDNZhbEbu1LIJaDhvw&_nc_tpa=Q5bMBQH3UbM-nBre7wr4QQAvgTPqA2eNBa0qG8c_zEhnG9y5y9zKkz09BqeYF7pzGApnyltRoKdH-pix&oh=01_Q5Aa5AGmt_79AmcU48sTLcEd_bgogS14j0LnO23p_hw3a7qbrg&oe=6A93D914"
+            ]
+          }
+        },
+        {
+          "type": "BODY",
+          "text": "Alhamdulillah\nTelah kami terima dana untuk pembelian hewan qurban dengan keterangan :\n\nQurban a/n. {{1}}\nJenis Qurban : {{2}}\n{{3}} {{4}}\n\n{{5}} {{6}}\n\nTerima kasih atas Qurban yang disalurkan melalui 'Laznas Dewan Da'wah' teiring do'a..\n\nآجْرَكَ اللهُ فِيْمَا اَعْطَيْتَ، وَبَارَكَ فِيْمَا اَبْقَيْتَ وَ جَعَلَ اللهُ لَكَ طَهُوْرًا\n\nSemoga Allah Subhanahu Watta'ala memberikan pahala atas apa yang diberikan dan semoga Allah memberikan keberkahan atas (harta) {{7}} dan Keluarga. Aamiin ya Rabb\n\nNote:\n{{8}} {{9}}\nJika ada kekeliruan dalam penulisan nama Pequrban mohon di infokan ke kami. Terima kasih",
+          "example": {
+            "body_text": [
+              [
+                "Bapak Andi",
+                "Bapak Andi",
+                "Bapak Andi",
+                "Bapak Andi",
+                "Bapak Andi",
+                "Bapak Andi",
+                "Bapak Andi",
+                "Bapak Andi",
+                "Bapak Andi"
+              ]
+            ]
+          }
+        },
+        {
+          "type": "BUTTONS",
+          "buttons": [
+            {
+              "type": "QUICK_REPLY",
+              "text": "Customer Service"
+            }
+          ]
+        }
+      ],
+      "language": "id",
+      "status": "APPROVED",
+      "category": "UTILITY",
+      "disable_ios_autofill": false,
+      "is_primary_device_delivery_only": false,
+      "id": "1700777520667270",
+      "namespace": "f8b46dc6_a650_4334_b920_bf693ebe7ccd"
+    },
+    {
+      "name": "qurban_sudah_dipotong",
+      "parameter_format": "POSITIONAL",
+      "components": [
+        {
+          "type": "BODY",
+          "text": "Assalamu'alaikum Bpk/Ibu {{1}}\n\nAlhamdulillah, Qurban Bapak/Ibu yang di amanahkan melalui LAZNAS Dewan Dakwah insyaaAllah telah disembelih.\n\nSemoga setiap daging, helai bulu, ujung kuku hingga tetes darah hewan Qurban Bpk/Ibu, Allah jadikan keberkahan dan memberikan manfaat untuk ummat.\n\nCek status Qurban klik : {{2}}\n\ninsyaaAllah laporan Qurban akan kami proses maksimal. H+60 Idul Adha\n\nJazaakumullah khair\nAamiin ya Rabb",
+          "example": {
+            "body_text": [
+              [
+                "Bapak Anid",
+                "www.simddii.com"
+              ]
+            ]
+          }
+        },
+        {
+          "type": "FOOTER",
+          "text": "Pesan Otomatis"
+        }
+      ],
+      "language": "id",
+      "status": "APPROVED",
+      "category": "UTILITY",
+      "disable_ios_autofill": false,
+      "is_primary_device_delivery_only": false,
+      "correct_category": "UTILITY",
+      "id": "2136119190086498",
+      "namespace": "f8b46dc6_a650_4334_b920_bf693ebe7ccd"
+    },
+    {
+      "name": "badan_wakaf_polis",
+      "parameter_format": "POSITIONAL",
+      "components": [
+        {
+          "type": "HEADER",
+          "format": "DOCUMENT",
+          "example": {
+            "header_handle": [
+              "https://scontent.whatsapp.net/v/t61.29466-34/321235760_1178521223481632_6348722742781602023_n.pdf?ccb=1-7&_nc_sid=8b1bef&_nc_ohc=0UUei7Bs6mIQ7kNvwFY6OuH&_nc_oc=Adr1iRlX_tMr0oAUxYlG2WwzBAOLi-rvPRnsNzX_62vRkJTJ-LZ1D39dblvFSfLnvL4&_nc_zt=3&_nc_ht=scontent.whatsapp.net&edm=AH51TzQEAAAA&_nc_gid=8wD6cDNZhbEbu1LIJaDhvw&_nc_tpa=Q5bMBQFMlHL3oHGyBsPTuOmkLVmLhrfZAHFAutfFiAvhfvkEqjSCiOgo0nIg6GMSFsxuaXAir3fgGsz6&oh=01_Q5Aa5AF_rPmLnNcsyTHKqqfiAbkjPx_IIQ5LJrT4OHfZH_QSHQ&oe=6A93AA81"
+            ]
+          }
+        },
+        {
+          "type": "BODY",
+          "text": "Assalamu'alaikum Warahmatullah Wabarakatuh Bapak/Ibu {{1}}\n\nKami mengucapkan Jazakumullah Khairan Katsiran Ahsanal Jaza atas Keikutsertaan Bapak/Ibu dan keluarga dalam Ber Asuransi Syariah dan Ber Wakaf\n\nSemoga Allah membalas harta yang telah Bapak/Ibu Sedekahkan\n\nUntuk melihat program Badan Wakaf Dewan Dakwah Islamiyah silahkan kunjungi link berikut https://wakafdewandakwah.id/\n\nDemikian, Terima kasih sebesar-besarnya atas kontribusi yang telah ditunaikan . Barokallah fiikum\n\nWassalamu'alaikum Warahmatullah Wabarakatuh",
+          "example": {
+            "body_text": [
+              [
+                "Bapak Andi"
+              ]
+            ]
+          }
+        },
+        {
+          "type": "FOOTER",
+          "text": "Pesan Otomatis"
+        }
+      ],
+      "language": "id",
+      "status": "APPROVED",
+      "category": "UTILITY",
+      "disable_ios_autofill": false,
+      "is_primary_device_delivery_only": false,
+      "id": "1178521220148299",
+      "namespace": "f8b46dc6_a650_4334_b920_bf693ebe7ccd"
+    },
+    {
+      "name": "kartu_wakaf",
+      "parameter_format": "POSITIONAL",
+      "components": [
+        {
+          "type": "HEADER",
+          "format": "DOCUMENT",
+          "example": {
+            "header_handle": [
+              "https://scontent.whatsapp.net/v/t61.29466-34/421029641_458127427123956_4408367320796517236_n.pdf?ccb=1-7&_nc_sid=8b1bef&_nc_ohc=Xh5v5afsx5kQ7kNvwElWLc_&_nc_oc=AdqcnRJY0nrM6-cqZzy2E6oq7s6CQJSY7qBk2ecgElosGHn_mpn7f3nuNDoW3EtQrhM&_nc_zt=3&_nc_ht=scontent.whatsapp.net&edm=AH51TzQEAAAA&_nc_gid=8wD6cDNZhbEbu1LIJaDhvw&_nc_tpa=Q5bMBQF4vpzZ39Bwf2X03teUvBu_ORxf-heeYTQqUXaN_5TKpQ39qAgV8BHHiDDXgPz4c8-M_IPPwohC&oh=01_Q5Aa5AFud0FPlJPXuV6VQYt-7kJ2KLVzgL59zgIbzjyuY9Lrag&oe=6A93D2C3"
+            ]
+          }
+        },
+        {
+          "type": "BODY",
+          "text": "Assalamu'alaikum Bapak/Ibu {{1}}\n\nKami ucapkan terima kasih telah Ber Asuransi Syariah dan Ber Wakaf, berikut kami lampirkan untuk Kartu Kepersetaan Asuransi dan Wakaf\n\nDemikian, Terima kasih sebesar-besarnya atas kontribusi yang telah ditunaikan . Barokallah fiikum\n\nWassalamu'alaikum Warahmatullah Wabarakatuh",
+          "example": {
+            "body_text": [
+              [
+                "Bapak Andi"
+              ]
+            ]
+          }
+        }
+      ],
+      "language": "id",
+      "status": "APPROVED",
+      "category": "UTILITY",
+      "disable_ios_autofill": false,
+      "is_primary_device_delivery_only": false,
+      "id": "458127423790623",
+      "namespace": "f8b46dc6_a650_4334_b920_bf693ebe7ccd"
+    }
+  ]
+}

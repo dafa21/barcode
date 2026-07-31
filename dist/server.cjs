@@ -1084,6 +1084,7 @@ router4.post("/send-wappin", jwtAuthGuard, tenantGuard, async (req, res) => {
           const mediaUploadUrl = "https://api.chat.wappin.app/v1/media";
           const mediaHeaders = {
             "Content-Type": "application/pdf",
+            "Content-Length": pdfBuffer.length.toString(),
             "Authorization": `Bearer ${activeBearerToken}`
           };
           if (process.env.WAPPIN_PROJECT_ID) {
