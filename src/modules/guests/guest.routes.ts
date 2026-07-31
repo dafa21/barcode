@@ -163,6 +163,23 @@ router.get('/public/invitation/:barcodeUid/undangan.pdf', handleGuestInvitation)
 router.get('/public/invitation/:barcodeUid([^/]+(?:/undangan\\.pdf)?)', handleGuestInvitation);
 router.get('/public/invitation/:barcodeUid', handleGuestInvitation);
 
+router.get('/debug-wappin-logs', (req, res) => {
+  try {
+    const logPath = require('path').join(process.cwd(), 'debug-wappin.log');
+    const fs = require('fs');
+    if (fs.existsSync(logPath)) {
+      const logs = fs.readFileSync(logPath, 'utf8');
+      const lines = logs.split('\n').filter(Boolean).slice(-100);
+      res.setHeader('Content-Type', 'text/plain');
+      res.send(lines.join('\n'));
+    } else {
+      res.send('Log file not found at: ' + logPath);
+    }
+  } catch (e: any) {
+    res.status(500).send(e.message);
+  }
+});
+
 router.use(jwtAuthGuard, tenantGuard);
 
 router.post('/', async (req: AuthRequest, res) => {
@@ -744,7 +761,9 @@ let fileUrl = '';
         });
         
         const pdfFilename = `${guest.barcodeUid}_${Date.now()}.pdf`;
-        const targetBase64 = guest.customInvitationFile || event.invitationFile || '';
+        const actualGuestFile = guest.customInvitationFile === 'exists' ? null : guest.customInvitationFile;
+        const actualEventFile = event.invitationFile === 'exists' ? null : event.invitationFile;
+        const targetBase64 = actualGuestFile || actualEventFile || '';
         
         if (!targetBase64) {
           throw new Error('Tamu ini dan Event ini tidak memiliki file PDF undangan. Harap unggah PDF terlebih dahulu.');
@@ -766,13 +785,13 @@ let fileUrl = '';
         } else if (targetBase64.startsWith('http://') || targetBase64.startsWith('https://')) {
           fileUrl = targetBase64;
         } else {
-          fileUrl = guest.customInvitationFile 
+          fileUrl = actualGuestFile 
             ? `${appUrl}/api/guests/public/invitation/${guest.barcodeUid}/undangan.pdf` 
             : `${appUrl}/api/events/public/invitation/${event.eventName.toLowerCase().replace(/[^a-z0-9]+/g, '-')}/undangan.pdf`;
         }
       } catch (err) {
         console.error('Error creating physical PDF:', err);
-        fileUrl = guest.customInvitationFile 
+        fileUrl = (guest.customInvitationFile && guest.customInvitationFile !== 'exists')
          ? `${appUrl}/api/guests/public/invitation/${guest.barcodeUid}/undangan.pdf` 
          : `${appUrl}/api/events/public/invitation/${event.eventName.toLowerCase().replace(/[^a-z0-9]+/g, '-')}/undangan.pdf`;
       }
@@ -928,22 +947,5 @@ let fileUrl = '';
       res.status(500).json({ error: 'Internal server error: ' + (error.stack || error.message || String(error)) });
     }
 });
-
-  router.get('/debug-wappin-logs', (req, res) => {
-    try {
-      const logPath = require('path').join(process.cwd(), 'debug-wappin.log');
-      const fs = require('fs');
-      if (fs.existsSync(logPath)) {
-        const logs = fs.readFileSync(logPath, 'utf8');
-        const lines = logs.split('\n').filter(Boolean).slice(-100);
-        res.setHeader('Content-Type', 'text/plain');
-        res.send(lines.join('\n'));
-      } else {
-        res.send('Log file not found at: ' + logPath);
-      }
-    } catch (e: any) {
-      res.status(500).send(e.message);
-    }
-  });
 
 export default router;
