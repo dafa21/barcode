@@ -648,27 +648,18 @@ router.post('/send-wappin', jwtAuthGuard, tenantGuard, async (req: AuthRequest, 
         link: fileUrl
       };
 
-      // Format Payload Wappin 2.0 dengan Header Dokumen
+      // Format Payload Wappin 2.0 TANPA Header Dokumen
       const payload = {
         messaging_product: "whatsapp",
         to: recipientWaId,
         type: "template",
         template: {
-          name: "undangan_dai",
+          name: "undangan_dai", // Pastikan nama template di Wappin adalah ini
           language: {
             policy: "deterministic",
             code: "id"
           },
           components: [
-            {
-              type: "header",
-              parameters: [
-                {
-                  type: "document",
-                  document: documentParamObj
-                }
-              ]
-            },
             {
               type: "body",
               parameters: [
