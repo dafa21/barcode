@@ -543,8 +543,8 @@ router.post('/send-wappin', jwtAuthGuard, tenantGuard, async (req: AuthRequest, 
       if (phoneStr.startsWith('0')) phoneStr = '62' + phoneStr.slice(1);
       if (!phoneStr.startsWith('62')) phoneStr = '62' + phoneStr;
       
-      // Wappin API merekomendasikan format +62
-      const recipientWaId = '+' + phoneStr;
+      // Meta API expects number without '+'
+      const recipientWaId = phoneStr;
 
       const envAppUrl = process.env.APP_URL || 'https://undangan.laznasdewandakwah.or.id';
       const appUrl = envAppUrl.includes('localhost') ? 'https://undangan.laznasdewandakwah.or.id' : envAppUrl;
