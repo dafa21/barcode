@@ -180,6 +180,29 @@ router.get('/debug-wappin-logs', (req, res) => {
   }
 });
 
+  // Dedicated physical file downloader to bypass Vite/Express static middleware issues
+  router.get('/download-physical-pdf/:filename', (req, res) => {
+    const filename = req.params.filename;
+    const path = require('path');
+    const fs = require('fs');
+    const candidatePaths = [
+      path.join(process.cwd(), 'dist', 'wappin_pdf', filename),
+      path.join(process.cwd(), 'public', 'wappin_pdf', filename),
+      path.join(process.cwd(), 'wappin_pdf', filename)
+    ];
+
+    const foundPath = candidatePaths.find(p => fs.existsSync(p));
+
+    if (foundPath) {
+      res.setHeader('Content-Type', 'application/pdf');
+      res.setHeader('Content-Disposition', `inline; filename="${filename}"`);
+      res.setHeader('Cache-Control', 'public, max-age=86400');
+      res.sendFile(foundPath);
+    } else {
+      res.status(404).send('PDF not found di physical drive');
+    }
+  });
+
 router.use(jwtAuthGuard, tenantGuard);
 
 router.post('/', async (req: AuthRequest, res) => {
@@ -456,26 +479,6 @@ router.post('/mark-manual-wa', jwtAuthGuard, tenantGuard, async (req: AuthReques
   }
 });
 
-  // Dedicated physical file downloader to bypass Vite/Express static middleware issues
-  router.get('/download-physical-pdf/:filename', (req, res) => {
-    const filename = req.params.filename;
-    const candidatePaths = [
-      path.join(process.cwd(), 'dist', 'wappin_pdf', filename),
-      path.join(process.cwd(), 'public', 'wappin_pdf', filename),
-      path.join(process.cwd(), 'wappin_pdf', filename)
-    ];
-
-    const foundPath = candidatePaths.find(p => fs.existsSync(p));
-
-    if (foundPath) {
-      res.setHeader('Content-Type', 'application/pdf');
-      res.setHeader('Content-Disposition', `inline; filename="${filename}"`);
-      res.setHeader('Cache-Control', 'public, max-age=86400');
-      res.sendFile(foundPath);
-    } else {
-      res.status(404).send('PDF not found di physical drive');
-    }
-  });
 
 router.post('/send-wappin', jwtAuthGuard, tenantGuard, async (req: AuthRequest, res) => {
   try {
