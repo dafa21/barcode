@@ -185,6 +185,7 @@ export function OfficeAdminDashboard({ user }: { user: User }) {
     title: string;
     category: 'checked_in' | 'attending' | 'pending' | 'not_attending' | 'wappin' | 'manual_wa';
   }>({ isOpen: false, title: '', category: 'checked_in' });
+  const [guestListSearch, setGuestListSearch] = useState('');
 
   const [events, setEvents] = useState<Event[]>([]);
   const [loading, setLoading] = useState(true);
@@ -3264,9 +3265,21 @@ const handleCreateEvent = async (e: React.FormEvent) => {
           <div className="bg-white rounded-2xl w-full max-w-lg shadow-2xl overflow-hidden flex flex-col max-h-[80vh]">
             <div className="p-4 border-b border-gray-100 flex justify-between items-center bg-gray-50">
               <h3 className="text-lg font-bold text-gray-900">{guestListModal.title}</h3>
-              <button onClick={() => setGuestListModal({ ...guestListModal, isOpen: false })} className="p-2 text-gray-400 hover:text-gray-600 rounded-lg hover:bg-gray-200 transition-colors">
+              <button onClick={() => { setGuestListModal({ ...guestListModal, isOpen: false }); setGuestListSearch(''); }} className="p-2 text-gray-400 hover:text-gray-600 rounded-lg hover:bg-gray-200 transition-colors">
                 <X className="w-5 h-5" />
               </button>
+            </div>
+            <div className="px-4 py-3 border-b border-gray-100">
+              <div className="relative">
+                <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                <input 
+                  type="text" 
+                  placeholder="Cari nama, instansi, email atau telepon..." 
+                  value={guestListSearch}
+                  onChange={(e) => setGuestListSearch(e.target.value)}
+                  className="w-full pl-9 pr-4 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:border-emerald-500"
+                />
+              </div>
             </div>
             <div className="p-4 overflow-y-auto flex-1">
               {(() => {
@@ -3278,17 +3291,39 @@ const handleCreateEvent = async (e: React.FormEvent) => {
                 else if (guestListModal.category === 'wappin') list = guests.filter(g => g.wappinSent);
                 else if (guestListModal.category === 'manual_wa') list = guests.filter(g => g.manualWaSent);
                 
+                if (guestListSearch) {
+                  const q = guestListSearch.toLowerCase();
+                  list = list.filter(g => 
+                    (g.guestName && g.guestName.toLowerCase().includes(q)) ||
+                    (g.company && g.company.toLowerCase().includes(q)) ||
+                    (g.jobTitle && g.jobTitle.toLowerCase().includes(q)) ||
+                    (g.email && g.email.toLowerCase().includes(q)) ||
+                    (g.phone && g.phone.toLowerCase().includes(q)) ||
+                    (g.guestType && g.guestType.toLowerCase().includes(q))
+                  );
+                }
+                
                 if (list.length === 0) return <p className="text-gray-500 text-center py-8">Belum ada data.</p>;
                 
                 return (
                   <ul className="space-y-2">
                     {list.map((g, i) => (
-                      <li key={g.id || i} className="p-3 bg-gray-50 rounded-lg flex justify-between items-center border border-gray-100">
+                      <li key={g.id || i} className="p-3 bg-gray-50 rounded-lg flex justify-between items-start border border-gray-100">
                         <div>
-                          <p className="font-semibold text-gray-900 text-sm">{g.guestName}</p>
-                          {(g.company || g.jobTitle) && <p className="text-xs text-gray-500 mt-0.5">{g.jobTitle ? g.jobTitle + (g.company ? ' at ' : '') : ''}{g.company}</p>}
+                          <p className="font-semibold text-gray-900 text-sm flex flex-wrap items-center gap-2">
+                            {g.guestName}
+                            {g.guestType && <span className="px-2 py-0.5 bg-blue-50 text-blue-600 text-[10px] font-bold uppercase tracking-wider rounded">{g.guestType}</span>}
+                            {g.isVip && <span className="px-2 py-0.5 bg-amber-50 text-amber-600 text-[10px] font-bold uppercase tracking-wider rounded flex items-center gap-1"><Crown className="w-3 h-3" /> VIP</span>}
+                          </p>
+                          <div className="text-xs text-gray-500 mt-1 space-y-0.5">
+                            {(g.company || g.jobTitle) && <p>{g.jobTitle ? g.jobTitle + (g.company ? ' di ' : '') : ''}{g.company}</p>}
+                            {(g.phone || g.email) && <p className="flex items-center gap-3 mt-1">
+                              {g.phone && <span className="flex items-center gap-1">📞 {g.phone}</span>}
+                              {g.email && <span className="flex items-center gap-1">✉️ {g.email}</span>}
+                            </p>}
+                          </div>
                         </div>
-                        {g.barcodeUid && <span className="text-[10px] font-mono text-gray-400 bg-gray-200 px-2 py-1 rounded">{g.barcodeUid.substring(0,8)}</span>}
+                        {g.barcodeUid && <span className="text-[10px] font-mono text-gray-400 bg-gray-200 px-2 py-1 rounded mt-0.5">{g.barcodeUid.substring(0,8)}</span>}
                       </li>
                     ))}
                   </ul>
