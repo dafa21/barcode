@@ -3,7 +3,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { db } from '../../db/index.ts';
 import { guests, events, attendances, users } from '../../db/schema.ts';
-import { eq, sql, inArray } from 'drizzle-orm';
+import { eq, sql, inArray, and } from 'drizzle-orm';
 import { v4 as uuidv4 } from 'uuid';
 import { jwtAuthGuard, AuthRequest } from '../../core/middlewares/jwtAuthGuard.ts';
 import { tenantGuard } from '../../core/middlewares/tenantGuard.ts';
@@ -383,11 +383,16 @@ router.put('/bulk-update/excel', jwtAuthGuard, tenantGuard, async (req: AuthRequ
     // we will loop and update.
     const results = [];
     for (const updateData of updates) {
-      if (!updateData.barcodeUid) continue;
+      if (!updateData.identifyingName) continue;
+
+      let conditions = [eq(guests.guestName, updateData.identifyingName)];
+      if (updateData.identifyingPhone) {
+        conditions.push(eq(guests.phone, updateData.identifyingPhone));
+      }
 
       // Check permission for each guest's event? We can assume the frontend sends guests for the current event.
       // But for security, we should verify it. To optimize, we can verify one guest's event and assume all are same event.
-      const guestResult = await db.select().from(guests).where(eq(guests.barcodeUid, updateData.barcodeUid)).limit(1);
+      const guestResult = await db.select().from(guests).where(and(...conditions)).limit(1);
       if (guestResult.length === 0) continue;
 
       const eventResult = await db.select().from(events).where(eq(events.id, guestResult[0].eventId)).limit(1);
@@ -403,7 +408,7 @@ router.put('/bulk-update/excel', jwtAuthGuard, tenantGuard, async (req: AuthRequ
         jobTitle: updateData.jobTitle !== undefined ? updateData.jobTitle : guestResult[0].jobTitle,
         guestType: updateData.guestType !== undefined ? updateData.guestType : guestResult[0].guestType,
         isVip: updateData.isVip !== undefined ? updateData.isVip : guestResult[0].isVip,
-      }).where(eq(guests.barcodeUid, updateData.barcodeUid)).returning();
+      }).where(eq(guests.id, guestResult[0].id)).returning();
       
       if (updated.length > 0) results.push(updated[0]);
     }

@@ -1011,12 +1011,13 @@ const handleCreateEvent = async (e: React.FormEvent) => {
         }
 
         const firstRow = data[0] as any;
-        if (!firstRow['Barcode UID']) {
-          showAlert('Pemberitahuan', 'Kolom "Barcode UID" tidak ditemukan. Kolom ini wajib ada untuk mencocokkan data.');
+        const guestNameKey = Object.keys(firstRow).find(k => ['Nama Tamu', 'Guest Name', 'Name'].includes(k));
+        if (!guestNameKey) {
+          showAlert('Pemberitahuan', 'Kolom "Nama Tamu" atau "Name" tidak ditemukan. Kolom ini wajib ada untuk mencocokkan data.');
           return;
         }
 
-        const availableCols = Object.keys(firstRow).filter(k => k !== 'Barcode UID' && k !== 'No' && k !== 'Check-in Time' && k !== 'Status');
+        const availableCols = Object.keys(firstRow).filter(k => k !== 'Barcode UID' && k !== 'No' && k !== 'Check-in Time' && k !== 'Status' && k !== guestNameKey && k !== 'Telepon' && k !== 'Phone' && k !== 'No. HP');
         setBulkUpdateAvailableColumns(availableCols);
         setBulkUpdateSelectedColumns(availableCols);
         setBulkUpdateData(data);
@@ -1038,13 +1039,16 @@ const handleCreateEvent = async (e: React.FormEvent) => {
     
     // Map data
     const updates = bulkUpdateData.map((row: any) => {
-      const updateData: any = { barcodeUid: row['Barcode UID'] };
+      const identifyingName = row['Nama Tamu'] || row['Guest Name'] || row['Name'];
+      const identifyingPhone = row['Telepon'] || row['Phone'] || row['No. HP'];
+      
+      const updateData: any = { identifyingName, identifyingPhone };
       
       if (bulkUpdateSelectedColumns.includes('Nama Tamu') || bulkUpdateSelectedColumns.includes('Guest Name') || bulkUpdateSelectedColumns.includes('Name')) {
-        updateData.guestName = row['Nama Tamu'] || row['Guest Name'] || row['Name'];
+        updateData.guestName = identifyingName;
       }
       if (bulkUpdateSelectedColumns.includes('Email')) updateData.email = row['Email'];
-      if (bulkUpdateSelectedColumns.includes('Telepon') || bulkUpdateSelectedColumns.includes('Phone')) updateData.phone = row['Telepon'] || row['Phone'];
+      if (bulkUpdateSelectedColumns.includes('Telepon') || bulkUpdateSelectedColumns.includes('Phone')) updateData.phone = identifyingPhone;
       if (bulkUpdateSelectedColumns.includes('Instansi') || bulkUpdateSelectedColumns.includes('Company')) updateData.company = row['Instansi'] || row['Company'];
       if (bulkUpdateSelectedColumns.includes('Jabatan') || bulkUpdateSelectedColumns.includes('Job Title')) updateData.jobTitle = row['Jabatan'] || row['Job Title'];
       if (bulkUpdateSelectedColumns.includes('Tipe Tamu')) updateData.guestType = row['Tipe Tamu'];
