@@ -2,7 +2,7 @@ import React from "react";
 import { CustomModal } from './CustomModal.tsx';
 import { useState, useEffect, useRef } from 'react';
 import { User, Event, Guest } from '../types.ts';
-import { Calendar, Plus, Edit, Edit3, Trash2, Users, MapPin, Search, QrCode, BarChart2, LayoutList, Activity, Download, MessageCircle, Send, Bot, X, UserPlus, Printer, Crown, Upload, FileText, Menu, ChevronLeft, ChevronRight, PanelLeftClose, PanelLeftOpen } from 'lucide-react';
+import { Calendar, Plus, Edit, Edit3, Trash2, Users, MapPin, Search, QrCode, BarChart2, LayoutList, Activity, Download, MessageCircle, Send, Bot, X, UserPlus, Printer, Crown, Upload, FileText, Menu, ChevronLeft, ChevronRight, PanelLeftClose, PanelLeftOpen, CheckCircle2, Clock, XCircle } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { AnalyticsDashboard } from './AnalyticsDashboard.tsx';
 import { TwibbonConfigurator } from "./TwibbonConfigurator.tsx";
@@ -180,6 +180,11 @@ export function OfficeAdminDashboard({ user }: { user: User }) {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(12);
   const [selectedGuestDetail, setSelectedGuestDetail] = useState<Guest | null>(null);
+  const [guestListModal, setGuestListModal] = useState<{
+    isOpen: boolean;
+    title: string;
+    category: 'checked_in' | 'attending' | 'pending' | 'not_attending' | 'wappin' | 'manual_wa';
+  }>({ isOpen: false, title: '', category: 'checked_in' });
 
   const [events, setEvents] = useState<Event[]>([]);
   const [loading, setLoading] = useState(true);
@@ -1709,45 +1714,105 @@ const handleCreateEvent = async (e: React.FormEvent) => {
                   </div>
                 </div>
                   <div className="p-6 flex flex-col gap-6 overflow-y-auto flex-1">
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                  <div className="p-4 bg-emerald-50 rounded-xl">
+                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+                  <div 
+                    className="p-4 bg-emerald-50 rounded-xl cursor-pointer hover:bg-emerald-100 transition-colors"
+                    onClick={() => setGuestListModal({ isOpen: true, title: 'Total Attendance', category: 'checked_in' })}
+                  >
                     <div className="flex items-center justify-between">
                       <div>
-                        <p className="text-sm font-medium text-emerald-600 mb-1">Total Checked-in</p>
-                        <p className="text-3xl font-bold text-emerald-700">
+                        <p className="text-xs font-medium text-emerald-600 mb-1">Total Checked-in</p>
+                        <p className="text-2xl font-bold text-emerald-700">
                           {guests.filter(g => g.status === 'attended').length}
                         </p>
                       </div>
-                      <div className="p-3 bg-emerald-100 rounded-lg">
-                        <Activity className="w-6 h-6 text-emerald-600" />
+                      <div className="p-2 bg-emerald-100 rounded-lg hidden sm:block">
+                        <Activity className="w-5 h-5 text-emerald-600" />
                       </div>
                     </div>
                   </div>
                   
-                  <div className="p-4 bg-blue-50 rounded-xl">
+                  <div 
+                    className="p-4 bg-blue-50 rounded-xl cursor-pointer hover:bg-blue-100 transition-colors"
+                    onClick={() => setGuestListModal({ isOpen: true, title: 'Total Confirmed', category: 'attending' })}
+                  >
                     <div className="flex items-center justify-between">
                       <div>
-                        <p className="text-sm font-medium text-blue-600 mb-1">Wappin Sent</p>
-                        <p className="text-3xl font-bold text-blue-700">
-                          {guests.filter(g => g.wappinSent).length}
+                        <p className="text-xs font-medium text-blue-600 mb-1">Confirmed</p>
+                        <p className="text-2xl font-bold text-blue-700">
+                          {guests.filter(g => g.rsvpStatus === 'attending' && g.status !== 'attended').length}
                         </p>
                       </div>
-                      <div className="p-3 bg-blue-100 rounded-lg">
-                        <Bot className="w-6 h-6 text-blue-600" />
+                      <div className="p-2 bg-blue-100 rounded-lg hidden sm:block">
+                        <CheckCircle2 className="w-5 h-5 text-blue-600" />
                       </div>
                     </div>
                   </div>
 
-                  <div className="p-4 bg-purple-50 rounded-xl">
+                  <div 
+                    className="p-4 bg-amber-50 rounded-xl cursor-pointer hover:bg-amber-100 transition-colors"
+                    onClick={() => setGuestListModal({ isOpen: true, title: 'Total Pending', category: 'pending' })}
+                  >
                     <div className="flex items-center justify-between">
                       <div>
-                        <p className="text-sm font-medium text-purple-600 mb-1">Manual WA Sent</p>
-                        <p className="text-3xl font-bold text-purple-700">
+                        <p className="text-xs font-medium text-amber-600 mb-1">Pending</p>
+                        <p className="text-2xl font-bold text-amber-700">
+                          {guests.filter(g => g.rsvpStatus === 'pending' && g.status !== 'attended').length}
+                        </p>
+                      </div>
+                      <div className="p-2 bg-amber-100 rounded-lg hidden sm:block">
+                        <Clock className="w-5 h-5 text-amber-600" />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div 
+                    className="p-4 bg-red-50 rounded-xl cursor-pointer hover:bg-red-100 transition-colors"
+                    onClick={() => setGuestListModal({ isOpen: true, title: 'Not Attending', category: 'not_attending' })}
+                  >
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-xs font-medium text-red-600 mb-1">Not Attending</p>
+                        <p className="text-2xl font-bold text-red-700">
+                          {guests.filter(g => g.rsvpStatus === 'not_attending').length}
+                        </p>
+                      </div>
+                      <div className="p-2 bg-red-100 rounded-lg hidden sm:block">
+                        <XCircle className="w-5 h-5 text-red-600" />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div 
+                    className="p-4 bg-indigo-50 rounded-xl cursor-pointer hover:bg-indigo-100 transition-colors"
+                    onClick={() => setGuestListModal({ isOpen: true, title: 'Wappin Sent', category: 'wappin' })}
+                  >
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-xs font-medium text-indigo-600 mb-1">Wappin Sent</p>
+                        <p className="text-2xl font-bold text-indigo-700">
+                          {guests.filter(g => g.wappinSent).length}
+                        </p>
+                      </div>
+                      <div className="p-2 bg-indigo-100 rounded-lg hidden sm:block">
+                        <Bot className="w-5 h-5 text-indigo-600" />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div 
+                    className="p-4 bg-purple-50 rounded-xl cursor-pointer hover:bg-purple-100 transition-colors"
+                    onClick={() => setGuestListModal({ isOpen: true, title: 'Manual WA Sent', category: 'manual_wa' })}
+                  >
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-xs font-medium text-purple-600 mb-1">Manual WA</p>
+                        <p className="text-2xl font-bold text-purple-700">
                           {guests.filter(g => g.manualWaSent).length}
                         </p>
                       </div>
-                      <div className="p-3 bg-purple-100 rounded-lg">
-                        <Send className="w-6 h-6 text-purple-600" />
+                      <div className="p-2 bg-purple-100 rounded-lg hidden sm:block">
+                        <Send className="w-5 h-5 text-purple-600" />
                       </div>
                     </div>
                   </div>
@@ -3185,6 +3250,47 @@ const handleCreateEvent = async (e: React.FormEvent) => {
             <h3 className="text-xl font-bold text-gray-900">Mengirim Undangan...</h3>
             <p className="text-gray-500">Memproses {generatingWappinProgress.current} dari {generatingWappinProgress.total} tamu.</p>
             <p className="text-xs text-gray-400">Mohon jangan menutup halaman ini.</p>
+          </div>
+        </div>
+      )}
+
+      {/* Guest List Modal */}
+      {guestListModal.isOpen && (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-[9999]">
+          <div className="bg-white rounded-2xl w-full max-w-lg shadow-2xl overflow-hidden flex flex-col max-h-[80vh]">
+            <div className="p-4 border-b border-gray-100 flex justify-between items-center bg-gray-50">
+              <h3 className="text-lg font-bold text-gray-900">{guestListModal.title}</h3>
+              <button onClick={() => setGuestListModal({ ...guestListModal, isOpen: false })} className="p-2 text-gray-400 hover:text-gray-600 rounded-lg hover:bg-gray-200 transition-colors">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            <div className="p-4 overflow-y-auto flex-1">
+              {(() => {
+                let list: Guest[] = [];
+                if (guestListModal.category === 'checked_in') list = guests.filter(g => g.status === 'attended');
+                else if (guestListModal.category === 'attending') list = guests.filter(g => g.rsvpStatus === 'attending' && g.status !== 'attended');
+                else if (guestListModal.category === 'pending') list = guests.filter(g => g.rsvpStatus === 'pending' && g.status !== 'attended');
+                else if (guestListModal.category === 'not_attending') list = guests.filter(g => g.rsvpStatus === 'not_attending');
+                else if (guestListModal.category === 'wappin') list = guests.filter(g => g.wappinSent);
+                else if (guestListModal.category === 'manual_wa') list = guests.filter(g => g.manualWaSent);
+                
+                if (list.length === 0) return <p className="text-gray-500 text-center py-8">Belum ada data.</p>;
+                
+                return (
+                  <ul className="space-y-2">
+                    {list.map((g, i) => (
+                      <li key={g.id || i} className="p-3 bg-gray-50 rounded-lg flex justify-between items-center border border-gray-100">
+                        <div>
+                          <p className="font-semibold text-gray-900 text-sm">{g.guestName}</p>
+                          {(g.company || g.jobTitle) && <p className="text-xs text-gray-500 mt-0.5">{g.jobTitle ? g.jobTitle + (g.company ? ' at ' : '') : ''}{g.company}</p>}
+                        </div>
+                        {g.barcodeUid && <span className="text-[10px] font-mono text-gray-400 bg-gray-200 px-2 py-1 rounded">{g.barcodeUid.substring(0,8)}</span>}
+                      </li>
+                    ))}
+                  </ul>
+                );
+              })()}
+            </div>
           </div>
         </div>
       )}
