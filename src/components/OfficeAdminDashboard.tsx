@@ -1997,12 +1997,12 @@ const handleCreateEvent = async (e: React.FormEvent) => {
         {guest.rsvpStatus === 'attending' ? (
           <div className="flex flex-col gap-0.5">
             <span className="inline-flex items-center justify-center px-2 py-1 rounded text-[10px] font-medium bg-blue-50 text-blue-600 border border-blue-200 w-fit">Hadir</span>
-            {guest.rsvpUpdatedAt && <span className="text-[8px] text-gray-400 font-medium">{new Date(guest.rsvpUpdatedAt).toLocaleDateString('id-ID', {day:'numeric', month:'short'})}</span>}
+            {guest.rsvpUpdatedAt && <span className="text-[8px] text-gray-400 font-medium">{new Date(guest.rsvpUpdatedAt).toLocaleString('id-ID', {day:'numeric', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit'})}</span>}
           </div>
         ) : guest.rsvpStatus === 'not_attending' ? (
           <div className="flex flex-col gap-0.5">
             <span className="inline-flex items-center justify-center px-2 py-1 rounded text-[10px] font-medium bg-red-50 text-red-600 border border-red-200 w-fit">Tidak Hadir</span>
-            {guest.rsvpUpdatedAt && <span className="text-[8px] text-gray-400 font-medium">{new Date(guest.rsvpUpdatedAt).toLocaleDateString('id-ID', {day:'numeric', month:'short'})}</span>}
+            {guest.rsvpUpdatedAt && <span className="text-[8px] text-gray-400 font-medium">{new Date(guest.rsvpUpdatedAt).toLocaleString('id-ID', {day:'numeric', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit'})}</span>}
           </div>
         ) : (
           <span className="inline-flex items-center px-2 py-1 rounded text-[10px] font-medium bg-amber-50 text-amber-600 border border-amber-200">Menunggu</span>
