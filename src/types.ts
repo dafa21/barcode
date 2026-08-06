@@ -55,6 +55,7 @@ export interface Guest {
   paxCount?: number;
   status?: 'attended' | 'invalid' | null;
   scannedAt?: string | null;
+  rsvpUpdatedAt?: string | null;
   customInvitationFile?: string | null;
 }
 

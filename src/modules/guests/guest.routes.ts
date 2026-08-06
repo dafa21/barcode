@@ -93,7 +93,8 @@ router.post('/rsvp/:barcodeUid', async (req, res) => {
     const updated = await db.update(guests)
       .set({ 
         rsvpStatus: rsvpStatus || 'attending', 
-        paxCount: paxCount || 1 
+        paxCount: paxCount || 1,
+        rsvpUpdatedAt: new Date()
       })
       .where(eq(guests.barcodeUid, barcodeUid))
       .returning();
@@ -108,6 +109,7 @@ router.post('/rsvp/:barcodeUid', async (req, res) => {
         jobTitle: ag.jobTitle || null,
         barcodeUid: uuidv4(),
         rsvpStatus: 'attending' as const,
+        rsvpUpdatedAt: new Date(),
         paxCount: 1
       }));
       
@@ -311,6 +313,7 @@ router.get('/event/:eventId', async (req: AuthRequest, res) => {
         wappinSent: guests.wappinSent,
         manualWaSent: guests.manualWaSent,
         customInvitationFile: sql<string>`CASE WHEN ${guests.customInvitationFile} IS NOT NULL THEN 'exists' ELSE NULL END`.as('customInvitationFile'),
+        rsvpUpdatedAt: guests.rsvpUpdatedAt,
         status: attendances.status,
         scannedAt: attendances.scannedAt
       })

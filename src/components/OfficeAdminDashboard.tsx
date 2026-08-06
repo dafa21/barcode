@@ -1995,11 +1995,15 @@ const handleCreateEvent = async (e: React.FormEvent) => {
         )}
         
         {guest.rsvpStatus === 'attending' ? (
-          <div className="flex flex-col">
-            <span className="inline-flex items-center px-2 py-1 rounded text-[10px] font-medium bg-blue-50 text-blue-600 border border-blue-200">Hadir</span>
+          <div className="flex flex-col gap-0.5">
+            <span className="inline-flex items-center justify-center px-2 py-1 rounded text-[10px] font-medium bg-blue-50 text-blue-600 border border-blue-200 w-fit">Hadir</span>
+            {guest.rsvpUpdatedAt && <span className="text-[8px] text-gray-400 font-medium">{new Date(guest.rsvpUpdatedAt).toLocaleDateString('id-ID', {day:'numeric', month:'short'})}</span>}
           </div>
         ) : guest.rsvpStatus === 'not_attending' ? (
-          <span className="inline-flex items-center px-2 py-1 rounded text-[10px] font-medium bg-red-50 text-red-600 border border-red-200">Tidak Hadir</span>
+          <div className="flex flex-col gap-0.5">
+            <span className="inline-flex items-center justify-center px-2 py-1 rounded text-[10px] font-medium bg-red-50 text-red-600 border border-red-200 w-fit">Tidak Hadir</span>
+            {guest.rsvpUpdatedAt && <span className="text-[8px] text-gray-400 font-medium">{new Date(guest.rsvpUpdatedAt).toLocaleDateString('id-ID', {day:'numeric', month:'short'})}</span>}
+          </div>
         ) : (
           <span className="inline-flex items-center px-2 py-1 rounded text-[10px] font-medium bg-amber-50 text-amber-600 border border-amber-200">Menunggu</span>
         )}
@@ -3321,6 +3325,7 @@ const handleCreateEvent = async (e: React.FormEvent) => {
                               {g.phone && <span className="flex items-center gap-1">📞 {g.phone}</span>}
                               {g.email && <span className="flex items-center gap-1">✉️ {g.email}</span>}
                             </p>}
+                            {g.rsvpUpdatedAt && <p className="text-[10px] text-gray-400 mt-1 font-medium">🕒 Konfirmasi pada: {new Date(g.rsvpUpdatedAt).toLocaleString('id-ID')}</p>}
                           </div>
                         </div>
                         {g.barcodeUid && <span className="text-[10px] font-mono text-gray-400 bg-gray-200 px-2 py-1 rounded mt-0.5">{g.barcodeUid.substring(0,8)}</span>}

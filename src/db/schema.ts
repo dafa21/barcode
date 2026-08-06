@@ -64,6 +64,7 @@ export const guests = pgTable('guests', {
   phone: varchar('phone', { length: 20 }),
   barcodeUid: varchar('barcode_uid', { length: 100 }).notNull().unique(), // UUID for barcode
   rsvpStatus: rsvpEnum('rsvp_status').default('pending'),
+  rsvpUpdatedAt: timestamp('rsvp_updated_at'),
   isVip: boolean('is_vip').default(false),
   paxCount: integer('pax_count').default(1),
   customInvitationFile: text('custom_invitation_file'),
